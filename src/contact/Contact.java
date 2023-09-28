@@ -57,6 +57,17 @@ public class Contact {
         return memo;
     }
 
+    @Override
+    public String toString() {
+        return "Contact{" +
+                "pid=" + pid +
+                ", name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", groupName='" + groupName + '\'' +
+                ", memo='" + memo + '\'' +
+                '}';
+    }
+
     public void setMemo(String memo) {
         this.memo = memo;
     }
