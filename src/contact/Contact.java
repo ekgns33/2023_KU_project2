@@ -15,6 +15,12 @@ public class Contact {
         this.memo = memo;
     }
 
+    public Contact (int pid, String name, String phoneNumber) {
+        this.pid = pid;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+    }
+
     public int getPid() {
         return pid;
     }
