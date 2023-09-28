@@ -15,7 +15,12 @@ public class FileHandler {
         this.dataList = new ArrayList<>();
     }
 
-    // txt파일을 read하고 한줄 한줄을 list에 담아서 리턴한다.
+    /**
+     * 파일을 한줄씩읽어서 리스트에 삽입 후 리스트 반환
+     *
+     * @return 파일의 문자열들을 개행마다 분리하여 리스트로 반환.
+     *
+     * */
     public List<String> readFile() {
 
         try {
@@ -35,7 +40,12 @@ public class FileHandler {
         return this.dataList;
     }
 
-    // String list을 받아서 한줄 씩 저장.
+    /**
+     *
+     * 애플리케이션이 갖고있던 정보를 file에 저장.
+     * @param dataList 문자열로 변환된 Contact객체들의 리스트
+     *
+     * */
     public void writeListToFile(List<String> dataList) {
         try {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(this.filePath));
