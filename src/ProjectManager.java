@@ -1,5 +1,9 @@
 import contact.ContactController;
 import contact.ContactRepository;
+import errors.exceptions.ApplicationException;
+import errors.exceptions.ErrorCode;
+import errors.exceptions.InvalidInputException;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -26,9 +30,18 @@ public class ProjectManager extends ProjectManagerSupport {
         // read datas from FILE
         init();
         while(true) {
-            String userInput = getUserInput();
-            if(userInput.equals("0")) break;
-            this.contactController.routeRequest(Integer.parseInt(userInput));
+            try {
+                String userInput = getUserInput();
+                int userCommand = Integer.parseInt(userInput);
+
+                if(userCommand> 5) throw new InvalidInputException(ErrorCode.Invalid_Input);
+                //end clause
+                if(userCommand == 0) break;
+                this.contactController.routeRequest(userCommand);
+            } catch (ApplicationException e) {
+                System.out.println(e.getMessage());
+            }
+
         }
     }
     public String getUserInput() {
