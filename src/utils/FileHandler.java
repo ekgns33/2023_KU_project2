@@ -1,8 +1,6 @@
 package utils;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +33,21 @@ public class FileHandler {
         }
 
         return this.dataList;
+    }
+
+    // String list을 받아서 한줄 씩 저장.
+    public void writeListToFile(List<String> dataList) {
+        try {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(this.filePath));
+            for(String nextLine : dataList) {
+                bufferedWriter.write(nextLine);
+                bufferedWriter.newLine();
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }
