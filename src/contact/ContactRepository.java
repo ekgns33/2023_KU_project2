@@ -8,4 +8,7 @@ public class ContactRepository {
     public ContactRepository () {
     };
 
+    public void setUserTable(Map<Integer, Contact> userTable) {
+        this.userTable = userTable;
+    }
 }

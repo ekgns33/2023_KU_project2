@@ -2,10 +2,13 @@ package contact;
 
 public class ContactController {
     private ContactService contactService;
+
+    private int nextCommand;
     //constructor
     public void routeRequest(int userRequest) {
+        setNextCommand(userRequest);
         // read request and route to the certain controller.
-        while(true) {
+        while(nextCommand != 0) {
             switch (userRequest) {
                 case 1:
                     this.searchContact();
@@ -24,7 +27,10 @@ public class ContactController {
             }
         }
     }
-    public ContactController(){}
+    public ContactController(){
+        //initial value
+        this.nextCommand = -1;
+    }
 
     public void searchContact() {
     }
@@ -43,4 +49,7 @@ public class ContactController {
 
     }
 
+    public void setNextCommand(int nextCommand) {
+        this.nextCommand = nextCommand;
+    }
 }

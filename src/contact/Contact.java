@@ -15,6 +15,12 @@ public class Contact {
         this.memo = memo;
     }
 
+    public Contact (int pid, String name, String phoneNumber) {
+        this.pid = pid;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+    }
+
     public int getPid() {
         return pid;
     }
@@ -49,6 +55,17 @@ public class Contact {
 
     public String getMemo() {
         return memo;
+    }
+
+    @Override
+    public String toString() {
+        return "Contact{" +
+                "pid=" + pid +
+                ", name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", groupName='" + groupName + '\'' +
+                ", memo='" + memo + '\'' +
+                '}';
     }
 
     public void setMemo(String memo) {
