@@ -1,5 +1,6 @@
 package contact;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -8,7 +9,7 @@ public class ContactService {
     }
 
     public void searchService(int userInput, ContactRepository contactRepository){
-        List<Contact> queryResult;
+        List<Contact> queryResult = new ArrayList<>();
         switch (userInput) {
             case 1:
                 String inputName = getUserInput();
@@ -21,6 +22,10 @@ public class ContactService {
                 queryResult = contactRepository.findByGroupName(inputGroup);
             default:
                 break;
+        }
+        if(queryResult.isEmpty()){
+            System.out.println("일치하는 항목이 없습니다.");
+            return ;
         }
     }
     public String getUserInput() {
