@@ -46,7 +46,7 @@ public class ContactController {
                 int userCommand = Integer.parseInt(userInput);
                 if(userCommand > 3) throw new InvalidInputException(ErrorCode.Invalid_Input);
                 if(userCommand == 0) break;
-                contactService.searchService(userCommand);
+                contactService.searchService(userCommand, contactRepository);
             }catch(ApplicationException e){
                 System.out.println(e.getMessage());
             }

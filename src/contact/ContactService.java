@@ -6,9 +6,10 @@ public class ContactService {
     public ContactService(){
     }
 
-    public void searchService(int userInput){
+    public void searchService(int userInput, ContactRepository contactRepository){
         switch (userInput){
             case 1:
+
             case 2:
             case 3:
             default:
