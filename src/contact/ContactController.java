@@ -51,7 +51,7 @@ public class ContactController {
                 if(userCommand> 4) throw new InvalidInputException(ErrorCode.Invalid_Input);
                 //end clause
                 if(userCommand == 0) break;
-
+                contactService.searchService(userCommand, userTable);
             } catch (ApplicationException e) {
                 System.out.println(e.getMessage());
             }
