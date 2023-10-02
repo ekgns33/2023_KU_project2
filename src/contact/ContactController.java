@@ -1,5 +1,9 @@
 package contact;
 
+import errors.exceptions.ApplicationException;
+import errors.exceptions.ErrorCode;
+import errors.exceptions.InvalidInputException;
+
 import java.util.Scanner;
 
 public class ContactController {
@@ -36,6 +40,17 @@ public class ContactController {
         this.nextCommand = -1;
     }
     public void searchContact() {
+        while(true){
+            try{
+                String userInput = getUserInput();
+                int userCommand = Integer.parseInt(userInput);
+                if(userCommand > 3) throw new InvalidInputException(ErrorCode.Invalid_Input);
+                if(userCommand == 0) break;
+
+            }catch(ApplicationException e){
+                System.out.println(e.getMessage());
+            }
+        }
     }
     public void createContact(){
 
