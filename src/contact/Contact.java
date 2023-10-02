@@ -59,13 +59,11 @@ public class Contact {
 
     @Override
     public String toString() {
-        return "Contact{" +
-                "pid=" + pid +
-                ", name='" + name + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", groupName='" + groupName + '\'' +
-                ", memo='" + memo + '\'' +
-                '}';
+        return  pid +
+                "|" + name  +
+                "|" + phoneNumber +
+                "|" + groupName +
+                "|" + memo;
     }
 
     public void setMemo(String memo) {

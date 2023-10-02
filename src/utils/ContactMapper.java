@@ -33,7 +33,7 @@ public class ContactMapper {
      * @return 문자열을 분해해서 만든 Contact 객체
      * */
     public Contact mapStringToContact(String line) {
-        String[] tokens = line.split(" ");
+        String[] tokens = line.split("\\|");
         Contact contact = new Contact(Integer.parseInt(tokens[0]), tokens[1], tokens[2]);
         if(tokens.length >= 4) {
             contact.setGroupName(tokens[3]);

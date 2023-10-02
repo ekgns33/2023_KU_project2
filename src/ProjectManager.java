@@ -15,8 +15,8 @@ public class ProjectManager extends ProjectManagerSupport {
     public ProjectManager() {
         super("data.txt");
         // 의존성 부여를 위한 객체 생성
-        this.contactController = new ContactController();
         this.contactRepository = new ContactRepository();
+        this.contactController = new ContactController(this.contactRepository);
 
     }
 
@@ -38,6 +38,8 @@ public class ProjectManager extends ProjectManagerSupport {
                 //end clause
                 if(userCommand == 0) break;
                 this.contactController.routeRequest(userCommand);
+                //save file
+                fileHandler.writeListToFile(this.contactRepository.toStringList());
             } catch (ApplicationException e) {
                 System.out.println(e.getMessage());
             }
