@@ -32,12 +32,11 @@ public class ContactService {
         }
         if(queryResult.isEmpty()){
             System.out.println("일치하는 항목이 없습니다.");
-            return ;
         }
-        else{
+        else {
             int index = 1;
-            for(Contact contact : queryResult){
-                System.out.print("["+index+"] ");
+            for (Contact contact : queryResult) {
+                System.out.print("[" + index + "] ");
                 System.out.println(queryResult.toString());
                 index++;
             }
