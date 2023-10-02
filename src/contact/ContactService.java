@@ -3,6 +3,12 @@ package contact;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+
+import errors.exceptions.ApplicationException;
+import errors.exceptions.EntityNotFoundException;
+import errors.exceptions.ErrorCode;
+import errors.exceptions.InvalidInputException;
 
 public class ContactService {
     public ContactService(){}
@@ -17,46 +23,57 @@ public class ContactService {
     public void settingService(){}
 
     public void findInfo(Integer userCommand, Map<Integer, Contact> userInfo){
-        String userInput;
-        // index., Contact 담을 arraylist 생성
-        List<IndexContact> matchContacts = new ArrayList<>();
-        // 인덱스
-        int index = 1;
-        System.out.println(index);
-        switch(userCommand){
-            case 1:
-                // 이름 입력받기 -> 예외 처리 X
-                for(Map.Entry<Integer, Contact> entry : userInfo.entrySet()){
-                    if(String.valueOf(entry.getValue().getName()).equals(userInput)){
-                        Contact contact = entry.getValue();
-                        matchContacts.add(new IndexContact(index++, contact));
+        try {
+            String userInput = getUserInput();
+            // index., Contact 담을 arraylist 생성
+            List<IndexContact> matchContacts = new ArrayList<>();
+            // 인덱스
+            int index = 1;
+            System.out.println(index);
+            switch (userCommand) {
+                case 1:
+                    // 이름 입력받기 -> 예외 처리 X
+                    for (Map.Entry<Integer, Contact> entry : userInfo.entrySet()) {
+                        if (String.valueOf(entry.getValue().getName()).equals(userInput)) {
+                            Contact contact = entry.getValue();
+                            matchContacts.add(new IndexContact(index++, contact));
+                        }
                     }
-                }
-            case 2:
-                // 전화번호 입력받기 -> 예외 처리 X
-                for(Map.Entry<Integer, Contact> entry : userInfo.entrySet()){
-                    if(String.valueOf(entry.getValue().getPhoneNumber()).equals(userInput)){
-                        Contact contact = entry.getValue();
-                        matchContacts.add(new IndexContact(index++, contact));
+                case 2:
+                    // 전화번호 입력받기 -> 예외 처리 X
+                    for (Map.Entry<Integer, Contact> entry : userInfo.entrySet()) {
+                        if (String.valueOf(entry.getValue().getPhoneNumber()).equals(userInput)) {
+                            Contact contact = entry.getValue();
+                            matchContacts.add(new IndexContact(index++, contact));
+                        }
                     }
-                }
-            case 3:
-                // 그룹 입력받기 -> 예외 처리 X
-                for(Map.Entry<Integer, Contact> entry : userInfo.entrySet()){
-                    if(String.valueOf(entry.getValue().getGroupName()).equals(userInput)){
-                        Contact contact = entry.getValue();
-                        matchContacts.add(new IndexContact(index++, contact));
+                case 3:
+                    // 그룹 입력받기 -> 예외 처리 X
+                    for (Map.Entry<Integer, Contact> entry : userInfo.entrySet()) {
+                        if (String.valueOf(entry.getValue().getGroupName()).equals(userInput)) {
+                            Contact contact = entry.getValue();
+                            matchContacts.add(new IndexContact(index++, contact));
+                        }
                     }
-                }
-        }
-        // 검색 결과 출력 또는 반환
-        if (!matchContacts.isEmpty()) {
-            for (IndexContact indexContact : matchContacts) {
-                System.out.println("인덱스: " + indexContact.getIndex() + ", Contact: " + indexContact.getContact());
             }
-        } else {
-            System.out.println("검색 결과가 없습니다.");
+            // 검색 결과 출력 또는 반환
+            if (!matchContacts.isEmpty()) {
+                for (IndexContact indexContact : matchContacts) {
+                    System.out.println("인덱스: " + indexContact.getIndex() + ", Contact: " + indexContact.getContact());
+                }
+            } else {
+                throw new EntityNotFoundException(ErrorCode.Entity_Not_found);
+            }
+        } catch(ApplicationException e){
+            System.out.println(e.getMessage());
         }
+
+    }
+    public String getUserInput() {
+        Scanner scan = new Scanner(System.in);
+        String userInput;
+        userInput = scan.nextLine();
+        return userInput;
     }
 }
 

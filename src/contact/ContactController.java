@@ -48,6 +48,7 @@ public class ContactController {
                 System.out.println("1. 이름");
                 System.out.println("2. 전화번호");
                 System.out.println("3. 그룹");
+                System.out.println("(종료 : '0' 입력)");
                 String userInput = getUserInput();
                 int userCommand = Integer.parseInt(userInput);
                 if(userCommand> 4) throw new InvalidInputException(ErrorCode.Invalid_Input);
