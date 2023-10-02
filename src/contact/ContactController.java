@@ -1,5 +1,7 @@
 package contact;
 
+import java.util.Scanner;
+
 public class ContactController {
     private ContactService contactService;
     private ContactRepository contactRepository;
@@ -33,21 +35,24 @@ public class ContactController {
         this.contactRepository = contactRepository;
         this.nextCommand = -1;
     }
-
     public void searchContact() {
     }
-
     public void createContact(){
-    }
 
+    }
     public void updateContact() {
 
     }
     public void deleteContact() {
 
     }
-
     public void setNextCommand(int nextCommand) {
         this.nextCommand = nextCommand;
+    }
+    public String getUserInput() {
+        Scanner scan = new Scanner(System.in);
+        String userInput;
+        userInput = scan.nextLine();
+        return userInput;
     }
 }

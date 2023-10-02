@@ -17,7 +17,6 @@ public class ProjectManager extends ProjectManagerSupport {
         // 의존성 부여를 위한 객체 생성
         this.contactRepository = new ContactRepository();
         this.contactController = new ContactController(this.contactRepository);
-
     }
 
     public void init() {
