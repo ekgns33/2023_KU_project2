@@ -27,19 +27,25 @@ class IndexContact{
 public class ContactService {
     public ContactService(){}
 
-    public void searchService(Integer userCommand, Map<Integer, Contact> userInfo){
+    public void searchService(int userCommand, Map<Integer, Contact> userInfo){
         // index., Contact 담을 arraylist 생성
         List<IndexContact> matchContacts = new ArrayList<>();
         findInfo(userCommand, userInfo, matchContacts);
-        while(true) {
-            try {
-                // 인덱스 선택
-                String chooseIndex = getUserInput();
-                int userIndex = Integer.parseInt(chooseIndex);
-                if (userIndex >= matchContacts.size()) throw new InvalidInputException(ErrorCode.Invalid_Input);
-                if (userIndex == 0) break;
-            } catch (ApplicationException e) {
-                System.out.println(e.getMessage());
+        if(!matchContacts.isEmpty()) {
+            while (true) {
+                try {
+                    System.out.print("인덱스 입력 : ");
+                    // 인덱스 선택
+                    String chooseIndex = getUserInput();
+                    int userIndex = Integer.parseInt(chooseIndex);
+                    if (userIndex > matchContacts.size() || userIndex < 1) throw new InvalidInputException(ErrorCode.Invalid_Input);
+                    if (userIndex == 0) break;
+                    // 인덱스 선택 한 것 출력
+                    printInfo(userIndex, matchContacts);
+                    break;
+                } catch (ApplicationException e) {
+                    System.out.println(e.getMessage());
+                }
             }
         }
     }
@@ -48,7 +54,7 @@ public class ContactService {
     public void updateService(){}
     public void settingService(){}
 
-    public void findInfo(Integer userCommand, Map<Integer, Contact> userInfo, List<IndexContact> matchContacts){
+    public void findInfo(int userCommand, Map<Integer, Contact> userInfo, List<IndexContact> matchContacts){
         try {
             String userInput = getUserInput();
             // 인덱스
@@ -86,11 +92,15 @@ public class ContactService {
             }
         } catch(ApplicationException e){
             System.out.println(e.getMessage());
-            return ;
         }
         for (IndexContact indexedContact : matchContacts) {
             System.out.println("[" + indexedContact.getIndex() + "] " + indexedContact.getContact().toString());
         }
+    }
+    public void printInfo(int index, List<IndexContact> userInfo){
+        IndexContact indexContact = userInfo.get(index-1);
+        Contact contact = indexContact.getContact();
+        System.out.println(contact);
     }
     public String getUserInput() {
         Scanner scan = new Scanner(System.in);
