@@ -43,10 +43,6 @@ public class ContactController {
     public void updateContact() {
 
     }
-    public void saveContact() {
-
-    }
-
     public void deleteContact() {
 
     }
