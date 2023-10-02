@@ -57,7 +57,10 @@ public class ContactController {
 //              for (Map.Entry<Integer, Contact> entry : userInfo.entrySet()) {
 //                  System.out.println(entry.getKey() + ": " + entry.getValue());
 //              }
-                contactService.searchService(userCommand, userInfo);
+                Map<Integer, Contact> res = contactService.searchService(userCommand, userInfo);
+                if(res != null){
+                    System.out.println(res);
+                }
             } catch (ApplicationException e) {
                 System.out.println(e.getMessage());
             }

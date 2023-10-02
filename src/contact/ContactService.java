@@ -1,9 +1,6 @@
 package contact;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 import errors.exceptions.ApplicationException;
 import errors.exceptions.EntityNotFoundException;
@@ -27,27 +24,28 @@ class IndexContact{
 public class ContactService {
     public ContactService(){}
 
-    public void searchService(int userCommand, Map<Integer, Contact> userInfo){
+    public Map<Integer, Contact> searchService(int userCommand, Map<Integer, Contact> userInfo) {
         // index., Contact 담을 arraylist 생성
         List<IndexContact> matchContacts = new ArrayList<>();
         findInfo(userCommand, userInfo, matchContacts);
-        if(!matchContacts.isEmpty()) {
+        if (!matchContacts.isEmpty()) {
             while (true) {
                 try {
                     System.out.print("인덱스 입력 : ");
                     // 인덱스 선택
                     String chooseIndex = getUserInput();
                     int userIndex = Integer.parseInt(chooseIndex);
-                    if (userIndex > matchContacts.size() || userIndex < 1) throw new InvalidInputException(ErrorCode.Invalid_Input);
-                    if (userIndex == 0) break;
+                    if (userIndex == 0)break;
+                    if (userIndex > matchContacts.size() || userIndex < 1)
+                        throw new InvalidInputException(ErrorCode.Invalid_Input);
                     // 인덱스 선택 한 것 출력
-                    printInfo(userIndex, matchContacts);
-                    break;
+                    return chooseInfo(userIndex, matchContacts, userInfo);
                 } catch (ApplicationException e) {
                     System.out.println(e.getMessage());
                 }
             }
         }
+        return null;
     }
     public void createService(){}
     public void deleteService(){}
@@ -97,10 +95,21 @@ public class ContactService {
             System.out.println("[" + indexedContact.getIndex() + "] " + indexedContact.getContact().toString());
         }
     }
-    public void printInfo(int index, List<IndexContact> userInfo){
-        IndexContact indexContact = userInfo.get(index-1);
+    public Map<Integer, Contact> chooseInfo(int index, List<IndexContact> userList, Map<Integer, Contact> userInfo){
+        IndexContact indexContact = userList.get(index-1);
+        System.out.println(indexContact);
         Contact contact = indexContact.getContact();
-        System.out.println(contact);
+        return searchMapByContact(userInfo, contact);
+    }
+
+    public Map<Integer, Contact> searchMapByContact(Map<Integer, Contact> origin, Contact contact){
+        Map<Integer, Contact> resultMap = new HashMap<>();
+        for (Map.Entry<Integer, Contact> entry : origin.entrySet()) {
+            if (entry.getValue().equals(contact)) {
+                resultMap.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return resultMap;
     }
     public String getUserInput() {
         Scanner scan = new Scanner(System.in);
