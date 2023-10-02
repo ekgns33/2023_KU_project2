@@ -31,8 +31,17 @@ public class ContactService {
         // index., Contact 담을 arraylist 생성
         List<IndexContact> matchContacts = new ArrayList<>();
         findInfo(userCommand, userInfo, matchContacts);
-        // 인덱스 선택
-
+        while(true) {
+            try {
+                // 인덱스 선택
+                String chooseIndex = getUserInput();
+                int userIndex = Integer.parseInt(chooseIndex);
+                if (userIndex >= matchContacts.size()) throw new InvalidInputException(ErrorCode.Invalid_Input);
+                if (userIndex == 0) break;
+            } catch (ApplicationException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
     public void createService(){}
     public void deleteService(){}
