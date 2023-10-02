@@ -2,6 +2,7 @@ package contact;
 
 public class ContactController {
     private ContactService contactService;
+    private ContactRepository contactRepository;
 
     private int nextCommand;
     //constructor
@@ -27,8 +28,9 @@ public class ContactController {
             }
         }
     }
-    public ContactController(){
+    public ContactController(ContactRepository contactRepository){
         //initial value
+        this.contactRepository = contactRepository;
         this.nextCommand = -1;
     }
 
