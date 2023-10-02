@@ -1,6 +1,11 @@
 package contact;
 
+import errors.exceptions.ApplicationException;
+import errors.exceptions.ErrorCode;
+import errors.exceptions.InvalidInputException;
+
 import java.util.Map;
+import java.util.Scanner;
 
 public class ContactController {
     private ContactService contactService;
@@ -35,6 +40,21 @@ public class ContactController {
     }
 
     public void searchContact(Map<Integer, Contact> userTable) {
+        while(true) {
+            try {
+                // Menu UI
+                System.out.println("1. 이름");
+                System.out.println("2. 전화번호");
+                System.out.println("3. 그룹");
+                String userInput = getUserInput();
+                int userCommand = Integer.parseInt(userInput);
+                if(userCommand> 4) throw new InvalidInputException(ErrorCode.Invalid_Input);
+                //end clause
+                if(userCommand == 0) break;
+            } catch (ApplicationException e) {
+                System.out.println(e.getMessage());
+            }
+        }
         setNextCommand(0);
     }
     public void createContact(){
@@ -53,5 +73,13 @@ public class ContactController {
 
     public void setNextCommand(int nextCommand) {
         this.nextCommand = nextCommand;
+    }
+
+    // getUserInput 추가
+    public String getUserInput() {
+        Scanner scan = new Scanner(System.in);
+        String userInput;
+        userInput = scan.nextLine();
+        return userInput;
     }
 }
