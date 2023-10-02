@@ -8,10 +8,17 @@ public class ContactService {
     }
 
     public void searchService(int userInput, ContactRepository contactRepository){
-        switch (userInput){
+        List<Contact> queryResult;
+        switch (userInput) {
             case 1:
+                String inputName = getUserInput();
+                queryResult = contactRepository.findByName(inputName);
             case 2:
+                String inputPhoneNumber = getUserInput();
+                queryResult = contactRepository.findByPhoneNumber(inputPhoneNumber);
             case 3:
+                String inputGroup = getUserInput();
+                queryResult = contactRepository.findByGroupName(inputGroup);
             default:
                 break;
         }
