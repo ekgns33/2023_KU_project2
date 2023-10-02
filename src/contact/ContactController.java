@@ -43,6 +43,9 @@ public class ContactController {
     public void searchContact() {
         while(true){
             try{
+                System.out.println("1.이름");
+                System.out.println("2.전화번호");
+                System.out.println("3.그룹");
                 String userInput = getUserInput();
                 int userCommand = Integer.parseInt(userInput);
                 if(userCommand > 3) throw new InvalidInputException(ErrorCode.Invalid_Input);
