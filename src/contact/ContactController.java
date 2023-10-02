@@ -37,9 +37,11 @@ public class ContactController {
     public ContactController(){
         //initial value
         this.nextCommand = -1;
+        // Initialize contactService
+        this.contactService = new ContactService();
     }
 
-    public void searchContact(Map<Integer, Contact> userTable) {
+    public void searchContact(Map<Integer, Contact> userInfo) {
         while(true) {
             try {
                 // Menu UI
@@ -51,7 +53,10 @@ public class ContactController {
                 if(userCommand> 4) throw new InvalidInputException(ErrorCode.Invalid_Input);
                 //end clause
                 if(userCommand == 0) break;
-                contactService.searchService(userCommand, userTable);
+//              for (Map.Entry<Integer, Contact> entry : userInfo.entrySet()) {
+//                  System.out.println(entry.getKey() + ": " + entry.getValue());
+//              }
+                contactService.searchService(userCommand, userInfo);
             } catch (ApplicationException e) {
                 System.out.println(e.getMessage());
             }
