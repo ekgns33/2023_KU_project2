@@ -38,6 +38,7 @@ public class ContactController {
         //initial value
         this.contactRepository = contactRepository;
         this.nextCommand = -1;
+        this.contactService = new ContactService();
     }
     public void searchContact() {
         while(true){
