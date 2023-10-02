@@ -31,6 +31,8 @@ public class ContactService {
         // index., Contact 담을 arraylist 생성
         List<IndexContact> matchContacts = new ArrayList<>();
         findInfo(userCommand, userInfo, matchContacts);
+        // 인덱스 선택
+
     }
     public void createService(){}
     public void deleteService(){}
@@ -75,6 +77,7 @@ public class ContactService {
             }
         } catch(ApplicationException e){
             System.out.println(e.getMessage());
+            return ;
         }
         for (IndexContact indexedContact : matchContacts) {
             System.out.println("[" + indexedContact.getIndex() + "] " + indexedContact.getContact().toString());
