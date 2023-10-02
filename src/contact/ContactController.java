@@ -1,17 +1,19 @@
 package contact;
 
+import java.util.Map;
+
 public class ContactController {
     private ContactService contactService;
 
     private int nextCommand;
     //constructor
-    public void routeRequest(int userRequest) {
+    public void routeRequest(int userRequest, Map<Integer, Contact> userTable) {
         setNextCommand(userRequest);
         // read request and route to the certain controller.
         while(nextCommand != 0) {
             switch (userRequest) {
                 case 1:
-                    this.searchContact();
+                    this.searchContact(userTable);
                     break;
                 case 2:
                     this.createContact();
@@ -32,9 +34,9 @@ public class ContactController {
         this.nextCommand = -1;
     }
 
-    public void searchContact() {
+    public void searchContact(Map<Integer, Contact> userTable) {
+        setNextCommand(0);
     }
-
     public void createContact(){
     }
 
