@@ -9,7 +9,7 @@ public class ContactService {
     }
 
     public void searchService(int userInput, ContactRepository contactRepository){
-        List<Contact> queryResult = new ArrayList<>();
+        List<Contact> queryResult = contactRepository.findAll();
         switch (userInput) {
             case 1:
                 String inputName = getUserInput();
@@ -31,8 +31,11 @@ public class ContactService {
             return ;
         }
         else{
+            int index = 1;
             for(Contact contact : queryResult){
-                System.out.println(queryResult);
+                System.out.print("["+index+"] ");
+                System.out.println(queryResult.toString());
+                index++;
             }
         }
     }
