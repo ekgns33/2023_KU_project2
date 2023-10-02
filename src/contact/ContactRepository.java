@@ -10,6 +10,10 @@ public class ContactRepository {
     public ContactRepository () {
     };
 
+    public void save(Contact input) {
+        userTable.put(input.getPid(), input);
+    }
+
     /**
      * 모든 레코드를 반환하는 메소드
      * @return List<Contact> 모든 객체정보가 담긴 리스트 반환
