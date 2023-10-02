@@ -1,5 +1,9 @@
 package contact;
 
+import errors.exceptions.ApplicationException;
+import errors.exceptions.ErrorCode;
+import errors.exceptions.InvalidInputException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -37,8 +41,21 @@ public class ContactService {
                 System.out.println(queryResult.toString());
                 index++;
             }
+            selectIndex(queryResult);
         }
     }
+    public void selectIndex(List<Contact> queryResult){
+        try{
+            System.out.print("인덱스 선택 : ");
+            String inputIndex = getUserInput();
+            int indexCommand = Integer.parseInt(inputIndex);
+            if(indexCommand > queryResult.size()) throw new InvalidInputException(ErrorCode.Invalid_Input);
+            if(indexCommand == 0) return;
+            System.out.println(queryResult.get(indexCommand-1));
+        }catch(ApplicationException e){
+            System.out.println(e.getMessage());
+        }
+    };
     public String getUserInput() {
         Scanner scan = new Scanner(System.in);
         String userInput;
