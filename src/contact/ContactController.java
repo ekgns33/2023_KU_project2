@@ -47,6 +47,7 @@ public class ContactController {
                 System.out.println("2.전화번호");
                 System.out.println("3.그룹");
                 String userInput = getUserInput();
+                // 각각에 맞는 예외처리 구현 X
                 int userCommand = Integer.parseInt(userInput);
                 if(userCommand > 3) throw new InvalidInputException(ErrorCode.Invalid_Input);
                 if(userCommand == 0) break;
