@@ -37,17 +37,20 @@ public class ContactService {
             int index = 1;
             for (Contact contact : queryResult) {
                 System.out.print("[" + index + "] ");
-                System.out.println(queryResult.toString());
+                System.out.println(contact.toString());
                 index++;
             }
-            selectIndex(queryResult);
+            int targetIndex = selectIndex();
+            getContactDetails(targetIndex, queryResult);
         }
     }
-    public void selectIndex(List<Contact> queryResult){
+    public int selectIndex(){
+        System.out.print("인덱스 선택 : ");
+        String userInput = getUserInput();
+        return Integer.parseInt(userInput);
+    }
+    public void getContactDetails(int indexCommand, List<Contact> queryResult){
         try{
-            System.out.print("인덱스 선택 : ");
-            String inputIndex = getUserInput();
-            int indexCommand = Integer.parseInt(inputIndex);
             if(indexCommand > queryResult.size()) throw new InvalidInputException(ErrorCode.Invalid_Input);
             if(indexCommand == 0) return;
             System.out.println(queryResult.get(indexCommand-1));
@@ -55,6 +58,7 @@ public class ContactService {
             System.out.println(e.getMessage());
         }
     };
+
     public String getUserInput() {
         Scanner scan = new Scanner(System.in);
         String userInput;

@@ -11,6 +11,7 @@ public class ContactController {
     private ContactRepository contactRepository;
 
     private int nextCommand;
+
     //constructor
     public void routeRequest(int userRequest) {
         setNextCommand(userRequest);
@@ -48,10 +49,13 @@ public class ContactController {
                 System.out.println("3.그룹");
                 String userInput = getUserInput();
                 // 각각에 맞는 예외처리 구현 X
-                int userCommand = Integer.parseInt(userInput);
-                if(userCommand > 3) throw new InvalidInputException(ErrorCode.Invalid_Input);
-                if(userCommand == 0) break;
-                contactService.searchService(userCommand, contactRepository);
+                int menuCommand = Integer.parseInt(userInput);
+                if(menuCommand > 3) throw new InvalidInputException(ErrorCode.Invalid_Input);
+                if(menuCommand == 0) {
+                    setNextCommand(0);
+                    return ;
+                }
+                contactService.searchService(menuCommand, contactRepository);
             }catch(ApplicationException e){
                 System.out.println(e.getMessage());
             }
