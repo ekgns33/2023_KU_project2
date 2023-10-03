@@ -1,10 +1,17 @@
 package contact;
 
+import errors.exceptions.ApplicationException;
+import errors.exceptions.ErrorCode;
+import errors.exceptions.InvalidInputException;
+
+import java.util.Scanner;
+
 public class ContactController {
     private ContactService contactService;
     private ContactRepository contactRepository;
 
     private int nextCommand;
+
     //constructor
     public void routeRequest(int userRequest) {
         setNextCommand(userRequest);
@@ -32,22 +39,42 @@ public class ContactController {
         //initial value
         this.contactRepository = contactRepository;
         this.nextCommand = -1;
+        this.contactService = new ContactService();
     }
-
     public void searchContact() {
+        try{
+            System.out.println("1.이름");
+            System.out.println("2.전화번호");
+            System.out.println("3.그룹");
+            String userInput = getUserInput();
+            // 각각에 맞는 예외처리 구현 X
+            int menuCommand = Integer.parseInt(userInput);
+            if(menuCommand > 3) throw new InvalidInputException(ErrorCode.Invalid_Input);
+            if(menuCommand == 0) {
+                setNextCommand(0);
+                return ;
+            }
+            contactService.searchService(menuCommand, contactRepository);
+        }catch(ApplicationException e){
+            System.out.println(e.getMessage());
+        }
     }
-
     public void createContact(){
-    }
 
+    }
     public void updateContact() {
 
     }
     public void deleteContact() {
 
     }
-
     public void setNextCommand(int nextCommand) {
         this.nextCommand = nextCommand;
+    }
+    public String getUserInput() {
+        Scanner scan = new Scanner(System.in);
+        String userInput;
+        userInput = scan.nextLine();
+        return userInput;
     }
 }
