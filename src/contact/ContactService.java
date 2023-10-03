@@ -50,13 +50,19 @@ public class ContactService {
         return Integer.parseInt(userInput);
     }
     public void getContactDetails(int indexCommand, List<Contact> queryResult){
-        try{
-            if(indexCommand > queryResult.size()) throw new InvalidInputException(ErrorCode.Invalid_Input);
-            if(indexCommand == 0) return;
-            System.out.println(queryResult.get(indexCommand-1));
-        }catch(ApplicationException e){
-            System.out.println(e.getMessage());
-        }
+        do {
+            try {
+                if (indexCommand > queryResult.size() || indexCommand < 0) {
+                    throw new InvalidInputException(ErrorCode.Invalid_Input);
+                }
+                if (indexCommand == 0) return;
+                System.out.println(queryResult.get(indexCommand - 1));
+                return ;
+            } catch (ApplicationException e) {
+                System.out.println(e.getMessage());
+            }
+            indexCommand = selectIndex();
+        }while(true);
     };
 
     public String getUserInput() {
