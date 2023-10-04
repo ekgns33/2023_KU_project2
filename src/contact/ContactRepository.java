@@ -1,5 +1,8 @@
 package contact;
 
+import errors.exceptions.EntityNotFoundException;
+import errors.exceptions.ErrorCode;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +46,17 @@ public class ContactRepository {
             if(contact.getGroupName().equals(groupName)) queryResult.add(contact);
         }
         return queryResult;
+    }
+    /**
+     * 수정된 내용을 담고 있는 객체와 이미 저장되어있던 객체를 바꾼다.
+     * @param updatedContact : 사용자가 수정한 정보를 담고있는 객체로 pid값은 변하지 않는다.
+     * */
+    public void updateContact(Contact updatedContact) {
+        int targetPid = updatedContact.getPid();
+        if(!this.userTable.containsKey(targetPid))  {
+            throw new EntityNotFoundException(ErrorCode.Entity_Not_found);
+        }
+        this.userTable.replace(targetPid, updatedContact);
     }
 
 
