@@ -21,6 +21,9 @@ public class Contact {
         this.phoneNumber = phoneNumber;
     }
 
+    public Contact(int pid) {
+        this.pid = pid;
+    }
     public int getPid() {
         return pid;
     }
