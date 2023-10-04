@@ -12,8 +12,28 @@ public class ContactService {
     public ContactService(){
     }
 
-    public void searchService(int userInput, ContactRepository contactRepository){
-        List<Contact> queryResult = contactRepository.findAll();
+    public Contact search(int userInput, ContactRepository contactRepository){
+        List<Contact> queryResult = searchByInputType(userInput, contactRepository);
+
+        if(queryResult == null || queryResult.isEmpty()){
+            System.out.println("일치하는 항목이 없습니다.");
+            return null;
+        } else {
+            showContactList(queryResult);
+            Contact selectedContact = selectAndGetContact(queryResult);
+            return selectedContact;
+        }
+    }
+    public void showContactList(List<Contact> list) {
+        int index = 1;
+        for (Contact contact : list) {
+            System.out.print("[" + index + "] ");
+            System.out.println(contact.toString());
+            index++;
+        }
+    }
+    public List<Contact> searchByInputType(int userInput, ContactRepository contactRepository) {
+        List<Contact> queryResult = null;
         switch (userInput) {
             case 1:
                 String inputName = getUserInput();
@@ -30,40 +50,29 @@ public class ContactService {
             default:
                 break;
         }
-        if(queryResult.isEmpty()){
-            System.out.println("일치하는 항목이 없습니다.");
-        }
-        else {
-            int index = 1;
-            for (Contact contact : queryResult) {
-                System.out.print("[" + index + "] ");
-                System.out.println(contact.toString());
-                index++;
+        return queryResult;
+    }
+    public Contact selectAndGetContact(List<Contact> queryResult) {
+        int targetIndex = selectIndex();
+        while(targetIndex != 0) {
+            try {
+                if (targetIndex > queryResult.size() || targetIndex < 0) {
+                    throw new InvalidInputException(ErrorCode.Invalid_Input);
+                }
+                return queryResult.get(targetIndex - 1);
+//                    targetIndex = Integer.parseInt(getUserInput());
+            } catch (ApplicationException e) {
+                System.out.println(e.getMessage());
+                targetIndex = selectIndex();
             }
-            int targetIndex = selectIndex();
-            getContactDetails(targetIndex, queryResult);
         }
+        return null;
     }
     public int selectIndex(){
         System.out.print("인덱스 선택 : ");
         String userInput = getUserInput();
         return Integer.parseInt(userInput);
     }
-    public void getContactDetails(int indexCommand, List<Contact> queryResult){
-        do {
-            try {
-                if (indexCommand > queryResult.size() || indexCommand < 0) {
-                    throw new InvalidInputException(ErrorCode.Invalid_Input);
-                }
-                if (indexCommand == 0) return;
-                System.out.println(queryResult.get(indexCommand - 1));
-                return ;
-            } catch (ApplicationException e) {
-                System.out.println(e.getMessage());
-            }
-            indexCommand = selectIndex();
-        }while(true);
-    };
 
     public String getUserInput() {
         Scanner scan = new Scanner(System.in);
