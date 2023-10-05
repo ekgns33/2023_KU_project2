@@ -77,11 +77,19 @@ public class ContactService {
             return null;
         }
         else{
+            System.out.print("저장 확인(Y,N) : ");
+            String createDecision = getUserInput();
+            if(createDecision.equals("Y")){
+                contactRepository.save(newInput);
+            }
             return newInput;
         }
     }
 
     public Contact createInfo(int newPid){
+        // 지금 ESC를 입력받으면 코드 내에서 다 뒤로 돌아가는 작업을 하고 있는데
+        // 차라리 getUserInput()에서 ESC를 입력하게 되면 특정 null을 리턴하는 형식 등으로 하는 것 고려
+        // 현재 이 코드 내에선 esc 시 메뉴로 돌아가는 코드 구현X
         System.out.println("정보 입력 : ");
         // 이름 입력 -> 에러 처리 구현 X
         System.out.print("이름 : ");

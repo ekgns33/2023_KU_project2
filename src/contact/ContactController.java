@@ -63,11 +63,11 @@ public class ContactController {
     public void createContact(){
         try{
             Contact createdContact =  contactService.create(this.contactRepository);
-            if(createdContact == null){
-                setNextCommand(0);
-                return ;
+            if(createdContact != null){
+                System.out.println(createdContact);
             }
-            System.out.println(createdContact);
+            setNextCommand(0);
+            return ;
         }catch(ApplicationException e){
             System.out.println(e.getMessage());
         }
