@@ -61,7 +61,7 @@ public class ContactController {
         }
     }
     public void createContact(){
-        try{
+        try{ // 해당 부분에서 에러 처리가 필요할 수 있는 경우 대비해 try-catch로 작성
             Contact createdContact =  contactService.create(this.contactRepository);
             if(createdContact != null){
                 System.out.println(createdContact);
