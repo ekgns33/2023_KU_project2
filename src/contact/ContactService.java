@@ -71,9 +71,9 @@ public class ContactService {
 
     public Contact create(ContactRepository contactRepository){
         List<Contact> queryCurrent = contactRepository.findAll();
-        int newPid = queryCurrent.get(queryCurrent.size()-1).getPid() + 1;
-        Contact newInput = createInfo(newPid);
-        if(newInput == null){
+        int nextPid = queryCurrent.get(queryCurrent.size()-1).getPid() + 1;
+        Contact contact = createContactInfo(nextPid);
+        if(contact == null){
             return null;
         }
         else{
@@ -82,7 +82,7 @@ public class ContactService {
                 System.out.print("저장 확인(Y,N) : ");
                 String createDecision = getUserInput();
                 if(createDecision.equals("Y")) {
-                    contactRepository.save(newInput);
+                    contactRepository.save(contact);
                     break;
                 }
                 else if(createDecision.equals("N")){
@@ -92,11 +92,11 @@ public class ContactService {
                     System.out.println("다시 입력해주세요.");
                 }
             }
-            return newInput;
+            return contact;
         }
     }
 
-    public Contact createInfo(int newPid){
+    public Contact createContactInfo(int newPid){
         // 지금 ESC를 입력받으면 코드 내에서 다 뒤로 돌아가는 작업을 하고 있는데
         // 차라리 getUserInput()에서 ESC를 입력하게 되면 null을 리턴하는 형식 등으로 하는 것 고려
         // 현재 이 코드 내에선 esc 시 메뉴로 돌아가는 코드 구현X
