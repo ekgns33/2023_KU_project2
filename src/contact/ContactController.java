@@ -61,7 +61,16 @@ public class ContactController {
         }
     }
     public void createContact(){
-
+        try{
+            Contact createdContact =  contactService.create(this.contactRepository);
+            if(createdContact == null){
+                setNextCommand(0);
+                return ;
+            }
+            System.out.println(createdContact);
+        }catch(ApplicationException e){
+            System.out.println(e.getMessage());
+        }
     }
     public void updateContact() {
         try{
