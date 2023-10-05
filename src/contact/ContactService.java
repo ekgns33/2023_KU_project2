@@ -68,6 +68,36 @@ public class ContactService {
         }
         return null;
     }
+
+    public Contact create(ContactRepository contactRepository){
+        List<Contact> queryCurrent = contactRepository.findAll();
+        int newPid = queryCurrent.get(queryCurrent.size()-1).getPid() + 1;
+        Contact newInput = createInfo(newPid);
+        if(newInput == null){
+            return null;
+        }
+        else{
+            return newInput;
+        }
+    }
+
+    public Contact createInfo(int newPid){
+        System.out.println("정보 입력 : ");
+        // 이름 입력 -> 에러 처리 구현 X
+        System.out.print("이름 : ");
+        String userNameInput = getUserInput();
+        // 전화번호 입력 -> 에러 처리 구현 X
+        System.out.print("전화번호 : ");
+        String userNumInput = getUserInput();
+        // 그룹 입력 -> 에러 처리 구현 X
+        System.out.print("그룹 : ");
+        String userGroupInput = getUserInput();
+        // 메모 입력
+        System.out.print("메모 : ");
+        String userMemoInput = getUserInput();
+        Contact newInfo = new Contact(newPid, userNameInput, userNumInput, userGroupInput, userMemoInput);
+        return newInfo;
+    }
     public void update(int userInput, ContactRepository contactRepository) {
         // 검색기능 그대로 사용한다.
         List<Contact> queryResult = searchByInputType(userInput, contactRepository);
