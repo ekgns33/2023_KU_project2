@@ -3,7 +3,7 @@ import utils.FileHandler;
 
 public class ProjectManagerSupport {
 
-    public ProjectManagerSupport(String path ){
+    public ProjectManagerSupport(String path){
         this.fileHandler = new FileHandler(path);
         this.contactMapper = new ContactMapper();
     }
