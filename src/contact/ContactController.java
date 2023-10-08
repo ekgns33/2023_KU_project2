@@ -4,6 +4,7 @@ import errors.exceptions.ApplicationException;
 import errors.exceptions.ErrorCode;
 import errors.exceptions.InvalidInputException;
 
+import java.util.Map;
 import java.util.Scanner;
 
 public class ContactController {
@@ -60,8 +61,44 @@ public class ContactController {
             System.out.println(e.getMessage());
         }
     }
-    public void createContact(){
-
+     public void createContact(Map<Integer, Contact> userInfo){
+        while(true) {
+            try {
+                // Menu UI
+                System.out.print("1. 이름 입력: ");
+                String userName = getUserInput();
+				if(Integer.parseInt(userName)==0) break;
+				if(Integer.parseInt(userName)> 4 || Integer.parseInt(userName)<0) 
+					throw new InvalidInputException(ErrorCode.Invalid_Input);
+				
+                System.out.print("2. 번호 입력: ");
+                String userNumber = getUserInput();
+                if(Integer.parseInt(userNumber)==0) break;
+                if(Integer.parseInt(userNumber)> 4 || Integer.parseInt(userNumber)<0)
+                	throw new InvalidInputException(ErrorCode.Invalid_Input);
+                
+                System.out.print("3. 그룹 입력: ");
+                String userGroup = getUserInput();
+                if(Integer.parseInt(userGroup)==0) break;
+                if(Integer.parseInt(userGroup)> 4|| Integer.parseInt(userGroup)<0)
+                	throw new InvalidInputException(ErrorCode.Invalid_Input);
+                
+                System.out.print("4. 메모 입력: ");
+                String userMemo = getUserInput();
+                if(Integer.parseInt(userMemo)==0) break;
+                
+                System.out.println("저장하시겠습니까?");
+                String userInput = getUserInput();
+                char userCommand = userInput.charAt(0);
+                switch(userCommand) {
+                case 'y' -> saveContact();
+                case 'n' -> throw new InvalidInputException(ErrorCode.Invalid_Input);
+                }
+            } catch (ApplicationException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        setNextCommand(0);
     }
     public void updateContact() {
         try{
