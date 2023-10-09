@@ -16,7 +16,7 @@ public class ContactController {
     public void routeRequest(int userRequest) {
         setNextCommand(userRequest);
         // read request and route to the certain controller.
-        A: while(nextCommand != 0) {
+        while(nextCommand != 0) {
             switch (userRequest) {
                 case 1:
                     this.searchContact();
@@ -29,7 +29,7 @@ public class ContactController {
                     break;
                 case 4:
                     this.deleteContact();
-                    break A;
+                    break;
                 default:
                     break;
             }
@@ -83,6 +83,7 @@ public class ContactController {
     }
     public void deleteContact() {
             contactService.delete(this.contactRepository);
+            setNextCommand(0);
     }
     public void setNextCommand(int nextCommand) {
         this.nextCommand = nextCommand;
