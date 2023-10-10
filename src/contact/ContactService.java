@@ -68,6 +68,54 @@ public class ContactService {
         }
         return null;
     }
+
+    public Contact create(ContactRepository contactRepository){
+        List<Contact> queryCurrent = contactRepository.findAll();
+        int nextPid = queryCurrent.get(queryCurrent.size()-1).getPid() + 1;
+        Contact contact = createContactInfo(nextPid);
+        if(contact == null){
+            return null;
+        }
+        else{
+            // Y
+            while(true){
+                System.out.print("저장 확인(Y,N) : ");
+                String createDecision = getUserInput();
+                if(createDecision.equals("Y")) {
+                    contactRepository.save(contact);
+                    break;
+                }
+                else if(createDecision.equals("N")){
+                    return null;
+                }
+                else{
+                    System.out.println("다시 입력해주세요.");
+                }
+            }
+            return contact;
+        }
+    }
+
+    public Contact createContactInfo(int newPid){
+        // 지금 ESC를 입력받으면 코드 내에서 다 뒤로 돌아가는 작업을 하고 있는데
+        // 차라리 getUserInput()에서 ESC를 입력하게 되면 null을 리턴하는 형식 등으로 하는 것 고려
+        // 현재 이 코드 내에선 esc 시 메뉴로 돌아가는 코드 구현X
+        System.out.println("정보 입력");
+        // 이름 입력 -> 에러 처리 구현 X
+        System.out.print("이름>> ");
+        String userNameInput = getUserInput();
+        // 전화번호 입력 -> 에러 처리 구현 X
+        System.out.print("전화번호>> ");
+        String userNumInput = getUserInput();
+        // 그룹 입력 -> 에러 처리 구현 X
+        System.out.print("그룹>> ");
+        String userGroupInput = getUserInput();
+        // 메모 입력
+        System.out.print("메모>> ");
+        String userMemoInput = getUserInput();
+        Contact newInfo = new Contact(newPid, userNameInput, userNumInput, userGroupInput, userMemoInput);
+        return newInfo;
+    }
     public void update(int userInput, ContactRepository contactRepository) {
         // 검색기능 그대로 사용한다.
         List<Contact> queryResult = searchByInputType(userInput, contactRepository);
