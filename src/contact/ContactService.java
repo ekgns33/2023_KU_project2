@@ -202,6 +202,29 @@ public class ContactService {
         }
     }
 
+    public void delete(ContactRepository contactRepository) {
+        List<Contact> queryResult = searchByInputType(1, contactRepository);
+        if (queryResult.isEmpty()) {
+            System.out.println("일치하는 항목이 없습니다.");
+        }
+        else {
+            showContactList(queryResult);
+            int targetIndex = selectIndex();
+            if (targetIndex == 0) return; // detail을 안보겠다는 의미 -> 수정을 할 수가 없음 그냥 리턴한다.
+            Contact deletedContact = queryResult.get(targetIndex - 1);
+            System.out.print("삭제하시겠습니까?(Y/N)\n>> ");
+            String updateDecision = getUserInput();
+            if(updateDecision.equals("Y")) {
+                contactRepository.deleteContact(deletedContact);
+            }
+            else if(updateDecision.equals("N")) {
+                System.out.println("삭제 작업을 취소합니다.");
+            } else {
+                System.out.println("부적절 입력.");
+            }
+        }
+    }
+
     public int selectIndex(){
         System.out.print("인덱스 선택 : ");
         String userInput = getUserInput();

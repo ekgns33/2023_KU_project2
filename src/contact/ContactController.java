@@ -91,7 +91,8 @@ public class ContactController {
         }
     }
     public void deleteContact() {
-
+            contactService.delete(this.contactRepository);
+            setNextCommand(0);
     }
     public void setNextCommand(int nextCommand) {
         this.nextCommand = nextCommand;

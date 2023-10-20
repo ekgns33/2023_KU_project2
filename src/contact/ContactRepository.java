@@ -2,6 +2,7 @@ package contact;
 
 import errors.exceptions.EntityNotFoundException;
 import errors.exceptions.ErrorCode;
+import utils.FileHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,13 @@ public class ContactRepository {
         }
         this.userTable.replace(targetPid, updatedContact);
     }
-
+    public void deleteContact(Contact deletedContact) {
+        int targetpid = deletedContact.getPid();
+        if(!this.userTable.containsKey(targetpid)) {
+            throw new EntityNotFoundException(ErrorCode.Entity_Not_found);
+        }
+        this.userTable.remove(targetpid);
+    }
 
     public void setUserTable(Map<Integer, Contact> userTable) {
         this.userTable = userTable;
