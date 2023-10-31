@@ -6,13 +6,7 @@ import java.util.List;
 
 public class FileHandler {
 
-    private String filePath;
-
-    private List<String> dataList;
-
-    public FileHandler (String filePath) {
-        this.filePath = filePath;
-        this.dataList = new ArrayList<>();
+    public FileHandler () {
     }
 
     /**
@@ -21,23 +15,23 @@ public class FileHandler {
      * @return 파일의 문자열들을 개행마다 분리하여 리스트로 반환.
      *
      * */
-    public List<String> readFile() {
-
+    public List<String> readFile(String filePath) {
+        List<String> dataList = new ArrayList<>();
         try {
-            FileReader fileReader = new FileReader(this.filePath);
+            FileReader fileReader = new FileReader(filePath);
             BufferedReader br = new BufferedReader(fileReader);
 
             String nextLine;
 
             while((nextLine = br.readLine()) != null) {
-                this.dataList.add(nextLine);
+                dataList.add(nextLine);
             }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return this.dataList;
+        return dataList;
     }
 
     /**
@@ -46,9 +40,9 @@ public class FileHandler {
      * @param dataList 문자열로 변환된 Contact객체들의 리스트
      *
      * */
-    public void writeListToFile(List<String> dataList) {
+    public void writeListToFile(List<String> dataList, String filePath) {
         try {
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(this.filePath));
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath));
             for(String nextLine : dataList) {
                 bufferedWriter.write(nextLine);
                 bufferedWriter.newLine();

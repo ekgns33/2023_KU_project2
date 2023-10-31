@@ -9,12 +9,17 @@ import java.util.Map;
 
 public class ContactRepository {
 
+    private int sortBy;
+    private int lastPid;
+
     private Map<Integer, Contact> userTable;
     public ContactRepository () {
     };
 
     public void save(Contact input) {
-        userTable.put(input.getPid(), input);
+        input.setPid(this.lastPid);
+        userTable.put(this.lastPid, input);
+        this.lastPid++;
     }
 
     /**
@@ -60,10 +65,24 @@ public class ContactRepository {
     }
 
 
+    public int getSortBy() {
+        return sortBy;
+    }
+
+    public int getLastPid() {
+        return lastPid;
+    }
     public void setUserTable(Map<Integer, Contact> userTable) {
         this.userTable = userTable;
     }
 
+    public void setSortBy(int sortBy) {
+        this.sortBy = sortBy;
+    }
+
+    public void setLastPid(int lastPid) {
+        this.lastPid = lastPid;
+    }
     public List<String> toStringList() {
         List<String> contactList = new ArrayList<>();
         for(Contact contact : this.userTable.values()) {

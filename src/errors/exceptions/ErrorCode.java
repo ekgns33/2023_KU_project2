@@ -3,7 +3,9 @@ package errors.exceptions;
 public enum ErrorCode {
 
     Entity_Not_found("Entity Not Found", "A1"),
-    Invalid_Input("Invalid Input", "A2");
+
+    File_Integrity_Fail("File Integrity Test Fail", "A2"),
+    Invalid_Input("Invalid Input", "A3");
 
 
     private String message;
