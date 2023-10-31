@@ -10,10 +10,8 @@ import java.util.Map;
 public class ContactRepository {
 
     private int sortBy;
-
-
-
     private int lastPid;
+
     private Map<Integer, Contact> userTable;
     public ContactRepository () {
     };
