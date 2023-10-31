@@ -71,8 +71,7 @@ public class ContactService {
 
     public Contact create(ContactRepository contactRepository){
         List<Contact> queryCurrent = contactRepository.findAll();
-        int nextPid = queryCurrent.get(queryCurrent.size()-1).getPid() + 1;
-        Contact contact = createContactInfo(nextPid);
+        Contact contact = createContactInfo();
         if(contact == null){
             return null;
         }
@@ -96,7 +95,7 @@ public class ContactService {
         }
     }
 
-    public Contact createContactInfo(int newPid){
+    public Contact createContactInfo(){
         // 지금 ESC를 입력받으면 코드 내에서 다 뒤로 돌아가는 작업을 하고 있는데
         // 차라리 getUserInput()에서 ESC를 입력하게 되면 null을 리턴하는 형식 등으로 하는 것 고려
         // 현재 이 코드 내에선 esc 시 메뉴로 돌아가는 코드 구현X
@@ -113,8 +112,7 @@ public class ContactService {
         // 메모 입력
         System.out.print("메모>> ");
         String userMemoInput = getUserInput();
-        Contact newInfo = new Contact(newPid, userNameInput, userNumInput, userGroupInput, userMemoInput);
-        return newInfo;
+        return new Contact(userNameInput, userNumInput, userGroupInput, userMemoInput);
     }
     public void update(int userInput, ContactRepository contactRepository) {
         // 검색기능 그대로 사용한다.

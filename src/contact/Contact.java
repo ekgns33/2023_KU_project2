@@ -7,7 +7,7 @@ public class Contact {
     private String groupName;
     private String memo;
 
-    public Contact(int pid, String name, String phoneNumber, String groupName, String memo) {
+    public Contact(String name, String phoneNumber, String groupName, String memo) {
         this.pid = pid;
         this.name = name;
         this.phoneNumber = phoneNumber;

@@ -1,7 +1,11 @@
 # Created by https://www.toptal.com/developers/gitignore/api/intellij,eclipse,java
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij,eclipse,java
-.idea/vcs.xml
-.idea/
+config.txt
+data.txt
+./src/data.txt
+
+.idea/**/vcs.xml
+.idea/**/misc.xml
 
 ### Eclipse ###
 .metadata

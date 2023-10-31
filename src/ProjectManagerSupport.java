@@ -3,8 +3,8 @@ import utils.FileHandler;
 
 public class ProjectManagerSupport {
 
-    public ProjectManagerSupport(String path ){
-        this.fileHandler = new FileHandler(path);
+    public ProjectManagerSupport(){
+        this.fileHandler = new FileHandler();
         this.contactMapper = new ContactMapper();
     }
     FileHandler fileHandler;
