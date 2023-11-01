@@ -201,7 +201,30 @@ public class ContactService {
     }
 
     public void groupManagement(int userInput, ContactRepository contactRepository){
-
+        // phonebook 내 전화번호 내부 그룹 정보만 변하기 때문에 findAll로 우선 다 가져오기
+        List<Contact> queryCurrent = contactRepository.findAll();
+        switch (userInput) {
+            case 1:
+                System.out.print("추가할 그룹명을 입력하세요 : ");
+                String inputName = getUserInput();
+                // 1. 그룹명 검사
+                // 2. 그룹명이 존재한다면 fail , 그룹명이 없다면 create
+                break;
+            case 2:
+                System.out.print("삭제할 그룹명을 입력하세요 : ");
+                String inputPhoneNumber = getUserInput();
+                // 1. 그룹명 검사
+                // 2. 그룹명이 존재한다면 delete, 그룹명이 있다면 fail
+                break;
+            case 3:
+                System.out.print("수정할 그룹명을 입력하세요 : ");
+                String inputGroup = getUserInput();
+                // 1. 그룹명 검사
+                // 2. 그룹명이 존재한다면 update, 그룹명이 없다면 fail
+                break;
+            default:
+                break;
+        }
     }
     public int selectIndex(){
         System.out.print("인덱스 선택 : ");

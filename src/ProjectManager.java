@@ -34,9 +34,9 @@ public class ProjectManager extends ProjectManagerSupport {
         if(configList.size() < 2) throw new ApplicationException(ErrorCode.File_Integrity_Fail);
         // group_info.txt 내용 불러오기
         List<String> groupInfo = fileHandler.readFile("group_info.txt");
-        // groupInfo -> 배열로 저장
+        // groupInfo -> ArrayList로 저장
         this.contactRepository.setGroupTable(contactMapper.groupInfoToArrayList(groupInfo));
-
+        //
         this.sortBy = Integer.parseInt(configList.get(0));
         this.lastPid = Integer.parseInt(configList.get(0));
         this.contactRepository.setLastPid(this.lastPid);
@@ -61,6 +61,7 @@ public class ProjectManager extends ProjectManagerSupport {
                 fileHandler.writeListToFile(
                         Stream.of(Integer.toString(this.lastPid), Integer.toString(this.sortBy))
                                 .collect(Collectors.toList()), "config.txt");
+                //save group_info.txt 미구현
             } catch (ApplicationException e) {
                 System.out.println(e.getMessage());
             }
