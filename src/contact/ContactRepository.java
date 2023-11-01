@@ -3,6 +3,7 @@ package contact;
 import errors.exceptions.EntityNotFoundException;
 import errors.exceptions.ErrorCode;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,9 @@ public class ContactRepository {
     private int lastPid;
 
     private Map<Integer, Contact> userTable;
+
+    private ArrayList<String> groupTable;
+
     public ContactRepository () {
     };
 
@@ -74,6 +78,10 @@ public class ContactRepository {
     }
     public void setUserTable(Map<Integer, Contact> userTable) {
         this.userTable = userTable;
+    }
+
+    public void setGroupTable(ArrayList<String> groupTable){
+        this.groupTable = groupTable;
     }
 
     public void setSortBy(int sortBy) {

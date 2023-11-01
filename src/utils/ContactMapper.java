@@ -2,6 +2,7 @@ package utils;
 
 import contact.Contact;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,5 +43,16 @@ public class ContactMapper {
             contact.setMemo(tokens[4]);
         }
         return contact;
+    }
+
+    // 한줄로 읽어온 Group_Info.txt 내의 그룹 정보를 ArrayList로 변환해주는 과정
+    public ArrayList<String> groupInfoToArrayList(List<String> line){
+        String token = line.get(0);
+        ArrayList<String> groupList = new ArrayList<>();
+        String[] groupElements = token.split("\\|");
+        for(String groupName : groupElements){
+            groupList.add(groupName);
+        }
+        return groupList;
     }
 }

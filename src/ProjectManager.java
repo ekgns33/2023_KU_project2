@@ -32,6 +32,11 @@ public class ProjectManager extends ProjectManagerSupport {
         this.contactRepository.setUserTable(contactMapper.mapListToHashMap(dataList));
         List<String> configList = fileHandler.readFile("config.txt");
         if(configList.size() < 2) throw new ApplicationException(ErrorCode.File_Integrity_Fail);
+        // group_info.txt 내용 불러오기
+        List<String> groupInfo = fileHandler.readFile("group_info.txt");
+        // groupInfo -> 배열로 저장
+        this.contactRepository.setGroupTable(contactMapper.groupInfoToArrayList(groupInfo));
+
         this.sortBy = Integer.parseInt(configList.get(0));
         this.lastPid = Integer.parseInt(configList.get(0));
         this.contactRepository.setLastPid(this.lastPid);
