@@ -200,6 +200,9 @@ public class ContactService {
         }
     }
 
+    public void groupManagement(int userInput, ContactRepository contactRepository){
+
+    }
     public int selectIndex(){
         System.out.print("인덱스 선택 : ");
         String userInput = getUserInput();
