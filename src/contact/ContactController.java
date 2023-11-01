@@ -32,6 +32,7 @@ public class ContactController {
                     break;
                 case 5:
                     // groupManagement()
+                    this.groupManagementMenu();
                     break;
                 default:
                     break;
@@ -95,6 +96,25 @@ public class ContactController {
     }
     public void deleteContact() {
 
+    }
+
+    public void groupManagementMenu(){
+        try{
+            System.out.println("1.그룹 추가");
+            System.out.println("2.그룹 삭제");
+            System.out.println("3.그룹 수정");
+            String userInput = getUserInput();
+            // 예외 처리 구현 X
+            int menuCommand = Integer.parseInt(userInput);
+            if(menuCommand > 3) throw new InvalidInputException(ErrorCode.Invalid_Input);
+            if(menuCommand == 0){
+                setNextCommand(0);
+                return ;
+            }
+            contactService.groupManagement(menuCommand, this.contactRepository);
+        }catch(ApplicationException e){
+            System.out.println(e.getMessage());
+        }
     }
     public void setNextCommand(int nextCommand) {
         this.nextCommand = nextCommand;
