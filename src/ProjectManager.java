@@ -45,7 +45,7 @@ public class ProjectManager extends ProjectManagerSupport {
                 String userInput = getUserInput();
                 int userCommand = Integer.parseInt(userInput);
 
-                if(userCommand> 5) throw new InvalidInputException(ErrorCode.Invalid_Input);
+                if(userCommand> 6) throw new InvalidInputException(ErrorCode.Invalid_Input);
                 //end clause
                 if(userCommand == 0) break;
                 this.contactController.routeRequest(userCommand);

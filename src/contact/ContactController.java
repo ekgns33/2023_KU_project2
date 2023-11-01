@@ -30,6 +30,9 @@ public class ContactController {
                 case 4:
                     this.deleteContact();
                     break;
+                case 5:
+                    // groupManagement()
+                    break;
                 default:
                     break;
             }
