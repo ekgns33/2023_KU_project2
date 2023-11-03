@@ -5,7 +5,7 @@ public enum ErrorCode {
     Entity_Not_found("Entity Not Found", "A1"),
 
     File_Integrity_Fail("File Integrity Test Fail", "A2"),
-    Invalid_Input("Invalid Input", "A3");
+    Invalid_Input("잘못된 입력 형식입니다.", "A3");
 
 
     private String message;

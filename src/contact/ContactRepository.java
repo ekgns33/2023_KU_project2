@@ -3,10 +3,7 @@ package contact;
 import errors.exceptions.EntityNotFoundException;
 import errors.exceptions.ErrorCode;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ContactRepository {
 
@@ -17,7 +14,10 @@ public class ContactRepository {
 
     private ArrayList<String> groupTable;
 
+    private Set<String> phonNumberSet;
+
     public ContactRepository () {
+        this.phonNumberSet = new HashSet<>();
     };
 
     public void save(Contact input) {
@@ -44,7 +44,12 @@ public class ContactRepository {
     public List<Contact> findByPhoneNumber(String phoneNumber) {
         List<Contact> queryResult = new ArrayList<>();
         for(Contact contact : this.userTable.values()) {
-            if(contact.getPhoneNumber().equals(phoneNumber)) queryResult.add(contact);
+            PhoneNumber ph = contact.getPhoneNumber();
+            for(int i=0;i<ph.size();i++) {
+                if(ph.getTargetPhoneNumber(i).equals(phoneNumber)) {
+                    queryResult.add(contact);
+                }
+            }
         }
         return queryResult;
     }
@@ -68,6 +73,15 @@ public class ContactRepository {
         this.userTable.replace(targetPid, updatedContact);
     }
 
+    public void initPhoneNumberSet() {
+        for(Contact c : userTable.values()) {
+            this.phonNumberSet.addAll(c.getPhoneNumber().getPhoneNumbers());
+        }
+    }
+
+    public boolean isNumberUnique(String phoneNumber) {
+        return this.phonNumberSet.contains(phoneNumber);
+    }
 
     public int getSortBy() {
         return sortBy;
@@ -78,6 +92,10 @@ public class ContactRepository {
     }
     public void setUserTable(Map<Integer, Contact> userTable) {
         this.userTable = userTable;
+    }
+
+    public Map<Integer, Contact> getUSerTable() {
+        return this.userTable;
     }
 
     public void setGroupTable(ArrayList<String> groupTable){

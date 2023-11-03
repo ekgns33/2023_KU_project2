@@ -3,12 +3,15 @@ package contact;
 import errors.exceptions.ApplicationException;
 import errors.exceptions.ErrorCode;
 import errors.exceptions.InvalidInputException;
+import utils.Validator;
 
 import java.util.Scanner;
 
 public class ContactController {
     private ContactService contactService;
     private ContactRepository contactRepository;
+
+    private Validator validator;
 
     private int nextCommand;
 
@@ -34,6 +37,10 @@ public class ContactController {
                     // groupManagement()
                     this.groupManagementMenu();
                     break;
+                case 6:
+                    // 정렬 방식 설정
+                    this.setting();
+                    break;
                 default:
                     break;
             }
@@ -44,24 +51,28 @@ public class ContactController {
         this.contactRepository = contactRepository;
         this.nextCommand = -1;
         this.contactService = new ContactService();
+        this.validator = new Validator();
     }
     public void searchContact() {
         try{
-            System.out.println("1.이름");
-            System.out.println("2.전화번호");
-            System.out.println("3.그룹");
+            System.out.println("무엇으로 검색하시겠습니까?('0': 초기 메뉴로 이동)");
+            System.out.println("1) 이름 2) 전화번호 3) 그룹");
+            System.out.print(">> ");
             String userInput = getUserInput();
-            // 각각에 맞는 예외처리 구현 X
             int menuCommand = Integer.parseInt(userInput);
-            if(menuCommand > 3) throw new InvalidInputException(ErrorCode.Invalid_Input);
+            if(menuCommand > 3 || menuCommand < 0) throw new InvalidInputException(ErrorCode.Invalid_Input);
             if(menuCommand == 0) {
                 setNextCommand(0);
                 return ;
             }
             Contact searchedContact =  contactService.search(menuCommand, this.contactRepository);
-            System.out.println(searchedContact);
+            if(searchedContact != null) {
+                System.out.println(searchedContact);
+            }
         }catch(ApplicationException e){
             System.out.println(e.getMessage());
+        }catch(NumberFormatException e1) {
+            System.out.println("다시 입력해주세요.");
         }
     }
     public void createContact(){
@@ -116,13 +127,16 @@ public class ContactController {
             System.out.println(e.getMessage());
         }
     }
+    public void setting() {
+
+    }
     public void setNextCommand(int nextCommand) {
         this.nextCommand = nextCommand;
     }
     public String getUserInput() {
         Scanner scan = new Scanner(System.in);
         String userInput;
-        userInput = scan.nextLine();
-        return userInput;
+        userInput = scan.nextLine().trim();
+        return userInput.trim();
     }
 }

@@ -3,18 +3,19 @@ package contact;
 import errors.exceptions.ApplicationException;
 import errors.exceptions.ErrorCode;
 import errors.exceptions.InvalidInputException;
+import utils.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class ContactService {
+
     public ContactService(){
     }
 
     public Contact search(int userInput, ContactRepository contactRepository){
         List<Contact> queryResult = searchByInputType(userInput, contactRepository);
-
         if(queryResult == null || queryResult.isEmpty()){
             System.out.println("일치하는 항목이 없습니다.");
             return null;
@@ -34,17 +35,32 @@ public class ContactService {
     }
     public List<Contact> searchByInputType(int userInput, ContactRepository contactRepository) {
         List<Contact> queryResult = null;
+        String inputName, inputPhoneNumber, inputGroup;
         switch (userInput) {
             case 1:
-                String inputName = getUserInput();
+                while(true) {
+                    System.out.print("검색하실 이름을 입력하시오.('0': 검색 메뉴로 이동)\n>> ");
+                    inputName = getUserInput().trim();
+                    if(inputName.equals("0")) {
+                        Contact cancel = new Contact(-1);
+                        queryResult = new ArrayList<>();
+                        queryResult.add(cancel);
+                        return queryResult;
+                    }
+                    int check = Validator.isValidNameFormat(inputName);
+                    if (check == -1) {
+                        continue;
+                    }
+                    else break;
+                }
                 queryResult = contactRepository.findByName(inputName);
                 break;
             case 2:
-                String inputPhoneNumber = getUserInput();
+                inputPhoneNumber = getUserInput();
                 queryResult = contactRepository.findByPhoneNumber(inputPhoneNumber);
                 break;
             case 3:
-                String inputGroup = getUserInput();
+                inputGroup = getUserInput();
                 queryResult = contactRepository.findByGroupName(inputGroup);
                 break;
             default:
@@ -71,7 +87,7 @@ public class ContactService {
 
     public Contact create(ContactRepository contactRepository){
         List<Contact> queryCurrent = contactRepository.findAll();
-        Contact contact = createContactInfo();
+        Contact contact = createContactInfo(contactRepository);
         if(contact == null){
             return null;
         }
@@ -95,7 +111,7 @@ public class ContactService {
         }
     }
 
-    public Contact createContactInfo(){
+    public Contact createContactInfo(ContactRepository contactRepository){
         // 지금 ESC를 입력받으면 코드 내에서 다 뒤로 돌아가는 작업을 하고 있는데
         // 차라리 getUserInput()에서 ESC를 입력하게 되면 null을 리턴하는 형식 등으로 하는 것 고려
         // 현재 이 코드 내에선 esc 시 메뉴로 돌아가는 코드 구현X
@@ -104,15 +120,41 @@ public class ContactService {
         System.out.print("이름>> ");
         String userNameInput = getUserInput();
         // 전화번호 입력 -> 에러 처리 구현 X
-        System.out.print("전화번호>> ");
-        String userNumInput = getUserInput();
+
+        PhoneNumber phoneNumber = new PhoneNumber();
+        while(true) {
+            System.out.print("전화번호>> ");
+            String userNumInput = getUserInput();
+            if(Validator.isValidPhoneNumberFormat(userNumInput) == -1) {
+                System.out.println("잘못된 전화번호 형식입니다.");
+                continue;
+            }
+            if(userNumInput.matches(Validator.PHONENUM)) {
+                //무선
+                // set에 있는 애들이랑 비교해야되고
+                if(contactRepository.isNumberUnique(userNumInput)) {
+                    System.out.println("이미 존재하는 휴대폰 번호입니다.");
+                    continue;
+                }
+                phoneNumber.insertPhoneNumber(userNumInput);
+
+            }
+            else {
+                //유선
+                // 자기 자신이랑만 비교하면 되고
+            }
+
+            System.out.print("더 이상 추가를 원하지 않으시면 Y를 입력해주세요>>");
+            userNumInput = getUserInput();
+            if(userNumInput.equals("Y")) break;
+        }
         // 그룹 입력 -> 에러 처리 구현 X
         System.out.print("그룹>> ");
         String userGroupInput = getUserInput();
         // 메모 입력
         System.out.print("메모>> ");
         String userMemoInput = getUserInput();
-        return new Contact(userNameInput, userNumInput, userGroupInput, userMemoInput);
+        return new Contact(userNameInput, phoneNumber, userGroupInput, userMemoInput);
     }
     public void update(int userInput, ContactRepository contactRepository) {
         // 검색기능 그대로 사용한다.
@@ -144,22 +186,22 @@ public class ContactService {
                         System.out.print("다시 입력해주세요 : ");
                     }
                 }
-                while(true) {
-                    try {
-                        System.out.print("전화번호을 입력해주세요 (" + selectedContact.getPhoneNumber() + ") :");
-                        String inputPhoneNumber = getUserInput();
-                        //validate
-                        if(inputPhoneNumber.equals("")) {
-                            updateContact.setPhoneNumber(selectedContact.getPhoneNumber());
-                            break;
-                        }
-
-                        updateContact.setPhoneNumber(inputPhoneNumber);
-                        break;
-                    } catch (ApplicationException e){
-                        System.out.print("다시 입력해주세요 : ");
-                    }
-                }
+//                while(true) {
+//                    try {
+//                        System.out.print("전화번호을 입력해주세요 (" + selectedContact.getPhoneNumber() + ") :");
+//                        String inputPhoneNumber = getUserInput();
+//                        //validate
+//                        if(inputPhoneNumber.equals("")) {
+//                            updateContact.setPhoneNumber(selectedContact.getPhoneNumber());
+//                            break;
+//                        }
+//
+//                        updateContact.setPhoneNumber(inputPhoneNumber);
+//                        break;
+//                    } catch (ApplicationException e){
+//                        System.out.print("다시 입력해주세요 : ");
+//                    }
+//                }
                 while(true) {
                     try {
                         System.out.print("그룹명을 입력해주세요 (" + selectedContact.getGroupName() + ") :");
