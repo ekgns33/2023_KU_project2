@@ -275,9 +275,11 @@ public class ContactService {
     }
     public String groupManageAdd(ContactRepository contactRepository){
         String inputGroupName;
+        String createDecision;
         while(true) {
             System.out.print("추가할 그룹명을 입력하세요 : ");
             inputGroupName = getUserInput();
+            // groupManageAddInfo() 추가 할 예정
             if(inputGroupName.equals("0")){
                 return null;
             }
@@ -288,9 +290,20 @@ public class ContactService {
                 if (contactRepository.isGroupNameUnique(inputGroupName)) {
                     System.out.println("이미 존재하는 그룹명입니다.");
                 } else {
-                    ArrayList<String> groupCurrent = contactRepository.getGroupTable();
-                    groupCurrent.add(inputGroupName);
-                    contactRepository.setGroupTable(groupCurrent);
+                    while(true) {
+                        System.out.print("저장하시겠습니까? (Y or N) : ");
+                        createDecision = getUserInput();
+                        if (createDecision.equals("Y")) {
+                            ArrayList<String> groupCurrent = contactRepository.getGroupTable();
+                            groupCurrent.add(inputGroupName);
+                            contactRepository.setGroupTable(groupCurrent);
+                            break;
+                        } else if (createDecision.equals("N")) {
+                            return null;
+                        } else {
+                            System.out.println("다시 입력해주세요.");
+                        }
+                    }
                     break;
                 }
             }
@@ -300,6 +313,7 @@ public class ContactService {
 
     public String groupManageDelete(ContactRepository contactRepository){
         String inputGroupName;
+        String createDecision;
         while(true) {
             System.out.print("삭제할 그룹명을 입력하세요 : ");
             inputGroupName = getUserInput();
@@ -310,15 +324,26 @@ public class ContactService {
                 System.out.println("존재하지 않는 그룹명입니다.");
             }
             else {
-                List<Contact> queryCurrent = contactRepository.findAll();
-                for (Contact contact : queryCurrent) {
-                    if (contact.getGroupName().equals(inputGroupName)) {
-                        contact.setGroupName("");
+                while(true) {
+                    System.out.print("저장하시겠습니까? (Y or N) : ");
+                    createDecision = getUserInput();
+                    if (createDecision.equals("Y")) {
+                        List<Contact> queryCurrent = contactRepository.findAll();
+                        for (Contact contact : queryCurrent) {
+                            if (contact.getGroupName().equals(inputGroupName)) {
+                                contact.setGroupName("");
+                            }
+                        }
+                        ArrayList<String> groupCurrent = contactRepository.getGroupTable();
+                        groupCurrent.remove(inputGroupName);
+                        contactRepository.setGroupTable(groupCurrent);
+                        break;
+                    } else if (createDecision.equals("N")) {
+                        return null;
+                    } else {
+                        System.out.println("다시 입력해주세요.");
                     }
                 }
-                ArrayList<String> groupCurrent = contactRepository.getGroupTable();
-                groupCurrent.remove(inputGroupName);
-                contactRepository.setGroupTable(groupCurrent);
                 break;
             }
         }
@@ -328,6 +353,7 @@ public class ContactService {
     public String groupManageModify(ContactRepository contactRepository){
         String inputGroupName;
         String modifiedGroupName;
+        String createDecision;
         List<Contact> queryCurrent = contactRepository.findAll();
         while(true){
             System.out.print("수정할 그룹명을 입력하세요 : ");
@@ -349,21 +375,30 @@ public class ContactService {
                 }
                 else{
                     if(Validator.isValidGroupNameFormat(modifiedGroupName)==1){
-                        for(Contact contact : queryCurrent){
-                            if(contact.getGroupName().equals(inputGroupName)){
-                                contact.setGroupName(modifiedGroupName);
+                        while(true) {
+                            System.out.print("저장하시겠습니까? (Y or N) : ");
+                            createDecision = getUserInput();
+                            if (createDecision.equals("Y")) {
+                                for(Contact contact : queryCurrent){
+                                    if(contact.getGroupName().equals(inputGroupName)){
+                                        contact.setGroupName(modifiedGroupName);
+                                    }
+                                }
+                                ArrayList<String> groupCurrent = contactRepository.getGroupTable();
+                                for(int i=0;i<groupCurrent.size();i++){
+                                    String currentGroupName = groupCurrent.get(i);
+                                    if (currentGroupName.equals(inputGroupName)) {
+                                        groupCurrent.set(i, modifiedGroupName);
+                                    }
+                                }
+                                contactRepository.setGroupTable(groupCurrent);
+                                break;
+                            } else if (createDecision.equals("N")) {
+                                return null;
+                            } else {
+                                System.out.println("다시 입력해주세요.");
                             }
                         }
-                        ArrayList<String> groupCurrent = contactRepository.getGroupTable();
-                        System.out.println("?"+groupCurrent);
-                        for(int i=0;i<groupCurrent.size();i++){
-                            String currentGroupName = groupCurrent.get(i);
-                            if (currentGroupName.equals(inputGroupName)) {
-                                groupCurrent.set(i, modifiedGroupName);
-                            }
-                        }
-                        System.out.println(groupCurrent);
-                        contactRepository.setGroupTable(groupCurrent);
                         break;
                     }
                     else{
