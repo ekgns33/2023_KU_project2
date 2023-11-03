@@ -78,7 +78,7 @@ public class ContactMapper {
         return contact;
     }
 
-    // 한줄로 읽어온 Group_Info.txt 내의 그룹 정보를 ArrayList로 변환해주는 과정
+    // group_Info.txt 내의 그룹 정보를 ArrayList로 변환해주는 과정
     public ArrayList<String> groupInfoToArrayList(List<String> grouplist){
         ArrayList<String> groupArrayList = new ArrayList<>(grouplist);
         return groupArrayList;
