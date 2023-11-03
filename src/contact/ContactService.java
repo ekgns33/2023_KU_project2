@@ -76,7 +76,6 @@ public class ContactService {
                     throw new InvalidInputException(ErrorCode.Invalid_Input);
                 }
                 return queryResult.get(targetIndex - 1);
-//                    targetIndex = Integer.parseInt(getUserInput());
             } catch (ApplicationException e) {
                 System.out.println(e.getMessage());
                 targetIndex = selectIndex();
@@ -112,9 +111,6 @@ public class ContactService {
     }
 
     public Contact createContactInfo(ContactRepository contactRepository){
-        // 지금 ESC를 입력받으면 코드 내에서 다 뒤로 돌아가는 작업을 하고 있는데
-        // 차라리 getUserInput()에서 ESC를 입력하게 되면 null을 리턴하는 형식 등으로 하는 것 고려
-        // 현재 이 코드 내에선 esc 시 메뉴로 돌아가는 코드 구현X
         System.out.println("정보 입력");
         // 이름 입력 -> 에러 처리 구현 X
         System.out.print("이름>> ");
@@ -186,22 +182,6 @@ public class ContactService {
                         System.out.print("다시 입력해주세요 : ");
                     }
                 }
-//                while(true) {
-//                    try {
-//                        System.out.print("전화번호을 입력해주세요 (" + selectedContact.getPhoneNumber() + ") :");
-//                        String inputPhoneNumber = getUserInput();
-//                        //validate
-//                        if(inputPhoneNumber.equals("")) {
-//                            updateContact.setPhoneNumber(selectedContact.getPhoneNumber());
-//                            break;
-//                        }
-//
-//                        updateContact.setPhoneNumber(inputPhoneNumber);
-//                        break;
-//                    } catch (ApplicationException e){
-//                        System.out.print("다시 입력해주세요 : ");
-//                    }
-//                }
                 while(true) {
                     try {
                         System.out.print("그룹명을 입력해주세요 (" + selectedContact.getGroupName() + ") :");
@@ -243,12 +223,9 @@ public class ContactService {
     }
 
     public void groupManagement(int userInput, ContactRepository contactRepository){
-        // phonebook 내 전화번호 내부 그룹 정보만 변하기 때문에 findAll로 우선 다 가져오기
-        //List<Contact> queryCurrent = contactRepository.findAll();
-        String suceed;
+        String suceed; // 각 groupManage 함수 내 리턴값을 담기 위한 변수
         switch (userInput) {
             case 1:
-                // 1. 그룹명 검사, 존재시 fail, 없다면 create
                 suceed = groupManageAdd(contactRepository);
                 if(suceed != null) {
                     System.out.println("<"+suceed+"> 그룹 추가");
@@ -256,14 +233,12 @@ public class ContactService {
                 System.out.println(contactRepository.getGroupTable());
                 break;
             case 2:
-                // 1. 그룹명이 존재한다면 delete, 그룹명이 있다면 fail
                 suceed = groupManageDelete(contactRepository);
                 if(suceed != null){
                     System.out.println("<"+suceed+"> 그룹 삭제");
                 }
                 break;
             case 3:
-                // 1. 그룹명 검사, 그룹명이 존재한다면 update, 그룹명이 없다면 fail
                 suceed = groupManageModify(contactRepository);
                 if(suceed != null){
                     System.out.println("<"+suceed+"> 그룹으로 수정");
@@ -279,14 +254,12 @@ public class ContactService {
         while(true) {
             System.out.print("추가할 그룹명을 입력하세요 : ");
             inputGroupName = getUserInput();
-            // groupManageAddInfo() 추가 할 예정
             if(inputGroupName.equals("0")){
                 return null;
             }
             else if (Validator.isValidGroupNameFormat(inputGroupName) != 1) {
                 System.out.println("잘못된 그룹명 형식입니다.");
             } else {
-                // Group Unique?
                 if (contactRepository.isGroupNameUnique(inputGroupName)) {
                     System.out.println("이미 존재하는 그룹명입니다.");
                 } else {
