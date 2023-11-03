@@ -94,7 +94,7 @@ public class ContactRepository {
         this.userTable = userTable;
     }
 
-    public Map<Integer, Contact> getUSerTable() {
+    public Map<Integer, Contact> getUserTable() {
         return this.userTable;
     }
 

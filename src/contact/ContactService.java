@@ -246,7 +246,6 @@ public class ContactService {
         // phonebook 내 전화번호 내부 그룹 정보만 변하기 때문에 findAll로 우선 다 가져오기
         //List<Contact> queryCurrent = contactRepository.findAll();
         String suceed;
-        System.out.println(contactRepository.getGroupTable());
         switch (userInput) {
             case 1:
                 // 1. 그룹명 검사, 존재시 fail, 없다면 create
@@ -254,12 +253,14 @@ public class ContactService {
                 if(suceed != null) {
                     System.out.println("<"+suceed+"> 그룹 추가");
                 }
+                System.out.println(contactRepository.getGroupTable());
                 break;
             case 2:
-                System.out.print("삭제할 그룹명을 입력하세요 : ");
-                String inputPhoneNumber = getUserInput();
-                // 1. 그룹명 검사
-                // 2. 그룹명이 존재한다면 delete, 그룹명이 있다면 fail
+                // 1. 그룹명이 존재한다면 delete, 그룹명이 있다면 fail
+                suceed = groupManageDelete(contactRepository);
+                if(suceed != null){
+                    System.out.println("<"+suceed+"> 그룹 삭제");
+                }
                 break;
             case 3:
                 System.out.print("수정할 그룹명을 입력하세요 : ");
@@ -272,9 +273,9 @@ public class ContactService {
         }
     }
     public String groupManageAdd(ContactRepository contactRepository){
-        System.out.print("추가할 그룹명을 입력하세요 : ");
         String inputGroupName;
         while(true) {
+            System.out.print("추가할 그룹명을 입력하세요 : ");
             inputGroupName = getUserInput();
             if(inputGroupName.equals("0")){
                 return null;
@@ -291,6 +292,32 @@ public class ContactService {
                     contactRepository.setGroupTable(groupCurrent);
                     break;
                 }
+            }
+        }
+        return inputGroupName;
+    }
+
+    public String groupManageDelete(ContactRepository contactRepository){
+        String inputGroupName;
+        while(true) {
+            System.out.print("삭제할 그룹명을 입력하세요 : ");
+            inputGroupName = getUserInput();
+            if(inputGroupName.equals("0")){
+                return null;
+            }
+            else if (!contactRepository.isGroupNameUnique(inputGroupName)) {
+                System.out.println("존재하지 않는 그룹명입니다.");
+            } else {
+                List<Contact> queryCurrent = contactRepository.findAll();
+                for (Contact contact : queryCurrent) {
+                    if (contact.getGroupName().equals(inputGroupName)) {
+                        contact.setGroupName("");
+                    }
+                }
+                ArrayList<String> groupCurrent = contactRepository.getGroupTable();
+                groupCurrent.remove(inputGroupName);
+                contactRepository.setGroupTable(groupCurrent);
+                break;
             }
         }
         return inputGroupName;
