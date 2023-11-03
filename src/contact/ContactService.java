@@ -244,13 +244,16 @@ public class ContactService {
 
     public void groupManagement(int userInput, ContactRepository contactRepository){
         // phonebook 내 전화번호 내부 그룹 정보만 변하기 때문에 findAll로 우선 다 가져오기
-        List<Contact> queryCurrent = contactRepository.findAll();
+        //List<Contact> queryCurrent = contactRepository.findAll();
+        String suceed;
+        System.out.println(contactRepository.getGroupTable());
         switch (userInput) {
             case 1:
-                System.out.print("추가할 그룹명을 입력하세요 : ");
-                String inputName = getUserInput();
-                // 1. 그룹명 검사
-                // 2. 그룹명이 존재한다면 fail , 그룹명이 없다면 create
+                // 1. 그룹명 검사, 존재시 fail, 없다면 create
+                suceed = groupManageAdd(contactRepository);
+                if(suceed != null) {
+                    System.out.println("<"+suceed+"> 그룹 추가");
+                }
                 break;
             case 2:
                 System.out.print("삭제할 그룹명을 입력하세요 : ");
@@ -267,6 +270,30 @@ public class ContactService {
             default:
                 break;
         }
+    }
+    public String groupManageAdd(ContactRepository contactRepository){
+        System.out.print("추가할 그룹명을 입력하세요 : ");
+        String inputGroupName;
+        while(true) {
+            inputGroupName = getUserInput();
+            if(inputGroupName.equals("0")){
+                return null;
+            }
+            else if (Validator.isValidGroupNameFormat(inputGroupName) != 1) {
+                System.out.println("잘못된 그룹명 형식입니다.");
+            } else {
+                // Group Unique?
+                if (contactRepository.isGroupNameUnique(inputGroupName)) {
+                    System.out.println("이미 존재하는 그룹명입니다.");
+                } else {
+                    ArrayList<String> groupCurrent = contactRepository.getGroupTable();
+                    groupCurrent.add(inputGroupName);
+                    contactRepository.setGroupTable(groupCurrent);
+                    break;
+                }
+            }
+        }
+        return inputGroupName;
     }
     public int selectIndex(){
         System.out.print("인덱스 선택 : ");

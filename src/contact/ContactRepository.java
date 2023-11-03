@@ -78,11 +78,11 @@ public class ContactRepository {
             this.phonNumberSet.addAll(c.getPhoneNumber().getPhoneNumbers());
         }
     }
-
     public boolean isNumberUnique(String phoneNumber) {
         return this.phonNumberSet.contains(phoneNumber);
     }
 
+    public boolean isGroupNameUnique(String groupName) { return this.groupTable.contains(groupName);}
     public int getSortBy() {
         return sortBy;
     }
@@ -98,6 +98,9 @@ public class ContactRepository {
         return this.userTable;
     }
 
+    public ArrayList<String> getGroupTable(){
+        return this.groupTable;
+    }
     public void setGroupTable(ArrayList<String> groupTable){
         this.groupTable = groupTable;
     }

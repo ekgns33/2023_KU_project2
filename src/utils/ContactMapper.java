@@ -41,7 +41,7 @@ public class ContactMapper {
         int checkName, checkPhoneNumber, checkGroupName;
         int pid; // pid 검사용 임시 저장 변수
         pid = Integer.parseInt(contactData[0]);
-        if(pid < 1 || pid >= lastPid) { // 우선 1보다 작은지만 검사
+        if(pid < 1 || pid > lastPid) { // 우선 1보다 작은지만 검사
             System.out.println("전화번호부 파일 형식에 오류가 있습니다.");
             System.exit(0);
         }
