@@ -348,18 +348,21 @@ public class ContactService {
                     System.out.println("이미 존재하는 그룹명입니다.");
                 }
                 else{
-                    if(Validator.isValidGroupNameFormat(modifiedGroupName) == 1){
+                    if(Validator.isValidGroupNameFormat(modifiedGroupName)==1){
                         for(Contact contact : queryCurrent){
                             if(contact.getGroupName().equals(inputGroupName)){
                                 contact.setGroupName(modifiedGroupName);
                             }
                         }
                         ArrayList<String> groupCurrent = contactRepository.getGroupTable();
+                        System.out.println("?"+groupCurrent);
                         for(int i=0;i<groupCurrent.size();i++){
-                            if(groupCurrent.equals(inputGroupName)){
+                            String currentGroupName = groupCurrent.get(i);
+                            if (currentGroupName.equals(inputGroupName)) {
                                 groupCurrent.set(i, modifiedGroupName);
                             }
                         }
+                        System.out.println(groupCurrent);
                         contactRepository.setGroupTable(groupCurrent);
                         break;
                     }

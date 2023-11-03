@@ -25,7 +25,7 @@ public class ProjectManager extends ProjectManagerSupport {
     public void init() {
 
         // config_info.txt 내용 불러오기
-        List<String> configList = fileHandler.readFile("src/config.txt");
+        List<String> configList = fileHandler.readFile("./config.txt");
         if (configList.size() < 2) throw new ApplicationException(ErrorCode.File_Integrity_Fail);
 
         // config 값 validation
@@ -38,14 +38,12 @@ public class ProjectManager extends ProjectManagerSupport {
 
 
         // phonebook.txt 내용 불러오기
-        List<String> dataList = fileHandler.readFile("src/phonebook.txt");
+        List<String> dataList = fileHandler.readFile("./phonebook.txt");
         this.contactRepository.setUserTable(contactMapper.mapListToHashMap(dataList, lastPid));
 
         // group_info.txt 내용 불러오기
-        List<String> groupInfo = fileHandler.readFile("src/group_info.txt");
+        List<String> groupInfo = fileHandler.readFile("./group_info.txt");
         this.contactRepository.setGroupTable(contactMapper.groupInfoToArrayList(groupInfo));
-
-
 
         // contactRepository에 주입.
         this.contactRepository.initPhoneNumberSet();
@@ -76,10 +74,11 @@ public class ProjectManager extends ProjectManagerSupport {
                 this.lastPid = this.contactRepository.getLastPid();
                 this.sortBy = this.contactRepository.getSortBy();
                 //save file
-                fileHandler.writeListToFile(this.contactRepository.toStringList(), "src/phonebook.txt");
+                fileHandler.writeListToFile(this.contactRepository.toStringList(), "./phonebook.txt");
                 fileHandler.writeListToFile(
                         Stream.of(Integer.toString(this.sortBy), Integer.toString(this.lastPid))
-                                .collect(Collectors.toList()), "src/config.txt");
+                                .collect(Collectors.toList()), "./config.txt");
+                fileHandler.writeListToFile(this.contactRepository.getGroupTable(), "./group_info.txt");
                 //save group_info.txt 미구현
             } catch (NumberFormatException e1) {
                 System.out.println("다시 입력해주세요.");
