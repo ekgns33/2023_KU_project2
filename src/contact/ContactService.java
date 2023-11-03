@@ -263,10 +263,11 @@ public class ContactService {
                 }
                 break;
             case 3:
-                System.out.print("수정할 그룹명을 입력하세요 : ");
-                String inputGroup = getUserInput();
-                // 1. 그룹명 검사
-                // 2. 그룹명이 존재한다면 update, 그룹명이 없다면 fail
+                // 1. 그룹명 검사, 그룹명이 존재한다면 update, 그룹명이 없다면 fail
+                suceed = groupManageModify(contactRepository);
+                if(suceed != null){
+                    System.out.println("<"+suceed+"> 그룹으로 수정");
+                }
                 break;
             default:
                 break;
@@ -307,7 +308,8 @@ public class ContactService {
             }
             else if (!contactRepository.isGroupNameUnique(inputGroupName)) {
                 System.out.println("존재하지 않는 그룹명입니다.");
-            } else {
+            }
+            else {
                 List<Contact> queryCurrent = contactRepository.findAll();
                 for (Contact contact : queryCurrent) {
                     if (contact.getGroupName().equals(inputGroupName)) {
@@ -321,6 +323,54 @@ public class ContactService {
             }
         }
         return inputGroupName;
+    }
+
+    public String groupManageModify(ContactRepository contactRepository){
+        String inputGroupName;
+        String modifiedGroupName;
+        List<Contact> queryCurrent = contactRepository.findAll();
+        while(true){
+            System.out.print("수정할 그룹명을 입력하세요 : ");
+            inputGroupName = getUserInput();
+            if(inputGroupName.equals("0")){
+                return null;
+            }
+            else if(!contactRepository.isGroupNameUnique(inputGroupName)){
+                System.out.println("존재하지 않는 그룹명입니다.");
+            }
+            else{
+                System.out.print("새로운 그룹명을 입력하세요 : ");
+                modifiedGroupName = getUserInput();
+                if(modifiedGroupName.equals("0")){
+                    return null;
+                }
+                else if(contactRepository.isGroupNameUnique(modifiedGroupName)){
+                    System.out.println("이미 존재하는 그룹명입니다.");
+                }
+                else{
+                    if(Validator.isValidGroupNameFormat(modifiedGroupName) == 1){
+                        for(Contact contact : queryCurrent){
+                            if(contact.getGroupName().equals(inputGroupName)){
+                                contact.setGroupName(modifiedGroupName);
+                            }
+                        }
+                        ArrayList<String> groupCurrent = contactRepository.getGroupTable();
+                        for(int i=0;i<groupCurrent.size();i++){
+                            if(groupCurrent.equals(inputGroupName)){
+                                groupCurrent.set(i, modifiedGroupName);
+                            }
+                        }
+                        contactRepository.setGroupTable(groupCurrent);
+                        break;
+                    }
+                    else{
+                        System.out.println("잘못된 형식의 이름입니다.");
+                    }
+                }
+            }
+        }
+        System.out.print("기존 : "+inputGroupName+" -> ");
+        return modifiedGroupName;
     }
     public int selectIndex(){
         System.out.print("인덱스 선택 : ");
