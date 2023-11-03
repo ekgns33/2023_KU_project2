@@ -18,11 +18,11 @@ public class FileHandler {
     public List<String> readFile(String filePath) {
         File file = new File(filePath);
         if(!file.exists()) {
-            if(filePath.contains("phone"))
+            if(filePath.contains("phonebook"))
                 System.out.println("전화번호부 파일이 존재하지 않습니다.");
             else if(filePath.contains("config"))
                 System.out.println("환경 변수 파일이 존재하지 않습니다.");
-            else if(filePath.contains("group"))
+            else if(filePath.contains("group_info"))
                 System.out.println("그룹 정보 파일이 존재하지 않습니다.");
             System.exit(0);
         }
