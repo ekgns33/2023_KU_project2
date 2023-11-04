@@ -51,7 +51,6 @@ public class ProjectManager extends ProjectManagerSupport {
         this.contactRepository.setSortBy(this.sortBy);
     }
 
-
     public void bootProgram() {
         // read datas from FILE
         init();

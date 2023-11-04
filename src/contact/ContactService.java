@@ -51,7 +51,7 @@ public class ContactService {
                     if (check == -1) {
                         continue;
                     }
-                    else break;
+                    break;
                 }
                 queryResult = contactRepository.findByName(inputName);
                 break;
@@ -120,20 +120,19 @@ public class ContactService {
         PhoneNumber phoneNumber = new PhoneNumber();
         while(true) {
             System.out.print("전화번호>> ");
-            String userNumInput = getUserInput();
-            if(Validator.isValidPhoneNumberFormat(userNumInput) == -1) {
+            String userPhoneNumberInput = getUserInput();
+            if(Validator.isValidPhoneNumberFormat(userPhoneNumberInput) == -1) {
                 System.out.println("잘못된 전화번호 형식입니다.");
                 continue;
             }
-            if(userNumInput.matches(Validator.PHONENUM)) {
+            if(userPhoneNumberInput.matches(Validator.PHONENUM)) {
                 //무선
                 // set에 있는 애들이랑 비교해야되고
-                if(contactRepository.isNumberUnique(userNumInput)) {
+                if(contactRepository.isNumberUnique(userPhoneNumberInput)) {
                     System.out.println("이미 존재하는 휴대폰 번호입니다.");
                     continue;
                 }
-                phoneNumber.insertPhoneNumber(userNumInput);
-
+                phoneNumber.insertPhoneNumber(userPhoneNumberInput);
             }
             else {
                 //유선
@@ -141,8 +140,8 @@ public class ContactService {
             }
 
             System.out.print("더 이상 추가를 원하지 않으시면 Y를 입력해주세요>>");
-            userNumInput = getUserInput();
-            if(userNumInput.equals("Y")) break;
+            userPhoneNumberInput = getUserInput();
+            if(userPhoneNumberInput.equals("Y")) break;
         }
         // 그룹 입력 -> 에러 처리 구현 X
         System.out.print("그룹>> ");
@@ -223,32 +222,32 @@ public class ContactService {
     }
 
     public void groupManagement(int userInput, ContactRepository contactRepository){
-        String suceed; // 각 groupManage 함수 내 리턴값을 담기 위한 변수
+        String resultValue; // 각 groupManage 함수 내 리턴값을 담기 위한 변수
         switch (userInput) {
             case 1:
-                suceed = groupManageAdd(contactRepository);
-                if(suceed != null) {
-                    System.out.println("<"+suceed+"> 그룹 추가");
+                resultValue = groupAdd(contactRepository);
+                if(resultValue != null) {
+                    System.out.println("<"+resultValue+"> 그룹 추가");
                 }
                 System.out.println(contactRepository.getGroupTable());
                 break;
             case 2:
-                suceed = groupManageDelete(contactRepository);
-                if(suceed != null){
-                    System.out.println("<"+suceed+"> 그룹 삭제");
+                resultValue = groupDelete(contactRepository);
+                if(resultValue != null){
+                    System.out.println("<"+resultValue+"> 그룹 삭제");
                 }
                 break;
             case 3:
-                suceed = groupManageModify(contactRepository);
-                if(suceed != null){
-                    System.out.println("<"+suceed+"> 그룹으로 수정");
+                resultValue = groupModify(contactRepository);
+                if(resultValue != null){
+                    System.out.println("<"+resultValue+"> 그룹으로 수정");
                 }
                 break;
             default:
                 break;
         }
     }
-    public String groupManageAdd(ContactRepository contactRepository){
+    public String groupAdd(ContactRepository contactRepository){
         String inputGroupName;
         String createDecision;
         while(true) {
@@ -257,9 +256,10 @@ public class ContactService {
             if(inputGroupName.equals("0")){
                 return null;
             }
-            else if (Validator.isValidGroupNameFormat(inputGroupName) != 1) {
+            if (Validator.isValidGroupNameFormat(inputGroupName) != 1) {
                 System.out.println("잘못된 그룹명 형식입니다.");
-            } else {
+            }
+            else {
                 if (contactRepository.isGroupNameUnique(inputGroupName)) {
                     System.out.println("이미 존재하는 그룹명입니다.");
                 } else {
@@ -284,7 +284,7 @@ public class ContactService {
         return inputGroupName;
     }
 
-    public String groupManageDelete(ContactRepository contactRepository){
+    public String groupDelete(ContactRepository contactRepository){
         String inputGroupName;
         String createDecision;
         while(true) {
@@ -293,7 +293,7 @@ public class ContactService {
             if(inputGroupName.equals("0")){
                 return null;
             }
-            else if (!contactRepository.isGroupNameUnique(inputGroupName)) {
+            if (!contactRepository.isGroupNameUnique(inputGroupName)) {
                 System.out.println("존재하지 않는 그룹명입니다.");
             }
             else {
@@ -311,9 +311,11 @@ public class ContactService {
                         groupCurrent.remove(inputGroupName);
                         contactRepository.setGroupTable(groupCurrent);
                         break;
-                    } else if (createDecision.equals("N")) {
+                    }
+                    else if (createDecision.equals("N")) {
                         return null;
-                    } else {
+                    }
+                    else {
                         System.out.println("다시 입력해주세요.");
                     }
                 }
@@ -323,7 +325,7 @@ public class ContactService {
         return inputGroupName;
     }
 
-    public String groupManageModify(ContactRepository contactRepository){
+    public String groupModify(ContactRepository contactRepository){
         String inputGroupName;
         String modifiedGroupName;
         String createDecision;
@@ -334,7 +336,7 @@ public class ContactService {
             if(inputGroupName.equals("0")){
                 return null;
             }
-            else if(!contactRepository.isGroupNameUnique(inputGroupName)){
+            if(!contactRepository.isGroupNameUnique(inputGroupName)){
                 System.out.println("존재하지 않는 그룹명입니다.");
             }
             else{
@@ -343,7 +345,7 @@ public class ContactService {
                 if(modifiedGroupName.equals("0")){
                     return null;
                 }
-                else if(contactRepository.isGroupNameUnique(modifiedGroupName)){
+                if(contactRepository.isGroupNameUnique(modifiedGroupName)){
                     System.out.println("이미 존재하는 그룹명입니다.");
                 }
                 else{

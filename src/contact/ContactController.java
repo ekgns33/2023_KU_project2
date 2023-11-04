@@ -35,7 +35,7 @@ public class ContactController {
                     break;
                 case 5:
                     // groupManagement()
-                    this.groupManagementMenu();
+                    this.groupManage();
                     break;
                 case 6:
                     // 정렬 방식 설정
@@ -109,7 +109,7 @@ public class ContactController {
 
     }
 
-    public void groupManagementMenu(){
+    public void groupManage(){
         try{
             System.out.println("1.그룹 추가");
             System.out.println("2.그룹 삭제");
@@ -137,6 +137,6 @@ public class ContactController {
         Scanner scan = new Scanner(System.in);
         String userInput;
         userInput = scan.nextLine().trim();
-        return userInput.trim();
+        return userInput;
     }
 }
