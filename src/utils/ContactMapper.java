@@ -80,7 +80,8 @@ public class ContactMapper {
 
     // group_Info.txt 내의 그룹 정보를 ArrayList로 변환해주는 과정
     public ArrayList<String> groupInfoToArrayList(List<String> grouplist){
-        ArrayList<String> groupArrayList = new ArrayList<>(grouplist);
+        List<String> inputList = Arrays.asList(grouplist.get(0).split("\\|"));
+        ArrayList<String> groupArrayList = new ArrayList<>(inputList);
         return groupArrayList;
     }
 }

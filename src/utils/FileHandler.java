@@ -53,16 +53,22 @@ public class FileHandler {
     public void writeListToFile(List<String> dataList, String filePath) {
         try {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath));
-            for(String nextLine : dataList) {
-                bufferedWriter.write(nextLine);
+            if(filePath.contains("group_info.txt")){
+                String resultString = String.join("|", dataList);
+                bufferedWriter.write(resultString);
                 bufferedWriter.newLine();
+            }
+            else {
+                for (String nextLine : dataList) {
+                    bufferedWriter.write(nextLine);
+                    bufferedWriter.newLine();
+                }
             }
             bufferedWriter.close();
         }
         catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
 }
