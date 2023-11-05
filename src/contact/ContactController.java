@@ -39,7 +39,7 @@ public class ContactController {
                     break;
                 case 6:
                     // 정렬 방식 설정
-                    this.setting();
+                    this.updateConfig();
                     break;
                 default:
                     break;
@@ -127,8 +127,23 @@ public class ContactController {
             System.out.println(e.getMessage());
         }
     }
-    public void setting() {
-
+    public void updateConfig() {
+        try{
+            System.out.println("1.이름 가나다순");
+            System.out.println("2.그룹별 정렬");
+            System.out.println("3.최근 저장순");
+            String userInput = getUserInput();
+            // 예외 처리 구현 X
+            int menuCommand = Integer.parseInt(userInput);
+            if(menuCommand > 3) throw new InvalidInputException(ErrorCode.Invalid_Input);
+            if(menuCommand == 0){
+                setNextCommand(0);
+                return ;
+            }
+            contactService.modifyConfig(menuCommand, this.contactRepository);
+        }catch(ApplicationException e){
+            System.out.println(e.getMessage());
+        }
     }
     public void setNextCommand(int nextCommand) {
         this.nextCommand = nextCommand;
