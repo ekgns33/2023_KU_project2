@@ -164,7 +164,7 @@ public class ContactService {
                     return null;
                 }
                 if (Validator.isValidNameFormat(userNameInput) == -1)
-                    throw new InvalidInputException(ErrorCode.Invalid_Input);
+                    continue;
                 // 전화번호 입력
                 while(true) {
                     System.out.print("추가할 연락처의 전화번호를 입력하시오.\n더 이상 추가를 원하지 않으시면 'Q'를 입력하시오.('0': 초기 메뉴로 이동)\n>> ");
@@ -269,10 +269,15 @@ public class ContactService {
         List<Contact> queryResult = searchByInputType(userInput, contactRepository);
         if (queryResult == null || queryResult.isEmpty()) {
             System.out.println("일치하는 항목이 없습니다.");
+        } else if(queryResult.get(0).getPid() == -1) {
+                return;
         }
         else {
             showContactList(queryResult);
             Contact selectedContact = selectAndGetContact(queryResult);
+            if(selectedContact == null) {
+                return;
+            }
             while (true) {
                 System.out.print("수정하시겠습니까?(Y/N)\n>> ");
                 String updateDecision = getUserInput().trim();

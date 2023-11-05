@@ -1,7 +1,5 @@
 package contact;
 
-import java.util.List;
-
 public class Contact {
     private int pid;
     private String name;
@@ -9,15 +7,15 @@ public class Contact {
     private String groupName;
     private String memo;
 
-    public Contact() {}
-
-    public Contact(int pid, String name, String groupName, String memo) {
-        this.pid = pid;
-        this.name = name;
-        this.phoneNumber = new PhoneNumber();
-        this.groupName = groupName;
-        this.memo = memo;
-    }
+//    public Contact() {}
+//
+//    public Contact(int pid, String name, String groupName, String memo) {
+//        this.pid = pid;
+//        this.name = name;
+//        this.phoneNumber = new PhoneNumber();
+//        this.groupName = groupName;
+//        this.memo = memo;
+//    }
 
     public Contact(String name, PhoneNumber phoneNumber, String groupName, String memo){
         this.name = name;
@@ -34,7 +32,6 @@ public class Contact {
     public Contact(int pid) {
         this.pid = pid;
         this.phoneNumber = new PhoneNumber();
-
     }
     public void addPhoneNumber(String phoneNumber) {
         this.phoneNumber.insertPhoneNumber(phoneNumber);
