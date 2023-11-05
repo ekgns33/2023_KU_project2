@@ -5,9 +5,7 @@ import errors.exceptions.ErrorCode;
 import errors.exceptions.InvalidInputException;
 import utils.Validator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class ContactService {
 
@@ -397,7 +395,8 @@ public class ContactService {
         int resultValue; // 각 modifyConfig 세부 함수 내 리턴값을 담기 위한 변수
         switch (userInput) {
             case 1:
-                // sortByKoreanName
+                // sortByKoreanName'
+                sortByKoreanName(contactRepository);
                 break;
             case 2:
                 // sortByGroupName
@@ -416,7 +415,15 @@ public class ContactService {
             System.out.print("저장하시겠습니까? (Y or N) : ");
             createDecision = getUserInput();
             if (createDecision.equals("Y")) {
-
+                List<Contact> userTable = contactRepository.findAll();
+                Collections.sort(userTable, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+                Map<Integer, Contact> modifiedUserTable = new HashMap<>();
+                int integerInfo = 1;
+                for(Contact contact: userTable) {
+                    modifiedUserTable.put(integerInfo, contact);
+                    integerInfo++;
+                }
+                contactRepository.setUserTable(modifiedUserTable);
                 break;
             }
             else if (createDecision.equals("N")) {
