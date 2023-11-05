@@ -229,7 +229,6 @@ public class ContactService {
                 if(resultValue != null) {
                     System.out.println("<"+resultValue+"> 그룹 추가");
                 }
-                System.out.println(contactRepository.getGroupTable());
                 break;
             case 2:
                 resultValue = groupDelete(contactRepository);
@@ -392,6 +391,80 @@ public class ContactService {
         }
         System.out.print("기존 : "+inputGroupName+" -> ");
         return modifiedGroupName;
+    }
+
+    public void modifyConfig(int userInput, ContactRepository contactRepository){
+        int resultValue; // 각 modifyConfig 세부 함수 내 리턴값을 담기 위한 변수
+        switch (userInput) {
+            case 1:
+                // sortByKoreanName
+                break;
+            case 2:
+                // sortByGroupName
+                break;
+            case 3:
+                // sortByRecentStored
+                break;
+            default:
+                break;
+        }
+    }
+
+    public int sortByKoreanName(ContactRepository contactRepository){
+        String createDecision;
+        while(true) {
+            System.out.print("저장하시겠습니까? (Y or N) : ");
+            createDecision = getUserInput();
+            if (createDecision.equals("Y")) {
+
+                break;
+            }
+            else if (createDecision.equals("N")) {
+                return 0;
+            }
+            else {
+                System.out.println("다시 입력해주세요.");
+            }
+        }
+        return 1;
+    }
+
+    public int sortByGroupName(ContactRepository contactRepository){
+        String createDecision;
+        while(true) {
+            System.out.print("저장하시겠습니까? (Y or N) : ");
+            createDecision = getUserInput();
+            if (createDecision.equals("Y")) {
+
+                break;
+            }
+            else if (createDecision.equals("N")) {
+                return 0;
+            }
+            else {
+                System.out.println("다시 입력해주세요.");
+            }
+        }
+        return 1;
+    }
+
+    public int sortByRecentStored(ContactRepository contactRepository){
+        String createDecision;
+        while(true) {
+            System.out.print("저장하시겠습니까? (Y or N) : ");
+            createDecision = getUserInput();
+            if (createDecision.equals("Y")) {
+
+                break;
+            }
+            else if (createDecision.equals("N")) {
+                return 0;
+            }
+            else {
+                System.out.println("다시 입력해주세요.");
+            }
+        }
+        return 1;
     }
     public int selectIndex(){
         System.out.print("인덱스 선택 : ");
