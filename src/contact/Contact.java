@@ -31,16 +31,17 @@ public class Contact {
         this.name = name;
         this.phoneNumber = new PhoneNumber();
     }
+    public Contact(int pid) {
+        this.pid = pid;
+        this.phoneNumber = new PhoneNumber();
 
+    }
     public void addPhoneNumber(String phoneNumber) {
         this.phoneNumber.insertPhoneNumber(phoneNumber);
     }
 
     public PhoneNumber getPhoneNumber() {
         return this.phoneNumber;
-    }
-    public Contact(int pid) {
-        this.pid = pid;
     }
 
     public int getPid() {

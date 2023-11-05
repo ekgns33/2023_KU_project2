@@ -35,20 +35,19 @@ public final class Validator {
             // 전화번호가 숫자로만 이루어져 있지 않거나 길이 충족 못 할 시
             if (!phoneNumber.matches(DIGITONLY)) {
                 throw new InvalidInputException(ErrorCode.Invalid_Input);
-            } else {
+            }
                 // 무선 전화 형식 체크
-                if (!phoneNumber.matches(PHONENUM)) {
+            if (!phoneNumber.matches(PHONENUM)) {
                     // 무선 전화 형식은 아니지만 01로 시작하는 지 체크
-                    if (phoneNumber.matches(PHONENUMBERPREFIX)) {
+                if (phoneNumber.matches(PHONENUMBERPREFIX)) {
                         // 01로 시작하니까 유선 전화도 아님 Error
-                        throw new InvalidInputException(ErrorCode.Invalid_Input);
-                    }
+                    throw new InvalidInputException(ErrorCode.Invalid_Input);
+                }
                     // 무선 전화가 아니라면 유선 전화 형식 체크
-                    else {
-                        if (!phoneNumber.matches(OFFICENUM)) {
+                else {
+                    if (!phoneNumber.matches(OFFICENUM)) {
                             // 둘 다 아닐 시 Error
-                            throw new InvalidInputException(ErrorCode.Invalid_Input);
-                        }
+                        throw new InvalidInputException(ErrorCode.Invalid_Input);
                     }
                 }
             }
@@ -61,6 +60,8 @@ public final class Validator {
     public static int isValidGroupNameFormat(String groupName) {
         try {
             // 완전한 형태의 한글로 이루어져 있지 않을 시(중간 공백 허용 X)
+            if(groupName.equals("X"))
+                return 1;
             if(!groupName.matches(KOREANONLY)) {
                 throw new InvalidInputException(ErrorCode.Invalid_Input);
             }
