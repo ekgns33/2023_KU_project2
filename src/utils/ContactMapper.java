@@ -106,11 +106,11 @@ public class ContactMapper {
                 }
                 int checkNum = 0;
                 // 기존에 설정 되어 있는 그룹명 중 하나인지 확인, 아니면 종료
-                for (String groupName : groupTable) {
-                    if (contactData[3].equals(groupName)) {
-                        checkNum = 1;
+                    for (String groupName : groupTable) {
+                        if (contactData[3].equals(groupName)) {
+                            checkNum = 1;
+                        }
                     }
-                }
                 if (checkNum == 0) {
                     System.out.println("전화번호부 파일 형식에 오류가 있습니다");
                     System.exit(0);
@@ -121,6 +121,10 @@ public class ContactMapper {
                 contact.setGroupName("X");
             }
             if (contactData.length >= 5) {
+                if(contactData[4].length() > 20) {
+                    System.out.println("전화번호부 파일 형식에 오류가 있습니다.");
+                    System.exit(0);
+                }
                 contact.setMemo(contactData[4]);
             }
             return contact;

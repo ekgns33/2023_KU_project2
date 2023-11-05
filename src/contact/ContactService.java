@@ -145,108 +145,115 @@ public class ContactService {
         String userGroupInput, userMemoInput;
         int check;
         PhoneNumber phoneNumber = new PhoneNumber();
-            while (true) {
-                try {
-                    // 이름 입력
-                    System.out.print("추가할 연락처의 이름을 입력하시오.('0': 초기 메뉴로 이동)\n>> ");
-                    userNameInput = getUserInput().trim();
-                    if(userNameInput.equals("0")) {
+        while (true) {
+            try {
+                // 이름 입력
+                System.out.print("추가할 연락처의 이름을 입력하시오.('0': 초기 메뉴로 이동)\n>> ");
+                userNameInput = getUserInput().trim();
+                if(userNameInput.equals("0")) {
+                    return null;
+                }
+                if (Validator.isValidNameFormat(userNameInput) == -1)
+                    throw new InvalidInputException(ErrorCode.Invalid_Input);
+                // 전화번호 입력
+                while(true) {
+                    System.out.print("추가할 연락처의 전화번호를 입력하시오.\n더 이상 추가를 원하지 않으시면 'Q'를 입력하시오.('0': 초기 메뉴로 이동)\n>> ");
+                    userNumInput = getUserInput().trim();
+                    if(userNumInput.equals("0")) {
                         return null;
                     }
-                    if (Validator.isValidNameFormat(userNameInput) == -1)
-                        throw new InvalidInputException(ErrorCode.Invalid_Input);
-                    // 전화번호 입력
-                    while(true) {
-                        System.out.print("추가할 연락처의 전화번호를 입력하시오.\n더 이상 추가를 원하지 않으시면 'Q'를 입력하시오.('0': 초기 메뉴로 이동)\n>> ");
-                        userNumInput = getUserInput().trim();
-                        if(userNumInput.equals("0")) {
-                            return null;
-                        }
-                        if(userNumInput.equals("Q") && phoneNumber.getPhoneNumbers().size() == 0) {
-                            System.out.println("최소한 전화번호를 한 개 이상 추가하셔야 합니다.");
-                            continue;
-                        }
-                        if(userNumInput.equals("Q") && phoneNumber.getPhoneNumbers().size() > 0) {
-                            break;
-                        }
-                        if (Validator.isValidPhoneNumberFormat(userNumInput) == -1) {
-                            continue;
-                        }
-                        if (userNumInput.matches(Validator.PHONENUM)) {
-                            // 무선
-                            // set에 있는 애들이랑 비교해야되고
-                            // 현재 추가하고 있는 자신의 번호들은 set에 없어서 자기 자신 번호랑도 비교해야 함
-                            if (contactRepository.isNumberUnique(userNumInput)) {
-                                System.out.println("이미 존재하는 번호입니다.");
-                                continue;
-                            }
-                            check = 0;
-                            for(String phoneNumbers : phoneNumber.getPhoneNumbers()) {
-                                if(userNumInput.equals(phoneNumbers)) {
-                                    check = 1;
-                                    System.out.println("이미 존재하는 번호입니다.");
-                                    break;
-                                }
-                            }
-                            if(check == 1)
-                                continue;
-                            phoneNumber.insertPhoneNumber(userNumInput);
-                        } else {
-                            // 유선
-                            // 자기 자신이랑만 비교하면 되고
-                           check = 0;
-                            for (String phoneNumbers : phoneNumber.getPhoneNumbers()) {
-                                if (userNumInput.equals(phoneNumbers)) {
-                                    System.out.println("이미 존재하는 번호입니다.");
-                                    check = 1;
-                                }
-                            }
-                            if(check == 1)
-                                continue;
-                            phoneNumber.insertPhoneNumber(userNumInput);
-                        }
+                    if(userNumInput.equals("Q") && phoneNumber.getPhoneNumbers().size() == 0) {
+                        System.out.println("최소한 전화번호를 한 개 이상 추가하셔야 합니다.");
+                        continue;
                     }
-                    // 그룹 입력 -> 에러 처리 구현 X
-                    while(true) {
-                        System.out.print("추가할 연락처의 그룹명을 입력하시오.\n그룹명 추가를 원하지 않을 시 'enter' 키를 누르시오.('0': 초기 메뉴로 이동)\n>> ");
-                        userGroupInput = getUserInput().trim();
-                        if(userGroupInput.equals("")) {
-                            userGroupInput = "X";
-                            break;
-                        }
-                        if(userGroupInput.equals("0")) {
-                            return null;
-                        }
-                        if(Validator.isValidGroupNameFormat(userGroupInput) == -1) {
+                    if(userNumInput.equals("Q") && phoneNumber.getPhoneNumbers().size() > 0) {
+                        break;
+                    }
+                    if (Validator.isValidPhoneNumberFormat(userNumInput) == -1) {
+                        continue;
+                    }
+                    if (userNumInput.matches(Validator.PHONENUM)) {
+                        // 무선
+                        // set에 있는 애들이랑 비교해야되고
+                        // 현재 추가하고 있는 자신의 번호들은 set에 없어서 자기 자신 번호랑도 비교해야 함
+                        if (contactRepository.isNumberUnique(userNumInput)) {
+                            System.out.println("이미 존재하는 번호입니다.");
                             continue;
                         }
-                        else {
-                            if(contactRepository.isGroupNameUnique(userGroupInput)) {
+                        check = 0;
+                        for(String phoneNumbers : phoneNumber.getPhoneNumbers()) {
+                            if(userNumInput.equals(phoneNumbers)) {
+                                check = 1;
+                                System.out.println("이미 존재하는 번호입니다.");
                                 break;
                             }
-                            else {
-                                System.out.println("현재 존재하는 그룹명이 아닙니다.");
-                                continue;
+                        }
+                        if(check == 1)
+                            continue;
+                        phoneNumber.insertPhoneNumber(userNumInput);
+                    } else {
+                        // 유선
+                        // 자기 자신이랑만 비교하면 되고
+                        check = 0;
+                        for (String phoneNumbers : phoneNumber.getPhoneNumbers()) {
+                            if (userNumInput.equals(phoneNumbers)) {
+                                System.out.println("이미 존재하는 번호입니다.");
+                                check = 1;
                             }
                         }
+                        if(check == 1)
+                            continue;
+                        phoneNumber.insertPhoneNumber(userNumInput);
                     }
-                    // 메모 입력
-                    System.out.print("추가할 연락처의 메모를 입력하시오.\n메로 추가를 원하지 않을 시 'enter' 키를 누르시오.('0': 초기 메뉴로 이동)\n>>  ");
-                    userMemoInput = getUserInput();
-                    if(userMemoInput.trim().equals("0")) {
+                }
+                // 그룹 입력 -> 에러 처리 구현 X
+                while(true) {
+                    System.out.print("추가할 연락처의 그룹명을 입력하시오.\n그룹명 추가를 원하지 않을 시 'enter' 키를 누르시오.('0': 초기 메뉴로 이동)\n>> ");
+                    userGroupInput = getUserInput().trim();
+                    if(userGroupInput.equals("")) {
+                        userGroupInput = "X";
+                        break;
+                    }
+                    if(userGroupInput.equals("0")) {
                         return null;
                     }
-                    if(userMemoInput == null) {
+                    if(Validator.isValidGroupNameFormat(userGroupInput) == -1) {
+                        continue;
+                    }
+                    else {
+                        if(contactRepository.isGroupNameUnique(userGroupInput)) {
+                            break;
+                        }
+                        else {
+                            System.out.println("현재 존재하는 그룹명이 아닙니다.");
+                            continue;
+                        }
+                    }
+                }
+                // 메모 입력
+                while(true) {
+                    System.out.print("추가할 연락처의 메모를 입력하시오.\n메로 추가를 원하지 않을 시 'enter' 키를 누르시오.('0': 초기 메뉴로 이동)\n>>  ");
+                    userMemoInput = getUserInput();
+                    if(userMemoInput.length() > 20) {
+                        System.out.println("잘못된 입력 형식입니다.");
+                        continue;
+                    }
+                    if (userMemoInput.trim().equals("0")) {
+                        return null;
+                    }
+                    if (userMemoInput == null) {
                         userMemoInput = "";
                     }
                     break;
-                } catch(ApplicationException e) {
-                    System.out.println(e.getMessage());
-                    continue;
                 }
+                break;
+            } catch(ApplicationException e) {
+                System.out.println(e.getMessage());
+                continue;
             }
-            return new Contact(userNameInput, phoneNumber, userGroupInput, userMemoInput);
         }
+        return new Contact(userNameInput, phoneNumber, userGroupInput, userMemoInput);
+    }
     public void update(int userInput, ContactRepository contactRepository) {
         // 검색기능 그대로 사용한다.
 //        if(queryResult == null || queryResult.isEmpty()){
@@ -268,8 +275,8 @@ public class ContactService {
             showContactList(queryResult);
             Contact selectedContact = selectAndGetContact(queryResult);
             while (true) {
-            System.out.print("수정하시겠습니까?(Y/N)\n>> ");
-            String updateDecision = getUserInput().trim();
+                System.out.print("수정하시겠습니까?(Y/N)\n>> ");
+                String updateDecision = getUserInput().trim();
                 if (updateDecision.equals("Y")) {
                     Contact updateContact = new Contact(selectedContact.getPid());
 
@@ -367,13 +374,21 @@ public class ContactService {
                         }
                     }
                     updateContact.setGroupName(inputGroupName);
-                    System.out.print("수정할 메모를 입력하시오.\n(" + selectedContact.getMemo() + ")>> ");
-                    String inputMemo = getUserInput();
-                    if (inputMemo.trim().equals("0")) {
-                        return;
-                    }
-                    if(inputMemo == null) {
-                        inputMemo = "";
+                    String inputMemo;
+                    while(true) {
+                        System.out.print("수정할 메모를 입력하시오.\n(" + selectedContact.getMemo() + ")>> ");
+                        inputMemo = getUserInput();
+                        if(inputMemo.length() > 20) {
+                            System.out.println("잘못된 입력 형식입니다.");
+                            continue;
+                        }
+                        if (inputMemo.trim().equals("0")) {
+                            return;
+                        }
+                        if (inputMemo == null) {
+                            inputMemo = "";
+                        }
+                        break;
                     }
                     updateContact.setMemo(inputMemo);
                     String print = printContact(updateContact);
@@ -403,29 +418,46 @@ public class ContactService {
     }
 
     public void delete(ContactRepository contactRepository) {
-                while(true) {
-                    System.out.print("삭제할 이름을 입력하시오.('0': 초기 메뉴로 이동)\n>> ");
-                    String userInput = getUserInput().trim();
-                    if(userInput.equals("0"))
+        while(true) {
+            System.out.print("삭제할 이름을 입력하시오.('0': 초기 메뉴로 이동)\n>> ");
+            String userInput = getUserInput().trim();
+            if(userInput.equals("0"))
+                break;
+            if(Validator.isValidNameFormat(userInput) == -1) {
+                continue;
+            }
+            else {
+                List<Contact> queryResult = contactRepository.findByName(userInput);
+                if(queryResult == null || queryResult.isEmpty()){
+                    System.out.println("일치하는 항목이 없습니다.");
+                    break;
+                } else {
+                    showContactList(queryResult);
+                    Contact selectedContact = selectAndGetContact(queryResult);
+                    if(selectedContact == null)
                         break;
-                    if(Validator.isValidNameFormat(userInput) == -1) {
-                        continue;
-                    }
-                    else {
-                        List<Contact> queryResult = contactRepository.findByName(userInput);
-                        if(queryResult == null || queryResult.isEmpty()){
-                            System.out.println("일치하는 항목이 없습니다.");
-                            break;
-                        } else {
-                            showContactList(queryResult);
-                            Contact selectedContact = selectAndGetContact(queryResult);
-                            if(selectedContact == null)
-                                break;
-                            contactRepository.getUserTable().remove(selectedContact.getPid());
+                    while(true) {
+                        System.out.print("삭제하시겠습니까?(Y/N)\n>> ");
+                        String decision = getUserInput().trim();
+                        if(decision.equals("Y")) {
+                            System.out.println("삭제되었습니다.");
                             break;
                         }
+                        else if(decision.equals("N"))
+                            return;
+                        else {
+                            System.out.println("잘못된 입력 형식입니다.");
+                            continue;
+                        }
                     }
+                    contactRepository.getUserTable().remove(selectedContact.getPid());
+                    if(selectedContact.getPid() == contactRepository.getLastPid()-1) {
+                        contactRepository.setLastPid(contactRepository.getLastPid()-1);
+                    }
+                    break;
                 }
+            }
+        }
     }
 
     public void groupManagement(int userInput, ContactRepository contactRepository){
@@ -576,32 +608,32 @@ public class ContactService {
                     } else if (contactRepository.isGroupNameUnique(modifiedGroupName)) {
                         System.out.println("이미 존재하는 그룹명입니다.");
                     } else {
-                            while (true) {
-                                System.out.print("수정하시겠습니까?(Y/N)\n>> ");
-                                createDecision = getUserInput().trim();
-                                if (createDecision.equals("Y")) {
-                                    for (Contact contact : queryCurrent) {
-                                        if (contact.getGroupName().equals(inputGroupName)) {
-                                            contact.setGroupName(modifiedGroupName);
-                                        }
+                        while (true) {
+                            System.out.print("수정하시겠습니까?(Y/N)\n>> ");
+                            createDecision = getUserInput().trim();
+                            if (createDecision.equals("Y")) {
+                                for (Contact contact : queryCurrent) {
+                                    if (contact.getGroupName().equals(inputGroupName)) {
+                                        contact.setGroupName(modifiedGroupName);
                                     }
-                                    ArrayList<String> groupCurrent = contactRepository.getGroupTable();
-                                    for (int i = 0; i < groupCurrent.size(); i++) {
-                                        String currentGroupName = groupCurrent.get(i);
-                                        if (currentGroupName.equals(inputGroupName)) {
-                                            groupCurrent.set(i, modifiedGroupName);
-                                        }
+                                }
+                                ArrayList<String> groupCurrent = contactRepository.getGroupTable();
+                                for (int i = 0; i < groupCurrent.size(); i++) {
+                                    String currentGroupName = groupCurrent.get(i);
+                                    if (currentGroupName.equals(inputGroupName)) {
+                                        groupCurrent.set(i, modifiedGroupName);
                                     }
-                                    contactRepository.setGroupTable(groupCurrent);
-                                    break;
                                 }
-                                else if (createDecision.equals("N")) {
-                                    return null;
-                                }
-                                else {
-                                    System.out.println("잘못된 입력 형식입니다.");
-                                    continue;
-                                }
+                                contactRepository.setGroupTable(groupCurrent);
+                                break;
+                            }
+                            else if (createDecision.equals("N")) {
+                                return null;
+                            }
+                            else {
+                                System.out.println("잘못된 입력 형식입니다.");
+                                continue;
+                            }
                         }
                     }
                 }

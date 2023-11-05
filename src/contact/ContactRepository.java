@@ -13,7 +13,7 @@ public class ContactRepository {
 
     private Map<Integer, Contact> userTable;
 
-    private ArrayList<String> groupTable;
+    private ArrayList<String> groupTable = new ArrayList<>();
 
     private Set<String> phonNumberSet;
 
