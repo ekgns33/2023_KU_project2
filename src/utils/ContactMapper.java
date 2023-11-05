@@ -121,11 +121,11 @@ public class ContactMapper {
                 contact.setGroupName("X");
             }
             if (contactData.length >= 5) {
-                if(contactData[4].length() > 20) {
+                if(contactData[4].trim().length() > 20) {
                     System.out.println("전화번호부 파일 형식에 오류가 있습니다.");
                     System.exit(0);
                 }
-                contact.setMemo(contactData[4]);
+                contact.setMemo(contactData[4].trim());
             }
             return contact;
         } catch (NumberFormatException e) {

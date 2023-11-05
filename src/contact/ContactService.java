@@ -233,7 +233,7 @@ public class ContactService {
                 // 메모 입력
                 while(true) {
                     System.out.print("추가할 연락처의 메모를 입력하시오.\n메로 추가를 원하지 않을 시 'enter' 키를 누르시오.('0': 초기 메뉴로 이동)\n>>  ");
-                    userMemoInput = getUserInput();
+                    userMemoInput = getUserInput().trim();
                     if(userMemoInput.length() > 20) {
                         System.out.println("잘못된 입력 형식입니다.");
                         continue;
@@ -377,7 +377,7 @@ public class ContactService {
                     String inputMemo;
                     while(true) {
                         System.out.print("수정할 메모를 입력하시오.\n(" + selectedContact.getMemo() + ")>> ");
-                        inputMemo = getUserInput();
+                        inputMemo = getUserInput().trim();
                         if(inputMemo.length() > 20) {
                             System.out.println("잘못된 입력 형식입니다.");
                             continue;
