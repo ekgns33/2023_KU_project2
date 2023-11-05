@@ -74,6 +74,13 @@ public class ContactService {
                 queryResult = contactRepository.findByPhoneNumber(inputPhoneNumber);
                 break;
             case 3:
+                if(contactRepository.getGroupTable().size() == 0) {
+                    System.out.println("현재 프로그램 내에 존재하는 그룹이 없습니다.");
+                    Contact contact = new Contact(-1);
+                    queryResult = new ArrayList<>();
+                    queryResult.add(contact);
+                    break;
+                }
                 while(true) {
                     System.out.print("검색하실 그룹을 입력하시오.('0': 검색 메뉴로 이동)\n>> ");
                     inputGroupName = getUserInput().trim();
