@@ -392,7 +392,6 @@ public class ContactService {
     }
 
     public void modifyConfig(int userInput, ContactRepository contactRepository){
-        int resultValue; // 각 modifyConfig 세부 함수 내 리턴값을 담기 위한 변수
         switch (userInput) {
             case 1:
                 // sortByKoreanName'
@@ -400,16 +399,18 @@ public class ContactService {
                 break;
             case 2:
                 // sortByGroupName
+                sortByGroupName(contactRepository);
                 break;
             case 3:
                 // sortByRecentStored
+                sortByRecentStored(contactRepository);
                 break;
             default:
                 break;
         }
     }
 
-    public int sortByKoreanName(ContactRepository contactRepository){
+    public void sortByKoreanName(ContactRepository contactRepository){
         String createDecision;
         while(true) {
             System.out.print("저장하시겠습니까? (Y or N) : ");
@@ -427,51 +428,67 @@ public class ContactService {
                 break;
             }
             else if (createDecision.equals("N")) {
-                return 0;
+                return;
             }
             else {
                 System.out.println("다시 입력해주세요.");
             }
         }
-        return 1;
+        return;
     }
 
-    public int sortByGroupName(ContactRepository contactRepository){
+    public void sortByGroupName(ContactRepository contactRepository){
         String createDecision;
         while(true) {
             System.out.print("저장하시겠습니까? (Y or N) : ");
             createDecision = getUserInput();
             if (createDecision.equals("Y")) {
-
+                List<Contact> userTable = contactRepository.findAll();
+                Collections.sort(userTable, (c1, c2) -> c1.getGroupName().compareTo(c2.getGroupName()));
+                Map<Integer, Contact> modifiedUserTable = new HashMap<>();
+                int integerInfo = 1;
+                for(Contact contact: userTable) {
+                    modifiedUserTable.put(integerInfo, contact);
+                    integerInfo++;
+                }
+                contactRepository.setUserTable(modifiedUserTable);
                 break;
             }
             else if (createDecision.equals("N")) {
-                return 0;
+                return;
             }
             else {
                 System.out.println("다시 입력해주세요.");
             }
         }
-        return 1;
+        return;
     }
 
-    public int sortByRecentStored(ContactRepository contactRepository){
+    public void sortByRecentStored(ContactRepository contactRepository){
         String createDecision;
         while(true) {
             System.out.print("저장하시겠습니까? (Y or N) : ");
             createDecision = getUserInput();
             if (createDecision.equals("Y")) {
-
+                List<Contact> userTable = contactRepository.findAll();
+                Collections.sort(userTable, (c1, c2) -> Integer.compare(c1.getPid(), c2.getPid()));
+                Map<Integer, Contact> modifiedUserTable = new HashMap<>();
+                int integerInfo = 1;
+                for(Contact contact: userTable) {
+                    modifiedUserTable.put(integerInfo, contact);
+                    integerInfo++;
+                }
+                contactRepository.setUserTable(modifiedUserTable);
                 break;
             }
             else if (createDecision.equals("N")) {
-                return 0;
+                return;
             }
             else {
                 System.out.println("다시 입력해주세요.");
             }
         }
-        return 1;
+        return;
     }
     public int selectIndex(){
         System.out.print("인덱스 선택 : ");
