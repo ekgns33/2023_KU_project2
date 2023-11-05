@@ -103,6 +103,9 @@ public class ContactService {
                     throw new InvalidInputException(ErrorCode.Invalid_Input);
                 }
                 return queryResult.get(targetIndex - 1);
+            } catch(NumberFormatException e1) {
+                System.out.println("잘못된 입력 형식입니다.");
+                targetIndex = selectIndex();
             } catch (ApplicationException e) {
                 System.out.println(e.getMessage());
                 targetIndex = selectIndex();
@@ -739,9 +742,16 @@ public class ContactService {
         return 1;
     }
     public int selectIndex(){
-        System.out.print("인덱스 선택\n>> ");
-        String userInput = getUserInput().trim();
-        return Integer.parseInt(userInput);
+        String userInput=null;
+        int index=0;
+        try {
+            System.out.print("인덱스 선택\n>> ");
+            userInput = getUserInput().trim();
+            index = Integer.parseInt(userInput);
+        } catch(NumberFormatException e) {
+            index = -1;
+        }
+        return index;
     }
 
     public String getUserInput() {
