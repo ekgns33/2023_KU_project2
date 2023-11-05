@@ -640,6 +640,7 @@ public class ContactService {
                             }
                         }
                     }
+                    break;
                 }
             }
             break;
@@ -730,7 +731,7 @@ public class ContactService {
             createDecision = getUserInput().trim();
             if(createDecision.equals("Y")) {
                 List<Contact> userTable = contactRepository.findAll();
-                Collections.sort(userTable, (c1, c2) -> Integer.compare(c1.getPid(), c2.getPid()));
+                Collections.sort(userTable, (c1, c2) -> Integer.compare(c2.getPid(), c1.getPid()));
                 contactRepository.getSequencedUserTable().clear();
                 for(Contact contact : userTable) {
                     contactRepository.getSequencedUserTable().add(contact);

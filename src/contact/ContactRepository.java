@@ -106,7 +106,6 @@ public class ContactRepository {
         else if(sortBy == 2) {
             List<Contact> userTable = findAll();
             Collections.sort(userTable, (c1, c2) -> c1.getGroupName().compareTo(c2.getGroupName()));
-            int integerInfo = 1;
             this.sequencedUserTable.clear();
             for(Contact contact : userTable) {
                 this.sequencedUserTable.add(contact);
@@ -114,7 +113,7 @@ public class ContactRepository {
         }
         else if(sortBy == 3) {
             List<Contact> userTable = findAll();
-            Collections.sort(userTable, (c1, c2) -> Integer.compare(c1.getPid(), c2.getPid()));
+            Collections.sort(userTable, (c1, c2) -> Integer.compare(c2.getPid(), c1.getPid()));
             this.sequencedUserTable.clear();
             for(Contact contact : userTable) {
                 this.sequencedUserTable.add(contact);
