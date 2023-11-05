@@ -266,17 +266,6 @@ public class ContactService {
     }
     public void update(int userInput, ContactRepository contactRepository) {
         // 검색기능 그대로 사용한다.
-//        if(queryResult == null || queryResult.isEmpty()){
-//            System.out.println("일치하는 항목이 없습니다.");
-//            return null;
-//        } else if(queryResult.get(0).getPid() == -1) {
-//            return queryResult.get(0);
-//        }
-//        else {
-//            showContactList(queryResult);
-//            Contact selectedContact = selectAndGetContact(queryResult);
-//            return selectedContact;
-//        }
         List<Contact> queryResult = searchByInputType(userInput, contactRepository);
         if (queryResult == null || queryResult.isEmpty()) {
             System.out.println("일치하는 항목이 없습니다.");

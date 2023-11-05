@@ -90,6 +90,10 @@ public class ContactController {
             String userInput = getUserInput().trim();
             int menuCommand = Integer.parseInt(userInput);
             if(menuCommand > 3) throw new InvalidInputException(ErrorCode.Invalid_Input);
+            if(menuCommand == 3 && contactRepository.getGroupTable().size() == 0) {
+                System.out.println("현재 프로그램 내에 존재하는 그룹이 없습니다.");
+                return;
+            }
             if(menuCommand == 0) {
                 setNextCommand(0);
                 return;
