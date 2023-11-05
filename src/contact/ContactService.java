@@ -287,6 +287,10 @@ public class ContactService {
     public String groupDelete(ContactRepository contactRepository){
         String inputGroupName;
         String createDecision;
+        if(contactRepository.getGroupTable().isEmpty()){
+            System.out.println("존재하는 그룹이 없습니다!");
+            return null;
+        }
         while(true) {
             System.out.print("삭제할 그룹명을 입력하세요 : ");
             inputGroupName = getUserInput();
@@ -323,7 +327,7 @@ public class ContactService {
             }
         }
         return inputGroupName;
-    }
+    }/**/
 
     public String groupModify(ContactRepository contactRepository){
         String inputGroupName;
