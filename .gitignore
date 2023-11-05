@@ -1,8 +1,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/intellij,eclipse,java
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij,eclipse,java
-config.txt
-data.txt
-./src/data.txt
+./config.txt
+./data.txt
+./group_info.txt
 
 .idea/**/vcs.xml
 .idea/**/misc.xml
@@ -109,6 +109,7 @@ local.properties
 # auto-import.
 # .idea/artifacts
 # .idea/compiler.xml
+.idea/compiler.xml
 # .idea/jarRepositories.xml
 # .idea/modules.xml
 # .idea/*.iml

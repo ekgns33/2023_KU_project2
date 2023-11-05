@@ -1,29 +1,49 @@
 package contact;
 
+import java.util.List;
+
 public class Contact {
     private int pid;
     private String name;
-    private String phoneNumber;
+    private PhoneNumber phoneNumber;
     private String groupName;
     private String memo;
 
-    public Contact(String name, String phoneNumber, String groupName, String memo) {
+    public Contact() {}
+
+    public Contact(int pid, String name, String groupName, String memo) {
         this.pid = pid;
+        this.name = name;
+        this.phoneNumber = new PhoneNumber();
+        this.groupName = groupName;
+        this.memo = memo;
+    }
+
+    public Contact(String name, PhoneNumber phoneNumber, String groupName, String memo){
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.groupName = groupName;
         this.memo = memo;
     }
 
-    public Contact (int pid, String name, String phoneNumber) {
+    public Contact (int pid, String name) {
         this.pid = pid;
         this.name = name;
-        this.phoneNumber = phoneNumber;
+        this.phoneNumber = new PhoneNumber();
     }
-
     public Contact(int pid) {
         this.pid = pid;
+        this.phoneNumber = new PhoneNumber();
+
     }
+    public void addPhoneNumber(String phoneNumber) {
+        this.phoneNumber.insertPhoneNumber(phoneNumber);
+    }
+
+    public PhoneNumber getPhoneNumber() {
+        return this.phoneNumber;
+    }
+
     public int getPid() {
         return pid;
     }
@@ -40,16 +60,8 @@ public class Contact {
         this.name = name;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public String getGroupName() {
-        return groupName;
+        return this.groupName;
     }
 
     public void setGroupName(String groupName) {
@@ -64,7 +76,7 @@ public class Contact {
     public String toString() {
         return  pid +
                 "|" + name  +
-                "|" + phoneNumber +
+                "|" + phoneNumber.toString() +
                 "|" + groupName +
                 "|" + memo;
     }
