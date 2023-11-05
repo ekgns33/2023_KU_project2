@@ -150,7 +150,6 @@ public class ContactService {
     }
 
     public Contact createContactInfo(ContactRepository contactRepository) {
-        // 전화번호 입력 -> 에러 처리 구현 X
         String userNameInput, userNumInput = null;
         String userGroupInput, userMemoInput;
         int check;
