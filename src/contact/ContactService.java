@@ -334,6 +334,10 @@ public class ContactService {
         String modifiedGroupName;
         String createDecision;
         List<Contact> queryCurrent = contactRepository.findAll();
+        if(contactRepository.getGroupTable().isEmpty()){
+            System.out.println("존재하는 그룹이 없습니다!");
+            return null;
+        }
         while(true){
             System.out.print("수정할 그룹명을 입력하세요 : ");
             inputGroupName = getUserInput();
