@@ -92,7 +92,6 @@ public class ProjectManager extends ProjectManagerSupport {
         init();
         while (true) {
             try {
-
                 System.out.println("원하시는 작업을 고르시오.");
                 System.out.println("1) 연락처 검색   2) 연락처 추가");
                 System.out.println("3) 연락처 삭제   4) 연락처 수정");

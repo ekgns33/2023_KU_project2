@@ -142,7 +142,7 @@ public class ContactController {
             System.out.println("정렬 기준을 선택하시오.('0': 초기 메뉴로 이동)");
             System.out.println("현재 정렬 기준: " + sort);
             System.out.print("1) 이름 가나다순 2) 그룹별 정렬 3) 최근 저장순\n>> ");
-            String userInput = getUserInput().trim();
+            String userInput = getUserInput();
             int menuCommand = Integer.parseInt(userInput);
             if(menuCommand > 3 || menuCommand < 0) throw new InvalidInputException(ErrorCode.Invalid_Input);
             if(menuCommand == 0) {
@@ -150,7 +150,6 @@ public class ContactController {
                 return;
             }
             contactService.modifyConfig(menuCommand, this.contactRepository);
-            System.out.println(this.contactRepository.getSequencedUserTable());
         } catch(NumberFormatException e) {
             System.out.println("잘못된 입력 형식입니다.");
         } catch(ApplicationException e1) {

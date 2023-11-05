@@ -652,15 +652,21 @@ public class ContactService {
         switch(userInput) {
             case 1:
                 resultValue = sortByKoreanName(contactRepository);
-                contactRepository.setSortBy(resultValue);
+                if(resultValue == 1) {
+                    contactRepository.setSortBy(resultValue);
+                }
                 break;
             case 2:
                 resultValue = sortByGroupName(contactRepository);
-                contactRepository.setSortBy(resultValue);
+                if(resultValue == 2) {
+                    contactRepository.setSortBy(resultValue);
+                }
                 break;
             case 3:
                 resultValue = sortByRecentStored(contactRepository);
-                contactRepository.setSortBy(resultValue);
+                if(resultValue == 3) {
+                    contactRepository.setSortBy(resultValue);
+                }
                 break;
             default:
                 break;
@@ -670,7 +676,7 @@ public class ContactService {
     public int sortByKoreanName(ContactRepository contactRepository) {
         String createDecision;
         while(true) {
-            System.out.println("이름 가나다순으로 정렬하시겠습니까?(Y/N)\n>> ");
+            System.out.print("이름 가나다순으로 정렬하시겠습니까?(Y/N)\n>> ");
             createDecision = getUserInput().trim();
             if(createDecision.equals("Y")) {
                 List<Contact> userTable = contactRepository.findAll();
@@ -700,7 +706,6 @@ public class ContactService {
             if(createDecision.equals("Y")) {
                 List<Contact> userTable = contactRepository.findAll();
                 Collections.sort(userTable, (c1, c2) -> c1.getGroupName().compareTo(c2.getGroupName()));
-                int integerInfo = 1;
                 contactRepository.getSequencedUserTable().clear();
                 for(Contact contact : userTable) {
                     contactRepository.getSequencedUserTable().add(contact);
@@ -715,7 +720,7 @@ public class ContactService {
                 continue;
             }
         }
-        return 1;
+        return 2;
     }
 
     public int sortByRecentStored(ContactRepository contactRepository) {
@@ -740,7 +745,7 @@ public class ContactService {
                 continue;
             }
         }
-        return 1;
+        return 3;
     }
     public int selectIndex(){
         String userInput=null;
