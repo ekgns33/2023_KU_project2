@@ -62,8 +62,7 @@ public class ContactController {
             }
             Contact searchedContact =  contactService.search(menuCommand, this.contactRepository);
             if(searchedContact != null && searchedContact.getPid() != -1) {
-                String print = printContact(searchedContact);
-                System.out.println(print);
+                ContactViewProvider.printContactView(searchedContact);
             }
         }catch(ApplicationException e){
             System.out.println(e.getMessage());
@@ -166,16 +165,4 @@ public class ContactController {
         return userInput.trim();
     }
 
-    public String printContact(Contact contact) {
-        String sout;
-        String none = "";
-        if (!contact.getGroupName().equals("X")) {
-            none = contact.getGroupName();
-        }
-        sout = "이름: " + contact.getName() + "\n";
-        sout += "전화번호: " + contact.getPhoneNumber().toString() + "\n";
-        sout += "그룹: " + none + "\n";
-        sout += "메모: " + contact.getMemo() + "\n";
-        return sout;
-    }
 }

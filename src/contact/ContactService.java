@@ -9,6 +9,7 @@ import java.util.*;
 
 public class ContactService {
 
+
     public ContactService(){
     }
 
@@ -130,7 +131,7 @@ public class ContactService {
         else{
             // Y
             while(true){
-                printContact(contact);
+                ContactViewProvider.printContactView(contact);
                 System.out.print("위와 같이 저장하시겠습니까?(Y/N)\n>> ");
                 String createDecision = getUserInput().trim();
                 if(createDecision.equals("Y")) {
@@ -394,7 +395,7 @@ public class ContactService {
                         break;
                     }
                     updateContact.setMemo(inputMemo);
-                    printContact(updateContact);
+                    ContactViewProvider.printContactView(updateContact);
                     while(true) {
                         System.out.print("위와 같이 수정하시겠습니까?(Y/N)\n>> ");
                         String saveDecision = getUserInput().trim();
@@ -671,22 +672,4 @@ public class ContactService {
         return userInput;
     }
 
-    public void printContact(Contact contact) {
-        System.out.println(buildContactView(contact));
-    }
-
-    public void addPropertyToContactView(StringBuilder sb, String tag, String property) {
-        sb.append(tag).append(property).append('\n');
-    }
-
-    public  String buildContactView(Contact contact) {
-        StringBuilder sb = new StringBuilder();
-        String groupName = contact.getGroupName().equals("X") ? "" : contact.getGroupName();
-        addPropertyToContactView(sb, "이름: ", contact.getName());
-        addPropertyToContactView(sb, "전화번호: ", contact.getPhoneNumber().toString());
-        addPropertyToContactView(sb, "그룹명: ", groupName);
-        addPropertyToContactView(sb, "메모: ", contact.getMemo());
-
-        return sb.toString();
-    }
 }
