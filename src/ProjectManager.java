@@ -80,7 +80,6 @@ public class ProjectManager extends ProjectManagerSupport {
 
             this.contactRepository.setLastPid(this.lastPid);
             this.contactRepository.setSortBy(this.sortBy);
-            this.contactRepository.setSequencedUserTable(this.sortBy);
         } catch(NumberFormatException e) {
             System.out.println("환경변수 파일 형식에 오류가 있습니다.");
             System.exit(0);
@@ -126,7 +125,6 @@ public class ProjectManager extends ProjectManagerSupport {
                 }
                 groupArray.add(groups);
                 fileHandler.writeListToFile(groupArray, "src/group_info.txt");
-                this.contactRepository.setSequencedUserTable(this.sortBy);
             } catch (NumberFormatException e1) {
                 System.out.println("잘못된 입력 형식입니다.");
             } catch (ApplicationException e) {
