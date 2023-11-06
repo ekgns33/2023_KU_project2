@@ -17,8 +17,6 @@ public class ContactRepository {
 
     private final Set<String> phoneNumberSet;
 
-    private List<Contact> sequencedUserTable = new ArrayList<>();
-
     public ContactRepository () {
         this.phoneNumberSet = new HashSet<>();
     };
@@ -89,43 +87,9 @@ public class ContactRepository {
                     this.phoneNumberSet.add(phoneNums);
                 }
             }
-//            this.phonNumberSet.addAll(c.getPhoneNumber().getPhoneNumbers());
         }
     }
 
-    public List<Contact> getSequencedUserTable() {
-        return sequencedUserTable;
-    }
-    public void setSequencedUserTable(int sortBy) {
-        // 1. 가나다
-        // 2. 그룹
-        // 3. 최근(default)
-        if(sortBy == 1) {
-            List<Contact> userTable = findAll();
-            Collections.sort(userTable, (c1, c2) -> c1.getName().compareTo(c2.getName()));
-            this.sequencedUserTable.clear();
-            for(Contact contact: userTable) {
-                this.sequencedUserTable.add(contact);
-            }
-        }
-        else if(sortBy == 2) {
-            List<Contact> userTable = findAll();
-            Collections.sort(userTable, (c1, c2) -> c1.getGroupName().compareTo(c2.getGroupName()));
-            int integerInfo = 1;
-            this.sequencedUserTable.clear();
-            for(Contact contact : userTable) {
-                this.sequencedUserTable.add(contact);
-            }
-        }
-        else if(sortBy == 3) {
-            List<Contact> userTable = findAll();
-            Collections.sort(userTable, (c1, c2) -> Integer.compare(c1.getPid(), c2.getPid()));
-            this.sequencedUserTable.clear();
-            for(Contact contact : userTable) {
-                this.sequencedUserTable.add(contact);
-            }
-        }
-    }
     public Set<String> getPhoneNumberSet() {
         return this.phoneNumberSet;
     }

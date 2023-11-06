@@ -130,8 +130,7 @@ public class ContactService {
         else{
             // Y
             while(true){
-                String print = printContact(contact);
-                System.out.println(print);
+                printContact(contact);
                 System.out.print("위와 같이 저장하시겠습니까?(Y/N)\n>> ");
                 String createDecision = getUserInput().trim();
                 if(createDecision.equals("Y")) {
@@ -395,9 +394,8 @@ public class ContactService {
                         break;
                     }
                     updateContact.setMemo(inputMemo);
-                    String print = printContact(updateContact);
+                    printContact(updateContact);
                     while(true) {
-                        System.out.println(print);
                         System.out.print("위와 같이 수정하시겠습니까?(Y/N)\n>> ");
                         String saveDecision = getUserInput().trim();
                         if (saveDecision.equals("Y")) {
@@ -649,104 +647,10 @@ public class ContactService {
 
     public void modifyConfig(int userInput, ContactRepository contactRepository) {
         int resultValue;
-        switch(userInput) {
-            case 1:
-                resultValue = sortByKoreanName(contactRepository);
-                if(resultValue == 1) {
-                    contactRepository.setSortBy(resultValue);
-                }
-                break;
-            case 2:
-                resultValue = sortByGroupName(contactRepository);
-                if(resultValue == 2) {
-                    contactRepository.setSortBy(resultValue);
-                }
-                break;
-            case 3:
-                resultValue = sortByRecentStored(contactRepository);
-                if(resultValue == 3) {
-                    contactRepository.setSortBy(resultValue);
-                }
-                break;
-            default:
-                break;
-        }
+        contactRepository.setSortBy(userInput);
+
     }
 
-    public int sortByKoreanName(ContactRepository contactRepository) {
-        String createDecision;
-        while(true) {
-            System.out.print("이름 가나다순으로 정렬하시겠습니까?(Y/N)\n>> ");
-            createDecision = getUserInput().trim();
-            if(createDecision.equals("Y")) {
-                List<Contact> userTable = contactRepository.findAll();
-                Collections.sort(userTable, (c1, c2) -> c1.getName().compareTo(c2.getName()));
-                contactRepository.getSequencedUserTable().clear();
-                for(Contact contact: userTable) {
-                    contactRepository.getSequencedUserTable().add(contact);
-                }
-                break;
-            }
-            else if(createDecision.equals("N")) {
-                return 0;
-            }
-            else {
-                System.out.println("잘못된 입력 형식입니다.");
-                continue;
-            }
-        }
-        return 1;
-    }
-
-    public int sortByGroupName(ContactRepository contactRepository) {
-        String createDecision;
-        while(true) {
-            System.out.print("그룹별로 정렬하시겠습니까?(Y/N)\n>> ");
-            createDecision = getUserInput().trim();
-            if(createDecision.equals("Y")) {
-                List<Contact> userTable = contactRepository.findAll();
-                Collections.sort(userTable, (c1, c2) -> c1.getGroupName().compareTo(c2.getGroupName()));
-                contactRepository.getSequencedUserTable().clear();
-                for(Contact contact : userTable) {
-                    contactRepository.getSequencedUserTable().add(contact);
-                }
-                break;
-            }
-            else if(createDecision.equals("N")) {
-                return 0;
-            }
-            else {
-                System.out.println("잘못된 입력 형식입니다.");
-                continue;
-            }
-        }
-        return 2;
-    }
-
-    public int sortByRecentStored(ContactRepository contactRepository) {
-        String createDecision;
-        while(true) {
-            System.out.print("최근 저장순으로 정렬하시겠습니까?(Y/N)\n>> ");
-            createDecision = getUserInput().trim();
-            if(createDecision.equals("Y")) {
-                List<Contact> userTable = contactRepository.findAll();
-                Collections.sort(userTable, (c1, c2) -> Integer.compare(c1.getPid(), c2.getPid()));
-                contactRepository.getSequencedUserTable().clear();
-                for(Contact contact : userTable) {
-                    contactRepository.getSequencedUserTable().add(contact);
-                }
-                break;
-            }
-            else if(createDecision.equals("N")) {
-                return 0;
-            }
-            else {
-                System.out.println("잘못된 입력 형식입니다.");
-                continue;
-            }
-        }
-        return 3;
-    }
     public int selectIndex(){
         String userInput=null;
         int index=0;
@@ -767,16 +671,22 @@ public class ContactService {
         return userInput;
     }
 
-    public String printContact(Contact contact) {
-        String sout;
-        String none = "";
-        if (!contact.getGroupName().equals("X")) {
-            none = contact.getGroupName();
-        }
-        sout = "이름: " + contact.getName() + "\n";
-        sout += "전화번호: " + contact.getPhoneNumber().toString() + "\n";
-        sout += "그룹: " + none + "\n";
-        sout += "메모: " + contact.getMemo() + "\n";
-        return sout;
+    public void printContact(Contact contact) {
+        System.out.println(buildContactView(contact));
+    }
+
+    public void addPropertyToContactView(StringBuilder sb, String tag, String property) {
+        sb.append(tag).append(property).append('\n');
+    }
+
+    public  String buildContactView(Contact contact) {
+        StringBuilder sb = new StringBuilder();
+        String groupName = contact.getGroupName().equals("X") ? "" : contact.getGroupName();
+        addPropertyToContactView(sb, "이름: ", contact.getName());
+        addPropertyToContactView(sb, "전화번호: ", contact.getPhoneNumber().toString());
+        addPropertyToContactView(sb, "그룹명: ", groupName);
+        addPropertyToContactView(sb, "메모: ", contact.getMemo());
+
+        return sb.toString();
     }
 }
