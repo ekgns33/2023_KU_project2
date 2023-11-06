@@ -15,17 +15,22 @@ public class ContactRepository {
 
     private ArrayList<String> groupTable = new ArrayList<>();
 
-    private Set<String> phonNumberSet;
+    private final Set<String> phoneNumberSet;
 
     private List<Contact> sequencedUserTable = new ArrayList<>();
 
     public ContactRepository () {
-        this.phonNumberSet = new HashSet<>();
+        this.phoneNumberSet = new HashSet<>();
     };
 
     public void save(Contact input) {
         input.setPid(this.lastPid);
         userTable.put(this.lastPid, input);
+        for(String phoneNumber : input.getPhoneNumber().getPhoneNumbers()) {
+            if(phoneNumber.matches(Validator.PHONENUM)) {
+                phoneNumberSet.add(phoneNumber);
+            }
+        }
         this.lastPid++;
     }
 
@@ -81,7 +86,7 @@ public class ContactRepository {
         for(Contact c : userTable.values()) {
             for(String phoneNums : c.getPhoneNumber().getPhoneNumbers()) {
                 if(phoneNums.matches(Validator.PHONENUM)) {
-                    this.phonNumberSet.add(phoneNums);
+                    this.phoneNumberSet.add(phoneNums);
                 }
             }
 //            this.phonNumberSet.addAll(c.getPhoneNumber().getPhoneNumbers());
@@ -122,10 +127,10 @@ public class ContactRepository {
         }
     }
     public Set<String> getPhoneNumberSet() {
-        return this.phonNumberSet;
+        return this.phoneNumberSet;
     }
     public boolean isNumberUnique(String phoneNumber) {
-        return this.phonNumberSet.contains(phoneNumber);
+        return this.phoneNumberSet.contains(phoneNumber);
     }
 
     public boolean isGroupNameUnique(String groupName) { return this.groupTable.contains(groupName);}
