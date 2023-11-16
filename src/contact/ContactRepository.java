@@ -15,17 +15,20 @@ public class ContactRepository {
 
     private ArrayList<String> groupTable = new ArrayList<>();
 
-    private Set<String> phonNumberSet;
-
-    private List<Contact> sequencedUserTable = new ArrayList<>();
+    private final Set<String> phoneNumberSet;
 
     public ContactRepository () {
-        this.phonNumberSet = new HashSet<>();
+        this.phoneNumberSet = new HashSet<>();
     };
 
     public void save(Contact input) {
         input.setPid(this.lastPid);
         userTable.put(this.lastPid, input);
+        for(String phoneNumber : input.getPhoneNumber().getPhoneNumbers()) {
+            if(phoneNumber.matches(Validator.PHONENUM)) {
+                phoneNumberSet.add(phoneNumber);
+            }
+        }
         this.lastPid++;
     }
 
@@ -81,51 +84,17 @@ public class ContactRepository {
         for(Contact c : userTable.values()) {
             for(String phoneNums : c.getPhoneNumber().getPhoneNumbers()) {
                 if(phoneNums.matches(Validator.PHONENUM)) {
-                    this.phonNumberSet.add(phoneNums);
+                    this.phoneNumberSet.add(phoneNums);
                 }
             }
-//            this.phonNumberSet.addAll(c.getPhoneNumber().getPhoneNumbers());
         }
     }
 
-    public List<Contact> getSequencedUserTable() {
-        return sequencedUserTable;
-    }
-    public void setSequencedUserTable(int sortBy) {
-        // 1. 가나다
-        // 2. 그룹
-        // 3. 최근(default)
-        if(sortBy == 1) {
-            List<Contact> userTable = findAll();
-            Collections.sort(userTable, (c1, c2) -> c1.getName().compareTo(c2.getName()));
-            this.sequencedUserTable.clear();
-            for(Contact contact: userTable) {
-                this.sequencedUserTable.add(contact);
-            }
-        }
-        else if(sortBy == 2) {
-            List<Contact> userTable = findAll();
-            Collections.sort(userTable, (c1, c2) -> c1.getGroupName().compareTo(c2.getGroupName()));
-            int integerInfo = 1;
-            this.sequencedUserTable.clear();
-            for(Contact contact : userTable) {
-                this.sequencedUserTable.add(contact);
-            }
-        }
-        else if(sortBy == 3) {
-            List<Contact> userTable = findAll();
-            Collections.sort(userTable, (c1, c2) -> Integer.compare(c1.getPid(), c2.getPid()));
-            this.sequencedUserTable.clear();
-            for(Contact contact : userTable) {
-                this.sequencedUserTable.add(contact);
-            }
-        }
-    }
     public Set<String> getPhoneNumberSet() {
-        return this.phonNumberSet;
+        return this.phoneNumberSet;
     }
     public boolean isNumberUnique(String phoneNumber) {
-        return this.phonNumberSet.contains(phoneNumber);
+        return this.phoneNumberSet.contains(phoneNumber);
     }
 
     public boolean isGroupNameUnique(String groupName) { return this.groupTable.contains(groupName);}

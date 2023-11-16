@@ -60,7 +60,7 @@ public class ContactMapper {
             // | 기준으로 잘랐을 때 길이가 최소 4개까지는 나와야 함(pid, 이름, 전번, 그룹
             // test해보니 || 사이에 공백이어도 contactData 안에는 들어가긴 함(""인듯) 그래서 길이 4가 기준임
             // 반대로 메모는 ||로 둘러싸여 있지 않으므로 없으면 그냥 길이가 4가 됨 default 길이는 무조건 4
-            if(contactData.length < 4) {
+            if(contactData.length < 4 || contactData.length > 5) {
                 System.out.println("전화번호부 파일 형식에 오류가 있습니다.");
                 System.exit(0);
             }
@@ -120,12 +120,12 @@ public class ContactMapper {
             else {
                 contact.setGroupName("X");
             }
-            if (contactData.length >= 5) {
-                if(contactData[4].length() > 20) {
+            if (contactData.length == 5) {
+                if(contactData[4].trim().length() > 20) {
                     System.out.println("전화번호부 파일 형식에 오류가 있습니다.");
                     System.exit(0);
                 }
-                contact.setMemo(contactData[4]);
+                contact.setMemo(contactData[4].trim());
             }
             return contact;
         } catch (NumberFormatException e) {

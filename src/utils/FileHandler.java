@@ -55,7 +55,9 @@ public class FileHandler {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath));
             for(String nextLine : dataList) {
                 bufferedWriter.write(nextLine);
-                bufferedWriter.newLine();
+                if(!nextLine.equals(dataList.get(dataList.size()-1))) {
+                    bufferedWriter.newLine();
+                }
             }
             bufferedWriter.close();
         }

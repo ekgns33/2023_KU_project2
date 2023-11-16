@@ -9,6 +9,7 @@ import java.util.*;
 
 public class ContactService {
 
+
     public ContactService(){
     }
 
@@ -74,6 +75,13 @@ public class ContactService {
                 queryResult = contactRepository.findByPhoneNumber(inputPhoneNumber);
                 break;
             case 3:
+                if(contactRepository.getGroupTable().size() == 0) {
+                    System.out.println("현재 프로그램 내에 존재하는 그룹이 없습니다.");
+                    Contact contact = new Contact(-1);
+                    queryResult = new ArrayList<>();
+                    queryResult.add(contact);
+                    break;
+                }
                 while(true) {
                     System.out.print("검색하실 그룹을 입력하시오.('0': 검색 메뉴로 이동)\n>> ");
                     inputGroupName = getUserInput().trim();
@@ -103,6 +111,9 @@ public class ContactService {
                     throw new InvalidInputException(ErrorCode.Invalid_Input);
                 }
                 return queryResult.get(targetIndex - 1);
+            } catch(NumberFormatException e1) {
+                System.out.println("잘못된 입력 형식입니다.");
+                targetIndex = selectIndex();
             } catch (ApplicationException e) {
                 System.out.println(e.getMessage());
                 targetIndex = selectIndex();
@@ -120,8 +131,7 @@ public class ContactService {
         else{
             // Y
             while(true){
-                String print = printContact(contact);
-                System.out.println(print);
+                ContactViewProvider.printContactView(contact);
                 System.out.print("위와 같이 저장하시겠습니까?(Y/N)\n>> ");
                 String createDecision = getUserInput().trim();
                 if(createDecision.equals("Y")) {
@@ -154,7 +164,7 @@ public class ContactService {
                     return null;
                 }
                 if (Validator.isValidNameFormat(userNameInput) == -1)
-                    throw new InvalidInputException(ErrorCode.Invalid_Input);
+                    continue;
                 // 전화번호 입력
                 while(true) {
                     System.out.print("추가할 연락처의 전화번호를 입력하시오.\n더 이상 추가를 원하지 않으시면 'Q'를 입력하시오.('0': 초기 메뉴로 이동)\n>> ");
@@ -233,7 +243,7 @@ public class ContactService {
                 // 메모 입력
                 while(true) {
                     System.out.print("추가할 연락처의 메모를 입력하시오.\n메로 추가를 원하지 않을 시 'enter' 키를 누르시오.('0': 초기 메뉴로 이동)\n>>  ");
-                    userMemoInput = getUserInput();
+                    userMemoInput = getUserInput().trim();
                     if(userMemoInput.length() > 20) {
                         System.out.println("잘못된 입력 형식입니다.");
                         continue;
@@ -256,24 +266,18 @@ public class ContactService {
     }
     public void update(int userInput, ContactRepository contactRepository) {
         // 검색기능 그대로 사용한다.
-//        if(queryResult == null || queryResult.isEmpty()){
-//            System.out.println("일치하는 항목이 없습니다.");
-//            return null;
-//        } else if(queryResult.get(0).getPid() == -1) {
-//            return queryResult.get(0);
-//        }
-//        else {
-//            showContactList(queryResult);
-//            Contact selectedContact = selectAndGetContact(queryResult);
-//            return selectedContact;
-//        }
         List<Contact> queryResult = searchByInputType(userInput, contactRepository);
         if (queryResult == null || queryResult.isEmpty()) {
             System.out.println("일치하는 항목이 없습니다.");
+        } else if(queryResult.get(0).getPid() == -1) {
+                return;
         }
         else {
             showContactList(queryResult);
             Contact selectedContact = selectAndGetContact(queryResult);
+            if(selectedContact == null) {
+                return;
+            }
             while (true) {
                 System.out.print("수정하시겠습니까?(Y/N)\n>> ");
                 String updateDecision = getUserInput().trim();
@@ -377,7 +381,7 @@ public class ContactService {
                     String inputMemo;
                     while(true) {
                         System.out.print("수정할 메모를 입력하시오.\n(" + selectedContact.getMemo() + ")>> ");
-                        inputMemo = getUserInput();
+                        inputMemo = getUserInput().trim();
                         if(inputMemo.length() > 20) {
                             System.out.println("잘못된 입력 형식입니다.");
                             continue;
@@ -391,9 +395,8 @@ public class ContactService {
                         break;
                     }
                     updateContact.setMemo(inputMemo);
-                    String print = printContact(updateContact);
+                    ContactViewProvider.printContactView(updateContact);
                     while(true) {
-                        System.out.println(print);
                         System.out.print("위와 같이 수정하시겠습니까?(Y/N)\n>> ");
                         String saveDecision = getUserInput().trim();
                         if (saveDecision.equals("Y")) {
@@ -645,103 +648,21 @@ public class ContactService {
 
     public void modifyConfig(int userInput, ContactRepository contactRepository) {
         int resultValue;
-        switch(userInput) {
-            case 1:
-                resultValue = sortByKoreanName(contactRepository);
-                contactRepository.setSortBy(resultValue);
-                break;
-            case 2:
-                resultValue = sortByGroupName(contactRepository);
-                contactRepository.setSortBy(resultValue);
-                break;
-            case 3:
-                resultValue = sortByRecentStored(contactRepository);
-                contactRepository.setSortBy(resultValue);
-                break;
-            default:
-                break;
-        }
+        contactRepository.setSortBy(userInput);
+
     }
 
-    public int sortByKoreanName(ContactRepository contactRepository) {
-        String createDecision;
-        while(true) {
-            System.out.println("이름 가나다순으로 정렬하시겠습니까?(Y/N)\n>> ");
-            createDecision = getUserInput().trim();
-            if(createDecision.equals("Y")) {
-                List<Contact> userTable = contactRepository.findAll();
-                Collections.sort(userTable, (c1, c2) -> c1.getName().compareTo(c2.getName()));
-                contactRepository.getSequencedUserTable().clear();
-                for(Contact contact: userTable) {
-                    contactRepository.getSequencedUserTable().add(contact);
-                }
-                break;
-            }
-            else if(createDecision.equals("N")) {
-                return 0;
-            }
-            else {
-                System.out.println("잘못된 입력 형식입니다.");
-                continue;
-            }
-        }
-        return 1;
-    }
-
-    public int sortByGroupName(ContactRepository contactRepository) {
-        String createDecision;
-        while(true) {
-            System.out.print("그룹별로 정렬하시겠습니까?(Y/N)\n>> ");
-            createDecision = getUserInput().trim();
-            if(createDecision.equals("Y")) {
-                List<Contact> userTable = contactRepository.findAll();
-                Collections.sort(userTable, (c1, c2) -> c1.getGroupName().compareTo(c2.getGroupName()));
-                int integerInfo = 1;
-                contactRepository.getSequencedUserTable().clear();
-                for(Contact contact : userTable) {
-                    contactRepository.getSequencedUserTable().add(contact);
-                }
-                break;
-            }
-            else if(createDecision.equals("N")) {
-                return 0;
-            }
-            else {
-                System.out.println("잘못된 입력 형식입니다.");
-                continue;
-            }
-        }
-        return 1;
-    }
-
-    public int sortByRecentStored(ContactRepository contactRepository) {
-        String createDecision;
-        while(true) {
-            System.out.print("최근 저장순으로 정렬하시겠습니까?(Y/N)\n>> ");
-            createDecision = getUserInput().trim();
-            if(createDecision.equals("Y")) {
-                List<Contact> userTable = contactRepository.findAll();
-                Collections.sort(userTable, (c1, c2) -> Integer.compare(c1.getPid(), c2.getPid()));
-                contactRepository.getSequencedUserTable().clear();
-                for(Contact contact : userTable) {
-                    contactRepository.getSequencedUserTable().add(contact);
-                }
-                break;
-            }
-            else if(createDecision.equals("N")) {
-                return 0;
-            }
-            else {
-                System.out.println("잘못된 입력 형식입니다.");
-                continue;
-            }
-        }
-        return 1;
-    }
     public int selectIndex(){
-        System.out.print("인덱스 선택\n>> ");
-        String userInput = getUserInput().trim();
-        return Integer.parseInt(userInput);
+        String userInput=null;
+        int index=0;
+        try {
+            System.out.print("인덱스 선택\n>> ");
+            userInput = getUserInput().trim();
+            index = Integer.parseInt(userInput);
+        } catch(NumberFormatException e) {
+            index = -1;
+        }
+        return index;
     }
 
     public String getUserInput() {
@@ -751,16 +672,4 @@ public class ContactService {
         return userInput;
     }
 
-    public String printContact(Contact contact) {
-        String sout;
-        String none = "";
-        if (!contact.getGroupName().equals("X")) {
-            none = contact.getGroupName();
-        }
-        sout = "이름: " + contact.getName() + "\n";
-        sout += "전화번호: " + contact.getPhoneNumber().toString() + "\n";
-        sout += "그룹: " + none + "\n";
-        sout += "메모: " + contact.getMemo() + "\n";
-        return sout;
-    }
 }

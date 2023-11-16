@@ -62,8 +62,7 @@ public class ContactController {
             }
             Contact searchedContact =  contactService.search(menuCommand, this.contactRepository);
             if(searchedContact != null && searchedContact.getPid() != -1) {
-                String print = printContact(searchedContact);
-                System.out.println(print);
+                ContactViewProvider.printContactView(searchedContact);
             }
         }catch(ApplicationException e){
             System.out.println(e.getMessage());
@@ -90,6 +89,10 @@ public class ContactController {
             String userInput = getUserInput().trim();
             int menuCommand = Integer.parseInt(userInput);
             if(menuCommand > 3) throw new InvalidInputException(ErrorCode.Invalid_Input);
+            if(menuCommand == 3 && contactRepository.getGroupTable().size() == 0) {
+                System.out.println("현재 프로그램 내에 존재하는 그룹이 없습니다.");
+                return;
+            }
             if(menuCommand == 0) {
                 setNextCommand(0);
                 return;
@@ -138,7 +141,7 @@ public class ContactController {
             System.out.println("정렬 기준을 선택하시오.('0': 초기 메뉴로 이동)");
             System.out.println("현재 정렬 기준: " + sort);
             System.out.print("1) 이름 가나다순 2) 그룹별 정렬 3) 최근 저장순\n>> ");
-            String userInput = getUserInput().trim();
+            String userInput = getUserInput();
             int menuCommand = Integer.parseInt(userInput);
             if(menuCommand > 3 || menuCommand < 0) throw new InvalidInputException(ErrorCode.Invalid_Input);
             if(menuCommand == 0) {
@@ -146,7 +149,6 @@ public class ContactController {
                 return;
             }
             contactService.modifyConfig(menuCommand, this.contactRepository);
-            System.out.println(this.contactRepository.getSequencedUserTable());
         } catch(NumberFormatException e) {
             System.out.println("잘못된 입력 형식입니다.");
         } catch(ApplicationException e1) {
@@ -163,16 +165,4 @@ public class ContactController {
         return userInput.trim();
     }
 
-    public String printContact(Contact contact) {
-        String sout;
-        String none = "";
-        if (!contact.getGroupName().equals("X")) {
-            none = contact.getGroupName();
-        }
-        sout = "이름: " + contact.getName() + "\n";
-        sout += "전화번호: " + contact.getPhoneNumber().toString() + "\n";
-        sout += "그룹: " + none + "\n";
-        sout += "메모: " + contact.getMemo() + "\n";
-        return sout;
-    }
 }
