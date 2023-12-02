@@ -1,6 +1,6 @@
 package utils;
 
-import contact.Contact;
+import contact.entity.Contact;
 
 
 import java.util.*;
@@ -18,7 +18,7 @@ public class ContactMapper {
      * @return Contact 객체들이 담긴 해시맵.
      *
      * */
-    public Map<Integer, Contact> mapListToHashMap(List<String> lines, int lastPid, ArrayList<String> groupTable) {
+    public Map<Integer, Contact> mapListToHashMap(List<String> lines, int lastPid, Set<String> groupTable) {
         Map<Integer, Contact> map = new HashMap<>();
         List<Integer> pids = new ArrayList<>();
         int largestPid=0;
@@ -54,7 +54,7 @@ public class ContactMapper {
      * @param line 연락처 정보가 담긴 문자열
      * @return 문자열을 분해해서 만든 Contact 객체
      * */
-    public Contact mapStringToContact(String line, int lastPid, ArrayList<String> groupTable) {
+    public Contact mapStringToContact(String line, int lastPid, Set<String> groupTable) {
         try {
             String[] contactData = line.split("\\|");
             // | 기준으로 잘랐을 때 길이가 최소 4개까지는 나와야 함(pid, 이름, 전번, 그룹
@@ -82,10 +82,11 @@ public class ContactMapper {
             Contact contact = new Contact(Integer.parseInt(contactData[0]), contactData[1]);
             contact.setMemo("");
             for (String phoneNumber : phoneNumbers) {
-                if (Validator.isValidPhoneNumberFormat(phoneNumber) == -1) {
+                if (Validator.isValidPhoneNumberFormat(phoneNumber) == -1 || contact.hasPhoneNumber(phoneNumber)) {
                     System.out.println("전화번호부 파일 형식에 오류가 있습니다.");
                     System.exit(0);
                 }
+
                 contact.addPhoneNumber(phoneNumber);
             }
             // 한 연락처 내에 중복된 전화번호 있는 지 체크
@@ -106,12 +107,7 @@ public class ContactMapper {
                 }
                 int checkNum = 0;
                 // 기존에 설정 되어 있는 그룹명 중 하나인지 확인, 아니면 종료
-                    for (String groupName : groupTable) {
-                        if (contactData[3].equals(groupName)) {
-                            checkNum = 1;
-                        }
-                    }
-                if (checkNum == 0) {
+                if(!groupTable.contains(contactData[3])) {
                     System.out.println("전화번호부 파일 형식에 오류가 있습니다");
                     System.exit(0);
                 }
@@ -136,7 +132,7 @@ public class ContactMapper {
     }
 
     // group_Info.txt 내의 그룹 정보를 ArrayList로 변환해주는 과정
-    public ArrayList<String> groupInfoToArrayList(List<String> grouplist){
+    public Set<String> groupInfoToArrayList(List<String> grouplist){
         List<String> inputList = Arrays.asList(grouplist.get(0).split("\\|"));
         ArrayList<String> groupArrayList = new ArrayList<>(inputList);
         for(String groups : groupArrayList) {
@@ -154,6 +150,6 @@ public class ContactMapper {
                 }
             }
         }
-        return groupArrayList;
+        return new HashSet<>(inputList);
     }
 }
