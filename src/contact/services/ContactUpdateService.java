@@ -91,16 +91,21 @@ public class ContactUpdateService extends ServiceHelper {
     }
 
     public boolean updateGroupInfo(Contact prevContact, Contact selectedContact) {
+        Set<String> groupNames = new HashSet<>();
         String inputGroupName;
+        // copied???
         while (true) {
-            System.out.print("수정할 그룹명을 입력하시오.\n그룹명 추가를 원하지 않을 시 'enter'키를 누르시오.('0': 수정 메뉴로 이동)\n(" + prevContact.getGroupName() + ")>> ");
+            System.out.print("수정할 그룹명을 입력하시오.\n더 이상 수정을 원하지 않으면 'Q'를 입력하시오.('0': 수정 메뉴로 이동)\n(" + prevContact.getGroupListToString() + ")>> ");
             inputGroupName = getUserInput().trim();
             if (inputGroupName.isEmpty()) {
-                inputGroupName = "X";
-                return true;
+                System.out.println("올바른 입력 형식이 아닙니다.");
+                continue;
             }
             if (inputGroupName.equals("0")) {
                 return false;
+            }
+            if (inputGroupName.equals("Q")) {
+                break;
             }
             if (Validator.isValidGroupNameFormat(inputGroupName) == -1) {
                 continue;
@@ -109,9 +114,13 @@ public class ContactUpdateService extends ServiceHelper {
                 System.out.println("현재 존재하는 그룹명이 아닙니다.");
                 continue;
             }
-            selectedContact.setGroupName(inputGroupName);
-            return true;
+            if (groupNames.contains(inputGroupName)) {
+                System.out.println("이미 추가하신 그룹명입니다.");
+                continue;
+            }
+            groupNames.add(inputGroupName);
         }
+        return true;
     }
 
     public boolean updateMemo(Contact prevContact, Contact selectedContact) {

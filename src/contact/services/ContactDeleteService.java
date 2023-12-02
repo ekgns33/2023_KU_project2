@@ -64,7 +64,7 @@ public class ContactDeleteService extends ServiceHelper {
                 return;
             }
 
-            contactRepository.getUserTable().remove(selectedContact.getPid());
+            contactRepository.removeContact(selectedContact.getPid());
 
             System.out.println("삭제되었습니다.");
             return;

@@ -125,9 +125,7 @@ public class GroupService extends ServiceHelper {
     public void removeGroupFromContacts(String groupName) {
         List<Contact> totalContacts = contactRepository.findAll();
         for (Contact contact : totalContacts) {
-            if (contact.getGroupName().equals(groupName)) {
-                contact.setGroupName("X");
-            }
+                contact.removeGroupName(groupName);
         }
     }
 
@@ -175,9 +173,8 @@ public class GroupService extends ServiceHelper {
                     return null;
                 }
                 for (Contact contact : queryCurrent) {
-                    if (contact.getGroupName().equals(inputGroupName)) {
-                        contact.setGroupName(modifiedGroupName);
-                    }
+                    contact.removeGroupName(inputGroupName);
+                    contact.addGroupName(modifiedGroupName);
                 }
                 Set<String> groupCurrent = contactRepository.getGroupTable();
                 if (!ContactRepository.getInstance().isGroupNameUnique(modifiedGroupName)) {

@@ -98,24 +98,18 @@ public class ContactMapper {
                     }
                 }
             }
-            // 그룹 형식 체크
-            if (!contactData[3].equals("X")) {
-                checkGroupName = Validator.isValidGroupNameFormat(contactData[3]);
-                if (checkGroupName == -1) {
-                    System.out.println("전화번호부 파일 형식에 오류가 있습니다.");
-                    System.exit(0);
+
+            List<String> groupList = Arrays.stream(contactData[3].split(",")).collect(Collectors.toList());
+            if (!groupList.get(0).equals("X")) {
+                for (String groupName : groupList) {
+                    if (Validator.isValidGroupNameFormat(groupName) == -1 || contact.hasGroupName(groupName) || !groupTable.contains(groupName)) {
+                        System.out.println("전화번호부 파일 형식에 오류가 있습니다.");
+                        System.exit(1);
+                    }
+                    contact.addGroupName(groupName);
                 }
-                int checkNum = 0;
-                // 기존에 설정 되어 있는 그룹명 중 하나인지 확인, 아니면 종료
-                if(!groupTable.contains(contactData[3])) {
-                    System.out.println("전화번호부 파일 형식에 오류가 있습니다");
-                    System.exit(0);
-                }
-                contact.setGroupName(contactData[3]);
             }
-            else {
-                contact.setGroupName("X");
-            }
+            // 메모
             if (contactData.length == 5) {
                 if(contactData[4].trim().length() > 20) {
                     System.out.println("전화번호부 파일 형식에 오류가 있습니다.");

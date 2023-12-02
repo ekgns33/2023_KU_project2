@@ -67,7 +67,7 @@ public class ContactRepository {
     public List<Contact> findByGroupName(String groupName) {
         List<Contact> queryResult = new ArrayList<>();
         for(Contact contact : this.userTable.values()) {
-            if(contact.getGroupName().equals(groupName))
+            if(contact.hasGroupName(groupName))
                 queryResult.add(contact);
         }
         return queryResult;
@@ -95,12 +95,6 @@ public class ContactRepository {
                     this.phoneNumberSet.add(phoneNums);
                 }
             }
-        }
-    }
-
-    public void removePhoneNumber(String phoneNumber) {
-        if(this.phoneNumberSet.contains(phoneNumber)) {
-            phoneNumberSet.remove(phoneNumber);
         }
     }
 
