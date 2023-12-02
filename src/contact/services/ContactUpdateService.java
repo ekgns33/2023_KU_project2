@@ -26,18 +26,19 @@ public class ContactUpdateService extends ServiceHelper {
         return contactUpdateService;
     }
 
-    public void updateName(Contact prevContact, Contact selectedContact) {
+    public boolean updateName(Contact prevContact, Contact selectedContact) {
         while (true) {
             System.out.print("수정할 이름을 입력하시오.('0': 수정 메뉴로 이동)\n(" + prevContact.getName() + ")>> ");
             String inputName = getUserInput().trim();
             if (inputName.equals("0"))
-                return;
+                return false;
             if (Validator.isValidNameFormat(inputName) == -1)
                 continue;
             //validate
             selectedContact.setName(inputName);
             break;
         }
+        return true;
     }
 
     // inputPhoneNumber은 무선 전화 또는 유선전화의 형식으로만 주어짐.
@@ -46,6 +47,7 @@ public class ContactUpdateService extends ServiceHelper {
         if (inputPhoneNumber.matches(Validator.PHONENUM)) {
             // 이미 존재하는 번호인지 확인.
             if (copiedSet.contains(inputPhoneNumber)) {
+                System.out.println("이미 존재하는 번호입니다.");
                 return false;
             }
         }
@@ -57,7 +59,7 @@ public class ContactUpdateService extends ServiceHelper {
 
     }
 
-    public void updatePhoneNumber(Contact prevContact, Contact selectedContact, Set<String> copiedSet) {
+    public boolean updatePhoneNumber(Contact prevContact, Contact selectedContact, Set<String> copiedSet) {
 
         // 연락처 수정시 사용자가 모든 번호를 입력하므로 Set에 존재하는 번호 제거.
         prevContact.getPhoneNumbersAsList().forEach(copiedSet::remove);
@@ -68,7 +70,7 @@ public class ContactUpdateService extends ServiceHelper {
             System.out.println("(" + prevContact.getPhoneNumbersAsList().toString() + ")>> ");
             String inputPhoneNumber = getUserInput().trim();
             if (inputPhoneNumber.equals("0")) {
-                return;
+                return false;
             }
             if (inputPhoneNumber.equals("Q") && selectedContact.sizeOfPhoneNumbers() == 0) {
                 System.out.println("최소한 전화번호 한 개 이상 추가하셔야 합니다.");
@@ -79,41 +81,40 @@ public class ContactUpdateService extends ServiceHelper {
             if (Validator.isValidPhoneNumberFormat(inputPhoneNumber) == -1)
                 continue;
 
-            if(!checkPhoneNumber(inputPhoneNumber, selectedContact, copiedSet)){
+            if (!checkPhoneNumber(inputPhoneNumber, selectedContact, copiedSet)) {
                 continue;
             }
 
             selectedContact.addPhoneNumber(inputPhoneNumber);
         }
+        return true;
     }
 
-    public void updateGroupInfo(Contact prevContact, Contact selectedContact) {
+    public boolean updateGroupInfo(Contact prevContact, Contact selectedContact) {
         String inputGroupName;
         while (true) {
             System.out.print("수정할 그룹명을 입력하시오.\n그룹명 추가를 원하지 않을 시 'enter'키를 누르시오.('0': 수정 메뉴로 이동)\n(" + prevContact.getGroupName() + ")>> ");
             inputGroupName = getUserInput().trim();
             if (inputGroupName.isEmpty()) {
                 inputGroupName = "X";
-                break;
+                return true;
             }
             if (inputGroupName.equals("0")) {
-                return;
+                return false;
             }
             if (Validator.isValidGroupNameFormat(inputGroupName) == -1) {
                 continue;
-            } else {
-                if (contactRepository.isGroupNameUnique(inputGroupName)) {
-                    break;
-                } else {
-                    System.out.println("현재 존재하는 그룹명이 아닙니다.");
-                    continue;
-                }
             }
+            if (!contactRepository.isGroupNameUnique(inputGroupName)) {
+                System.out.println("현재 존재하는 그룹명이 아닙니다.");
+                continue;
+            }
+            selectedContact.setGroupName(inputGroupName);
+            return true;
         }
-        selectedContact.setGroupName(inputGroupName);
     }
 
-    public void updateMemo(Contact prevContact, Contact selectedContact) {
+    public boolean updateMemo(Contact prevContact, Contact selectedContact) {
         String inputMemo;
         while (true) {
             System.out.print("수정할 메모를 입력하시오.\n(" + prevContact.getMemo() + ")>> ");
@@ -123,11 +124,11 @@ public class ContactUpdateService extends ServiceHelper {
                 continue;
             }
             if (inputMemo.trim().equals("0")) {
-                return;
+                return false;
             }
-            break;
+            selectedContact.setMemo(inputMemo);
+            return true;
         }
-        selectedContact.setMemo(inputMemo);
     }
 
     public void update(int userInput) {
@@ -150,11 +151,19 @@ public class ContactUpdateService extends ServiceHelper {
                 if (updateDecision.equals("Y")) {
 
                     Set<String> copiedSet = new HashSet<>(contactRepository.getPhoneNumberSet());
+                    if (!updateName(selectedContact, updateContact)) {
+                        return;
+                    }
+                    if (!updatePhoneNumber(selectedContact, updateContact, copiedSet)) {
+                        return;
+                    }
+                    if (!updateGroupInfo(selectedContact, updateContact)) {
+                        return;
+                    }
+                    if (!updateMemo(selectedContact, updateContact)) {
+                        return;
+                    }
 
-                    updateName(selectedContact, updateContact);
-                    updatePhoneNumber(selectedContact, updateContact, copiedSet);
-                    updateGroupInfo(selectedContact, updateContact);
-                    updateMemo(selectedContact, updateContact);
                     ContactViewProvider.printContactView(updateContact);
 
 

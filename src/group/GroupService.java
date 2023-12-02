@@ -15,8 +15,8 @@ public class GroupService extends ServiceHelper {
     private final ContactRepository contactRepository;
 
     private static final int ADD = 1;
-    private static final int UPDATE = 2;
-    private static final int DELETE = 3;
+    private static final int DELETE = 2;
+    private static final int UPDATE = 3;
     private static final int FAIL = -1;
 
 
@@ -103,6 +103,7 @@ public class GroupService extends ServiceHelper {
             }
             if (!contactRepository.isGroupNameUnique(inputGroupName)) {
                 System.out.println("존재하지 않는 그룹명입니다.");
+                return null;
             }
             while (true) {
                 System.out.print("삭제하시겠습니까?(Y/N)\n>> ");
@@ -130,6 +131,19 @@ public class GroupService extends ServiceHelper {
         }
     }
 
+    public boolean confirmModifyOperation() {
+        while (true) {
+            System.out.println("수정하시겠습니까?(Y/N)\n>> ");
+            String decision = getUserInput().trim();
+            if (decision.equals("Y")) {
+                return true;
+            } else if (decision.equals("N")) {
+                return false;
+            }
+            System.out.println("잘못된 입력 형식입니다.");
+        }
+    }
+
     public String groupManageModify(ContactRepository contactRepository) {
         String inputGroupName;
         String modifiedGroupName = null;
@@ -140,59 +154,38 @@ public class GroupService extends ServiceHelper {
             inputGroupName = getUserInput().trim();
             if (inputGroupName.equals("0")) {
                 return null;
-            } else if (Validator.isValidGroupNameFormat(inputGroupName) == FAIL) {
-                continue;
-            } else if (!contactRepository.isGroupNameUnique(inputGroupName)) {
-                System.out.println("존재하지 않는 그룹명입니다.");
-            } else {
-                while (true) {
-                    System.out.println("수정하시겠습니까?(Y/N)\n>> ");
-                    String decision = getUserInput().trim();
-                    if (decision.equals("Y")) {
-                        break;
-                    } else if (decision.equals("N")) {
-                        return null;
-                    }
-                    System.out.println("잘못된 입력 형식입니다.");
-                }
-                while (true) {
-                    System.out.print("수정 후 그룹명을 입력하시오.('0': 그룹 관리 메뉴로 이동)\n>> ");
-                    modifiedGroupName = getUserInput().trim();
-                    if (modifiedGroupName.equals("0")) {
-                        return null;
-                    }
-                    if (Validator.isValidGroupNameFormat(modifiedGroupName) == -1) {
-                        continue;
-                    }
-                    if (contactRepository.isGroupNameUnique(modifiedGroupName)) {
-                        System.out.println("이미 존재하는 그룹명입니다.");
-                        continue;
-                    }
-                    while (true) {
-                        System.out.print("수정하시겠습니까?(Y/N)\n>> ");
-                        createDecision = getUserInput().trim();
-                        if (createDecision.equals("Y")) {
-                            for (Contact contact : queryCurrent) {
-                                if (contact.getGroupName().equals(inputGroupName)) {
-                                    contact.setGroupName(modifiedGroupName);
-                                }
-                            }
-                            Set<String> groupCurrent = contactRepository.getGroupTable();
-                            groupCurrent.remove(inputGroupName);
-                            groupCurrent.add(modifiedGroupName);
-                            return modifiedGroupName;
-                        } else if (createDecision.equals("N")) {
-                            return null;
-                        }
-                        System.out.println("잘못된 입력 형식입니다.");
-
-                    }
-
-                }
             }
-            break;
-        }
-        return modifiedGroupName;
-    }
+            if (Validator.isValidGroupNameFormat(inputGroupName) == FAIL) {
+                continue;
+            }
 
+            if (!confirmModifyOperation()) {
+                return null;
+            }
+            while (true) {
+                System.out.print("수정 후 그룹명을 입력하시오.('0': 그룹 관리 메뉴로 이동)\n>> ");
+                modifiedGroupName = getUserInput().trim();
+                if (modifiedGroupName.equals("0")) {
+                    return null;
+                }
+                if (Validator.isValidGroupNameFormat(modifiedGroupName) == -1) {
+                    continue;
+                }
+                if (!confirmModifyOperation()) {
+                    return null;
+                }
+                for (Contact contact : queryCurrent) {
+                    if (contact.getGroupName().equals(inputGroupName)) {
+                        contact.setGroupName(modifiedGroupName);
+                    }
+                }
+                Set<String> groupCurrent = contactRepository.getGroupTable();
+                if (!ContactRepository.getInstance().isGroupNameUnique(modifiedGroupName)) {
+                    groupCurrent.add(modifiedGroupName);
+                }
+                groupCurrent.remove(inputGroupName);
+                return modifiedGroupName;
+            }
+        }
+    }
 }
