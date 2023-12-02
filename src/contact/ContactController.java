@@ -1,14 +1,17 @@
 package contact;
 
+import contact.entity.Contact;
+import contact.repositories.ContactRepository;
+import contact.services.*;
 import errors.exceptions.ApplicationException;
 import errors.exceptions.ErrorCode;
 import errors.exceptions.InvalidInputException;
+import group.GroupService;
 
 import java.util.Scanner;
 
 public class ContactController {
-    private ContactService contactService;
-    private ContactRepository contactRepository;
+    private final ContactRepository contactRepository;
     private int nextCommand;
 
     //constructor
@@ -42,12 +45,13 @@ public class ContactController {
             }
         }
     }
-    public ContactController(ContactRepository contactRepository){
-        //initial value
-        this.contactRepository = contactRepository;
+
+    public ContactController() {
+        contactRepository = ContactRepository.getInstance();
         this.nextCommand = -1;
-        this.contactService = new ContactService();
     }
+
+
     public void searchContact() {
         try{
             System.out.println("무엇으로 검색하시겠습니까?('0': 초기 메뉴로 이동)");
@@ -60,7 +64,7 @@ public class ContactController {
                 setNextCommand(0);
                 return ;
             }
-            Contact searchedContact =  contactService.search(menuCommand, this.contactRepository);
+            Contact searchedContact = ContactSearchService.getInstance().search(menuCommand);
             if(searchedContact != null && searchedContact.getPid() != -1) {
                 ContactViewProvider.printContactView(searchedContact);
             }
@@ -72,7 +76,7 @@ public class ContactController {
     }
     public void createContact(){
         try{ // 해당 부분에서 에러 처리가 필요할 수 있는 경우 대비해 try-catch로 작성
-            Contact createdContact =  contactService.create(this.contactRepository);
+            Contact createdContact =  ContactCreateService.getInstance().create();
             if(createdContact != null){
                 System.out.println("저장되었습니다.");
             }
@@ -89,7 +93,7 @@ public class ContactController {
             String userInput = getUserInput().trim();
             int menuCommand = Integer.parseInt(userInput);
             if(menuCommand > 3) throw new InvalidInputException(ErrorCode.Invalid_Input);
-            if(menuCommand == 3 && contactRepository.getGroupTable().size() == 0) {
+            if(menuCommand == 3 && contactRepository.getGroupTable().isEmpty()) {
                 System.out.println("현재 프로그램 내에 존재하는 그룹이 없습니다.");
                 return;
             }
@@ -97,7 +101,7 @@ public class ContactController {
                 setNextCommand(0);
                 return;
             }
-            contactService.update(menuCommand, this.contactRepository);
+            ContactUpdateService.getInstance().update(Integer.parseInt(userInput));
         } catch(NumberFormatException e1) {
             System.out.println("잘못된 입력 형식입니다.");
         } catch(ApplicationException e) {
@@ -105,7 +109,7 @@ public class ContactController {
         }
     }
     public void deleteContact() {
-        contactService.delete(this.contactRepository);
+        ContactDeleteService.getInstance().delete();
         setNextCommand(0);
     }
 
@@ -121,7 +125,7 @@ public class ContactController {
                 setNextCommand(0);
                 return;
             }
-            contactService.groupManagement(menuCommand, this.contactRepository);
+            GroupService.getInstance().groupManagement(menuCommand);
         } catch(NumberFormatException e1) {
             System.out.println("잘못된 입력 형식입니다.");
         } catch(ApplicationException e) {
@@ -148,7 +152,7 @@ public class ContactController {
                 setNextCommand(0);
                 return;
             }
-            contactService.modifyConfig(menuCommand, this.contactRepository);
+            this.contactRepository.setSortBy(Integer.parseInt(userInput));
         } catch(NumberFormatException e) {
             System.out.println("잘못된 입력 형식입니다.");
         } catch(ApplicationException e1) {

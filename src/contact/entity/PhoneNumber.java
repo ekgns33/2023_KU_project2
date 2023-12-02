@@ -1,14 +1,20 @@
-package contact;
+package contact.entity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PhoneNumber {
 
-    private final List<String> phoneNumbers;
+    private Set<String> phoneNumbers = new HashSet<>();
 
-    public PhoneNumber(){
-        this.phoneNumbers = new ArrayList<>();
+    public PhoneNumber() {
+        this.phoneNumbers = new HashSet<>();
+    }
+
+    public PhoneNumber(Set<String> phoneNumbers){
+        this.phoneNumbers = phoneNumbers;
     }
 
     public void insertPhoneNumber(String phoneNumber) {
@@ -16,15 +22,15 @@ public class PhoneNumber {
     }
 
     public List<String> getPhoneNumbers() {
-        return phoneNumbers;
-    }
-
-    public String getTargetPhoneNumber(int i){
-        return phoneNumbers.get(i);
+        return new ArrayList<>(phoneNumbers);
     }
 
     public int size() {
         return phoneNumbers.size();
+    }
+
+    public boolean hasPhoneNumber(String number) {
+        return this.phoneNumbers.contains(number);
     }
 
     @Override

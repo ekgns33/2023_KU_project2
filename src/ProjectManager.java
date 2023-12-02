@@ -1,11 +1,8 @@
-//import contact.Contact;
-import contact.Contact;
 import contact.ContactController;
-import contact.ContactRepository;
+import contact.repositories.ContactRepository;
 import errors.exceptions.ApplicationException;
 import errors.exceptions.ErrorCode;
 import errors.exceptions.InvalidInputException;
-import utils.Validator;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,8 +18,8 @@ public class ProjectManager extends ProjectManagerSupport {
     public ProjectManager() {
         super();
         // 의존성 부여를 위한 객체 생성
-        this.contactRepository = new ContactRepository();
-        this.contactController = new ContactController(this.contactRepository);
+        this.contactRepository = ContactRepository.getInstance();
+        this.contactController = new ContactController();
     }
 
     public void init() {
@@ -50,33 +47,14 @@ public class ProjectManager extends ProjectManagerSupport {
             }
             if (groupInfo.size() == 1) {
                 this.contactRepository.setGroupTable(contactMapper.groupInfoToArrayList(groupInfo));
-                Collections.sort(this.contactRepository.getGroupTable(), (c1, c2) -> c1.compareTo(c2));
             }
 
             // phonebook.txt 내용 불러오기
             List<String> dataList = fileHandler.readFile("src/phonebook.txt");
-            this.contactRepository.setUserTable(contactMapper.mapListToHashMap(dataList, lastPid, this.contactRepository.getGroupTable()));
+            this.contactRepository.setUserTable(contactMapper.mapListToHashMap(dataList, lastPid, contactRepository.getGroupTable()));
 
             // contactRepository에 주입.
             this.contactRepository.initPhoneNumberSet();
-
-            // 모든 연락처의 무선 전화 번호와 비교 했을 때 겹치는 번호가 있는 지 검사
-            List<String> phones = new ArrayList<>();
-            for (Contact contact : this.contactRepository.getUserTable().values()) {
-                for (String phoneNumbers : contact.getPhoneNumber().getPhoneNumbers()) {
-                    if (phoneNumbers.matches(Validator.PHONENUM)) {
-                        phones.add(phoneNumbers);
-                    }
-                }
-            }
-            for (int i = 0; i < phones.size() - 1; i++) {
-                for (int j = i + 1; j < phones.size(); j++) {
-                    if (phones.get(i).equals(phones.get(j))) {
-                        System.out.println("전화번호부 파일 형식에 오류가 있습니다.");
-                        System.exit(0);
-                    }
-                }
-            }
 
             this.contactRepository.setLastPid(this.lastPid);
             this.contactRepository.setSortBy(this.sortBy);
@@ -113,17 +91,16 @@ public class ProjectManager extends ProjectManagerSupport {
                         Stream.of(Integer.toString(this.sortBy), Integer.toString(this.lastPid))
                                 .collect(Collectors.toList()), "src/config.txt");
                 List<String> groupArray = new ArrayList<>();
-                String groups = "";
-                Collections.sort(this.contactRepository.getGroupTable(), (c1, c2) -> c1.compareTo(c2));
-                for(int i=0;i<this.contactRepository.getGroupTable().size();i++) {
-                    if(i == 0) {
-                        groups += this.contactRepository.getGroupTable().get(i);
+                StringBuilder sb = new StringBuilder();
+                int cnt = 0;
+                for(String groupName : this.contactRepository.getGroupTable()) {
+                    if(cnt != 0) {
+                        sb.append("|");
                     }
-                    else {
-                        groups += "|" + this.contactRepository.getGroupTable().get(i);
-                    }
+                    sb.append(groupName);
+                    cnt++;
                 }
-                groupArray.add(groups);
+                groupArray.add(sb.toString());
                 fileHandler.writeListToFile(groupArray, "src/group_info.txt");
             } catch (NumberFormatException e1) {
                 System.out.println("잘못된 입력 형식입니다.");

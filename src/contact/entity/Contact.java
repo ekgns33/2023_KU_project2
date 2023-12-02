@@ -1,4 +1,9 @@
-package contact;
+package contact.entity;
+
+import contact.entity.PhoneNumber;
+
+import java.util.List;
+import java.util.Set;
 
 public class Contact {
     private int pid;
@@ -17,9 +22,9 @@ public class Contact {
 //        this.memo = memo;
 //    }
 
-    public Contact(String name, PhoneNumber phoneNumber, String groupName, String memo){
+    public Contact(String name, Set<String> phoneNumbers, String groupName, String memo){
         this.name = name;
-        this.phoneNumber = phoneNumber;
+        this.phoneNumber = new PhoneNumber(phoneNumbers);
         this.groupName = groupName;
         this.memo = memo;
     }
@@ -33,12 +38,21 @@ public class Contact {
         this.pid = pid;
         this.phoneNumber = new PhoneNumber();
     }
+
     public void addPhoneNumber(String phoneNumber) {
         this.phoneNumber.insertPhoneNumber(phoneNumber);
     }
 
-    public PhoneNumber getPhoneNumber() {
-        return this.phoneNumber;
+    public boolean hasPhoneNumber(String phoneNumber) {
+        return this.phoneNumber.hasPhoneNumber(phoneNumber);
+    }
+
+    public List<String> getPhoneNumbersAsList() {
+        return this.phoneNumber.getPhoneNumbers();
+    }
+
+    public int sizeOfPhoneNumbers() {
+        return this.phoneNumber.size();
     }
 
     public int getPid() {
