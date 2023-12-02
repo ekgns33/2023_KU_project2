@@ -95,11 +95,10 @@ public class ContactCreateService extends ServiceHelper {
             if (userPhoneNumber.matches(Validator.PHONENUM)) {
                 boolean isUnique = isRemoteNumberUnique(userPhoneNumber);
                 if(!isUnique) continue;
-                phoneNumbers.add(userPhoneNumber);
             }
 
 
-            if(!phoneNumbers.contains(userPhoneNumber)) {
+            if(phoneNumbers.contains(userPhoneNumber)) {
                 System.out.println("이미 존재하는 번호입니다.");
                 continue;
             }
@@ -153,7 +152,6 @@ public class ContactCreateService extends ServiceHelper {
         int check;
         String userName, userGroup, userMemo;
         Set<String> phoneNumbers;
-        System.out.println("d");
         if((userName = readUserName()) == null) return null;
         if((phoneNumbers = readUserPhoneNumber()) == null) return null;
         if((userGroup = readUserGroup()) == null) return null;
