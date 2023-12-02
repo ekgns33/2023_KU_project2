@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class PhoneNumber {
 
-    private Set<String> phoneNumbers = new HashSet<>();
+    private final Set<String> phoneNumbers;
 
     public PhoneNumber() {
         this.phoneNumbers = new HashSet<>();
