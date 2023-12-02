@@ -1,5 +1,6 @@
-package contact;
+package contact.repositories;
 
+import contact.entity.Contact;
 import errors.exceptions.EntityNotFoundException;
 import errors.exceptions.ErrorCode;
 import utils.Validator;
@@ -8,27 +9,33 @@ import java.util.*;
 
 public class ContactRepository {
 
+    private static ContactRepository contactRepository;
+
+    private ContactRepository () {
+        this.phoneNumberSet = new HashSet<>();
+        this.groupTable = new HashSet<>();
+    };
+
+    public static ContactRepository getInstance() {
+        if(contactRepository == null) contactRepository = new ContactRepository();
+        return contactRepository;
+    }
+
     private int sortBy;
     private int lastPid;
 
     private Map<Integer, Contact> userTable;
 
-    private ArrayList<String> groupTable = new ArrayList<>();
+    private Set<String> groupTable;
 
-    private final Set<String> phoneNumberSet;
+    private Set<String> phoneNumberSet;
 
-    public ContactRepository () {
-        this.phoneNumberSet = new HashSet<>();
-    };
+
 
     public void save(Contact input) {
         input.setPid(this.lastPid);
         userTable.put(this.lastPid, input);
-        for(String phoneNumber : input.getPhoneNumber().getPhoneNumbers()) {
-            if(phoneNumber.matches(Validator.PHONENUM)) {
-                phoneNumberSet.add(phoneNumber);
-            }
-        }
+        phoneNumberSet.addAll(input.getPhoneNumbersAsList());
         this.lastPid++;
     }
 
@@ -50,11 +57,8 @@ public class ContactRepository {
     public List<Contact> findByPhoneNumber(String phoneNumber) {
         List<Contact> queryResult = new ArrayList<>();
         for(Contact contact : this.userTable.values()) {
-            PhoneNumber ph = contact.getPhoneNumber();
-            for(int i=0;i<ph.size();i++) {
-                if(ph.getTargetPhoneNumber(i).equals(phoneNumber)) {
-                    queryResult.add(contact);
-                }
+            if(contact.hasPhoneNumber(phoneNumber)) {
+                queryResult.add(contact);
             }
         }
         return queryResult;
@@ -82,7 +86,7 @@ public class ContactRepository {
 
     public void initPhoneNumberSet() {
         for(Contact c : userTable.values()) {
-            for(String phoneNums : c.getPhoneNumber().getPhoneNumbers()) {
+            for(String phoneNums : c.getPhoneNumbersAsList()) {
                 if(phoneNums.matches(Validator.PHONENUM)) {
                     this.phoneNumberSet.add(phoneNums);
                 }
@@ -90,11 +94,47 @@ public class ContactRepository {
         }
     }
 
+    public void removePhoneNumber(String phoneNumber) {
+        if(this.phoneNumberSet.contains(phoneNumber)) {
+            phoneNumberSet.remove(phoneNumber);
+        }
+    }
+
+    public void removeContact(int userPid) {
+        List<String> removalNumbers = userTable.get(userPid).getPhoneNumbersAsList();
+        removalNumbers.forEach(this.phoneNumberSet::remove);
+        userTable.remove(userPid);
+    }
+
+    public boolean hasGroup(String groupName) {
+        return groupTable.contains(groupName);
+    }
+
+    public int sizeOfGroup() {
+        return groupTable.size();
+    }
+
+    public boolean hasPhoneNumber(String phoneNumber) {
+        return phoneNumberSet.contains(phoneNumber);
+    }
+
+    public void setPhoneNumberSet(Set<String> phoneNumberSet) {
+        this.phoneNumberSet = phoneNumberSet;
+    }
+
     public Set<String> getPhoneNumberSet() {
         return this.phoneNumberSet;
     }
     public boolean isNumberUnique(String phoneNumber) {
         return this.phoneNumberSet.contains(phoneNumber);
+    }
+
+    public void setGroupTable(Set<String> groupTable) {
+        this.groupTable = groupTable;
+    }
+
+    public Set<String> getGroupTable() {
+        return groupTable;
     }
 
     public boolean isGroupNameUnique(String groupName) { return this.groupTable.contains(groupName);}
@@ -111,13 +151,6 @@ public class ContactRepository {
 
     public Map<Integer, Contact> getUserTable() {
         return this.userTable;
-    }
-
-    public ArrayList<String> getGroupTable(){
-        return this.groupTable;
-    }
-    public void setGroupTable(ArrayList<String> groupTable){
-        this.groupTable = groupTable;
     }
 
     public void setSortBy(int sortBy) {
