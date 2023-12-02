@@ -87,6 +87,10 @@ public class ContactRepository {
     public void initPhoneNumberSet() {
         for(Contact c : userTable.values()) {
             for(String phoneNums : c.getPhoneNumbersAsList()) {
+                if(phoneNumberSet.contains(phoneNums)) {
+                    System.out.println("전화번호부 파일 형식에 오류가 있습니다.");
+                    System.exit(1);
+                }
                 if(phoneNums.matches(Validator.PHONENUM)) {
                     this.phoneNumberSet.add(phoneNums);
                 }
