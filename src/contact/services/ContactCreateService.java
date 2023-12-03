@@ -39,6 +39,9 @@ public class ContactCreateService extends ServiceHelper {
             String createDecision = getUserInput().trim();
             if (createDecision.equals("Y")) {
                 contactRepository.save(contact);
+                for(String group : contact.getGroups()) {
+                    contactRepository.addToMappingTable(group, contact.getPid());
+                }
                 break;
             } else if (createDecision.equals("N")) {
                 return null;

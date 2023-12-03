@@ -6,7 +6,8 @@ import utils.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Map;
+import java.util.Set;
 
 
 public class ContactSearchService extends ServiceHelper {
@@ -52,15 +53,40 @@ public class ContactSearchService extends ServiceHelper {
             index++;
         }
     }
+    public List<String> tokenizeQuery(String userInput) {
+        int l = 0; int r = 0;
+        int n = userInput.length();
+        List<String> ret = new ArrayList<>();
+        while(r < n && l <= r) {
+
+            while (r < n && userInput.charAt(r) != '&' && userInput.charAt(r) != '|') {
+                r++;
+            }
+            ret.add(userInput.substring(l, r));
+            l = r;
+            r++;
+        }
+        return ret;
+    }
+
     public List<Contact> searchByInputType(int userInput) {
+        for(Map.Entry<String, Set<Integer>>entry : ContactRepository.getInstance().getMappingTable().entrySet()) {
+            System.out.print(entry.getKey() + " : ");
+            List<Integer> l = new ArrayList<>(entry.getValue());
+            for(int pid : l) {
+                System.out.print(pid + " ");
+            }
+            System.out.println();
+        }
+
         List<Contact> queryResult = null;
         String inputName, inputPhoneNumber, inputGroupName;
         switch (userInput) {
             case NAME:
-                while(true) {
+                while (true) {
                     System.out.print("검색하실 이름을 입력하시오.('0': 검색 메뉴로 이동)\n>> ");
                     inputName = getUserInput().trim();
-                    if(inputName.equals("0")) {
+                    if (inputName.equals("0")) {
                         Contact cancel = new Contact(-1);
                         queryResult = new ArrayList<>();
                         queryResult.add(cancel);
@@ -69,56 +95,70 @@ public class ContactSearchService extends ServiceHelper {
                     int check = Validator.isValidNameFormat(inputName);
                     if (check == -1) {
                         continue;
-                    }
-                    else break;
+                    } else break;
                 }
                 queryResult = contactRepository.findByName(inputName);
                 break;
             case PHONENUMBER:
-                while(true) {
+                while (true) {
                     System.out.print("검색하실 전화번호를 입력하시오.('0': 검색 메뉴로 이동)\n>> ");
                     inputPhoneNumber = getUserInput().trim();
-                    if(inputPhoneNumber.equals("0")) {
+                    if (inputPhoneNumber.equals("0")) {
                         Contact cancel = new Contact(-1);
                         queryResult = new ArrayList<>();
                         queryResult.add(cancel);
                         return queryResult;
                     }
                     int check = Validator.isValidPhoneNumberFormat(inputPhoneNumber);
-                    if(check == -1)
-                        continue;
-                    else break;
+                    if (check == -1) continue;
+
+                    break;
                 }
                 queryResult = contactRepository.findByPhoneNumber(inputPhoneNumber);
                 break;
             case GROUP:
-                if(contactRepository.sizeOfGroup() == 0) {
+                // TODO: 1. inputvalidator -> 박주!&친구
+                // TODO: 2. 집합연산 -> and or not ->
+                //
+
+                if (contactRepository.sizeOfGroup() == 0) {
                     System.out.println("현재 프로그램 내에 존재하는 그룹이 없습니다.");
                     Contact contact = new Contact(-1);
                     queryResult = new ArrayList<>();
                     queryResult.add(contact);
                     break;
                 }
-                while(true) {
+
+                List<String> tokens;
+                while (true) {
                     System.out.print("검색하실 그룹을 입력하시오.('0': 검색 메뉴로 이동)\n>> ");
                     inputGroupName = getUserInput().trim();
-                    if(inputGroupName.equals("0")) {
+                    if(Validator.isValidGroupSearchFormat(inputGroupName) == -1) {
+                        continue;
+                    }
+                     tokens = this.tokenizeQuery(inputGroupName);
+                    for(String token: tokens) {
+                        System.out.println(token);
+                    }
+
+                    if (inputGroupName.equals("0")) {
                         Contact cancel = new Contact(-1);
                         queryResult = new ArrayList<>();
                         queryResult.add(cancel);
                         return queryResult;
                     }
-                    int check = Validator.isValidGroupNameFormat(inputGroupName);
-                    if(check == -1)
-                        continue;
-                    else break;
+//                    int check = Validator.isValidGroupNameFormat(inputGroupName);
+//                    if (check == -1)
+//                        continue;
+                    break;
                 }
-                queryResult = contactRepository.findByGroupName(inputGroupName);
+                queryResult = contactRepository.findByGroupName(tokens);
                 break;
             default:
                 break;
         }
         return queryResult;
     }
+
 
 }

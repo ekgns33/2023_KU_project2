@@ -1,6 +1,7 @@
 package utils;
 
 import contact.entity.Contact;
+import contact.repositories.ContactRepository;
 
 
 import java.util.*;
@@ -25,6 +26,11 @@ public class ContactMapper {
         for(String line : lines) {
             Contact contact = mapStringToContact(line, lastPid, groupTable);
             map.put(contact.getPid(), contact);
+            for(String group : contact.getGroups()) {
+                System.out.print(group);
+                ContactRepository.getInstance().addToMappingTable(group, contact.getPid());
+            }
+            System.out.println();
             pids.add(contact.getPid());
         }
         // pid 중복 체크

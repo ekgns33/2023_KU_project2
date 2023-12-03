@@ -14,6 +14,7 @@ public class ContactRepository {
     private ContactRepository () {
         this.phoneNumberSet = new HashSet<>();
         this.groupTable = new HashSet<>();
+        this.mappingTable = new HashMap<>();
     };
 
     public static ContactRepository getInstance() {
@@ -30,13 +31,27 @@ public class ContactRepository {
 
     private Set<String> phoneNumberSet;
 
+    private final Map<String, Set<Integer>> mappingTable;
 
+    private static final int AND = 1;
+
+    private static final int OR = 2;
+
+    private static final int NOT = 3;
+
+    public void addToMappingTable(String groupName, int pid) {
+        if(!mappingTable.containsKey(groupName)) {
+            mappingTable.put(groupName, new HashSet<>());
+        }
+        mappingTable.get(groupName).add(pid);
+    }
 
     public void save(Contact input) {
         input.setPid(this.lastPid);
         userTable.put(this.lastPid, input);
         phoneNumberSet.addAll(input.getPhoneNumbersAsList());
         this.lastPid++;
+
     }
 
     /**
@@ -63,15 +78,98 @@ public class ContactRepository {
         }
         return queryResult;
     }
+    // Moon's Lecture "LinkedList"
+    public static class ListNode{
+        private ListNode prev;
+        private ListNode next;
+        private Contact contact;
 
-    public List<Contact> findByGroupName(String groupName) {
+        public ListNode(Contact c) {
+            this.contact = c;
+        }
+
+        public Contact getContact() {
+            return this.contact;
+        }
+
+        public void setPrev(ListNode prev) {
+            this.prev = prev;
+        }
+
+        public void setNext(ListNode next) {
+            this.next = next;
+        }
+        public ListNode getNext() {
+            return this.next;
+        }
+        public ListNode getPrev() {
+            return this.prev;
+        }
+    }
+
+    public ListNode buildLinkedList(List<Contact> contacts) {
+
+        ListNode dummy = new ListNode(null);
+        ListNode curNode = dummy;
+
+       for(int i = 0; i < contacts.size(); i++) {
+           ListNode nextNode = new ListNode(contacts.get(i));
+           nextNode.setPrev(curNode);
+           curNode.setNext(nextNode);
+           curNode = curNode.getNext();
+       }
+        return dummy;
+    }
+    public List<Contact> customListToArrayList(ListNode dummy) {
+        List<Contact> ret = new ArrayList<>();
+        ListNode curNode = dummy.getNext();
+        while(curNode != null) {
+            ret.add(curNode.getContact());
+            curNode = curNode.getNext();
+        }
+        return ret;
+    }
+    public void filter(Set<Integer> pids, int command, String groupName) {
+
+        if(command == AND) {
+            pids.retainAll(contactRepository.getMappingTable().get(groupName));
+        }
+        if(command == OR) {
+            pids.addAll(contactRepository.getMappingTable().get(groupName));
+        }
+        if(command == NOT){
+
+
+        }
+    }
+
+
+    // &, |만 일단 분리
+    public List<Contact> findByGroupName(List<String> searchTokens) {
+        // groupName 내부 element 중 &, | 분리
         List<Contact> queryResult = new ArrayList<>();
-        for(Contact contact : this.userTable.values()) {
-            if(contact.hasGroupName(groupName))
-                queryResult.add(contact);
+        Set<Integer> pids = new HashSet<>();
+        pids.addAll(userTable.keySet());
+
+        for(String token : searchTokens) {
+            int command = 1;
+            String groupName = token;
+            if(token.charAt(0) == '|') {
+                command = 2;
+                groupName = token.substring(1);
+            }
+            if(token.charAt(0) == '&') {
+                groupName = token.substring(1);
+            }
+            //
+            filter(pids, command, groupName);
+        }
+        for(int key : pids) {
+            queryResult.add(userTable.get(key));
         }
         return queryResult;
     }
+
     /**
      * 수정된 내용을 담고 있는 객체와 이미 저장되어있던 객체를 바꾼다.
      * @param updatedContact : 사용자가 수정한 정보를 담고있는 객체로 pid값은 변하지 않는다.
@@ -80,6 +178,9 @@ public class ContactRepository {
         int targetPid = updatedContact.getPid();
         if(!this.userTable.containsKey(targetPid))  {
             throw new EntityNotFoundException(ErrorCode.Entity_Not_found);
+        }
+        for(String group : updatedContact.getGroups()) {
+            addToMappingTable(group, targetPid);
         }
         this.userTable.replace(targetPid, updatedContact);
     }
@@ -129,6 +230,10 @@ public class ContactRepository {
 
     public void setGroupTable(Set<String> groupTable) {
         this.groupTable = groupTable;
+    }
+
+    public Map<String, Set<Integer>> getMappingTable() {
+        return this.mappingTable;
     }
 
     public Set<String> getGroupTable() {

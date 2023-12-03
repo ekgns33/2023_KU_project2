@@ -7,7 +7,7 @@ import utils.Validator;
 
 import java.util.List;
 import java.util.Set;
-
+import java.util.Map;
 public class GroupService extends ServiceHelper {
 
     private static GroupService groupService;
@@ -110,6 +110,7 @@ public class GroupService extends ServiceHelper {
                 createDecision = getUserInput().trim();
                 if (createDecision.equals("Y")) {
                     removeGroupFromContacts(inputGroupName);
+                    ContactRepository.getInstance().getMappingTable().remove(inputGroupName);
                     Set<String> groupCurrent = contactRepository.getGroupTable();
                     groupCurrent.remove(inputGroupName);
                     return inputGroupName;
@@ -178,6 +179,10 @@ public class GroupService extends ServiceHelper {
                         contact.addGroupName(modifiedGroupName);
                     }
                 }
+                Map<String,Set<Integer>> table = ContactRepository.getInstance().getMappingTable();
+                table.get(modifiedGroupName).addAll(table.get(inputGroupName));
+                table.remove(inputGroupName);
+
                 Set<String> groupCurrent = contactRepository.getGroupTable();
                 if (!ContactRepository.getInstance().isGroupNameUnique(modifiedGroupName)) {
                     groupCurrent.add(modifiedGroupName);

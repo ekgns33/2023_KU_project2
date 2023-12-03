@@ -8,6 +8,7 @@ import utils.Validator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
 
 public class ContactUpdateService extends ServiceHelper {
 
@@ -180,6 +181,13 @@ public class ContactUpdateService extends ServiceHelper {
                         String saveDecision = getUserInput().trim();
                         if (saveDecision.equals("Y")) {
                             System.out.println("수정되었습니다.");
+
+
+                            Map<String, Set<Integer>> mappingTable = contactRepository.getMappingTable();
+                            for(String groupName : selectedContact.getGroups()) {
+                                mappingTable.get(groupName).remove(selectedContact.getPid());
+                            }
+
                             // 새로운 전역 set적용.
                             contactRepository.setPhoneNumberSet(copiedSet);
                             contactRepository.updateContact(updateContact);

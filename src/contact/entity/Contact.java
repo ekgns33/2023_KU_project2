@@ -2,6 +2,7 @@ package contact.entity;
 
 import contact.entity.PhoneNumber;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -66,6 +67,9 @@ public class Contact {
     public void modifyGroupName(String prevGroupName, String modifiedGroupName) {
         removeGroupName(prevGroupName);
         addGroupName(modifiedGroupName);
+    }
+    public List<String> getGroups() {
+        return new ArrayList<>(this.groupList);
     }
 
     public List<String> getPhoneNumbersAsList() {
