@@ -91,7 +91,6 @@ public class ContactUpdateService extends ServiceHelper {
     }
 
     public boolean updateGroupInfo(Contact prevContact, Contact selectedContact) {
-        Set<String> groupNames = new HashSet<>();
         String inputGroupName;
         // copied???
         while (true) {
@@ -114,11 +113,11 @@ public class ContactUpdateService extends ServiceHelper {
                 System.out.println("현재 존재하는 그룹명이 아닙니다.");
                 continue;
             }
-            if (groupNames.contains(inputGroupName)) {
+            if (selectedContact.hasGroupName(inputGroupName)) {
                 System.out.println("이미 추가하신 그룹명입니다.");
                 continue;
             }
-            groupNames.add(inputGroupName);
+            selectedContact.addGroupName(inputGroupName);
         }
         return true;
     }

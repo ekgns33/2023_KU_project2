@@ -106,7 +106,7 @@ public class Contact {
 
     public String getGroupListToString() {
         if(groupList.isEmpty()) {
-            return "";
+            return "X";
         }
         StringBuilder sb = new StringBuilder();
         for(String groupName: groupList) {
