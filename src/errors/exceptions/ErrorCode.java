@@ -2,7 +2,7 @@ package errors.exceptions;
 
 public enum ErrorCode {
 
-    Entity_Not_found("Entity Not Found", "A1"),
+    Entity_Not_found("일치하는 항목이 없습니다", "A1"),
 
 //    File_Integrity_Fail("File Integrity Test Fail", "A2"),
     Invalid_Input("잘못된 입력 형식입니다.", "A3");
