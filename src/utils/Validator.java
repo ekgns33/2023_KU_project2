@@ -77,10 +77,8 @@ public final class Validator {
 
     public static int isValidGroupSearchFormat(String searchedGroup) {
         try {
-            //생각해
             String[] groups = searchedGroup.split("&|\\|");
             int operatorCount = 0;
-            System.out.println(groups[0]);
             if(searchedGroup.isEmpty()) {
                 throw new InvalidInputException(ErrorCode.Invalid_Input);
             }

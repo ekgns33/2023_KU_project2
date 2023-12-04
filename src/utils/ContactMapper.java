@@ -30,7 +30,6 @@ public class ContactMapper {
                 System.out.print(group);
                 ContactRepository.getInstance().addToMappingTable(group, contact.getPid());
             }
-            System.out.println();
             pids.add(contact.getPid());
         }
         // pid 중복 체크
