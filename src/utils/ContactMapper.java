@@ -27,7 +27,6 @@ public class ContactMapper {
             Contact contact = mapStringToContact(line, lastPid, groupTable);
             map.put(contact.getPid(), contact);
             for(String group : contact.getGroups()) {
-                System.out.print(group);
                 ContactRepository.getInstance().addToMappingTable(group, contact.getPid());
             }
             pids.add(contact.getPid());

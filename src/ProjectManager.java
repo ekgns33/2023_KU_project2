@@ -45,9 +45,12 @@ public class ProjectManager extends ProjectManagerSupport {
                 System.out.println("그룹 정보 파일 형식에 오류가 있습니다.");
                 System.exit(0);
             }
-            if (groupInfo.isEmpty()) {
-                System.out.println("그룹 정보 파일 형식에 오류가 있습니다.");
-                System.exit(0);
+
+            // 암것도 없을 때... ->
+            if(!groupInfo.isEmpty()) {
+                List<String> groupList = contactMapper.groupInfoToArrayList(groupInfo);
+                this.contactRepository.initGroupMap(groupList);
+                this.contactRepository.setGroupTable(new HashSet<String>(groupList));
             }
 
             // phonebook.txt 내용 불러오기
