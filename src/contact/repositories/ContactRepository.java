@@ -3,6 +3,7 @@ package contact.repositories;
 import contact.entity.Contact;
 import errors.exceptions.EntityNotFoundException;
 import errors.exceptions.ErrorCode;
+import errors.exceptions.InvalidInputException;
 import utils.Validator;
 
 import java.util.*;
@@ -173,7 +174,9 @@ public class ContactRepository {
             if (token.charAt(0) == '&') {
                 groupName = token.substring(1);
             }
-            //
+            if(Validator.isValidGroupNameFormat(groupName) == -1) {
+                throw new InvalidInputException(ErrorCode.Invalid_Input);
+            }
             if(!groupTable.contains(groupName)) {
                 throw new EntityNotFoundException(ErrorCode.Entity_Not_found);
             }

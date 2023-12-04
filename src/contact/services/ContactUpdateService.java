@@ -108,6 +108,7 @@ public class ContactUpdateService extends ServiceHelper {
                 break;
             }
             if (Validator.isValidGroupNameFormat(inputGroupName) == -1) {
+                System.out.println("잘못된 입력 형식입니다.");
                 continue;
             }
             if (!contactRepository.isGroupNameUnique(inputGroupName)) {
