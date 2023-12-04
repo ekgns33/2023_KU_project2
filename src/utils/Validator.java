@@ -69,7 +69,6 @@ public final class Validator {
                 throw new InvalidInputException(ErrorCode.Invalid_Input);
             }
         } catch(ApplicationException e) {
-            System.out.println(e.getMessage());
             return -1;
         }
         return 1;

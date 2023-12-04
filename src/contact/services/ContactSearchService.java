@@ -145,7 +145,7 @@ public class ContactSearchService extends ServiceHelper {
                         break;
                     } catch (EntityNotFoundException e) {
                         System.out.println(e.getMessage());
-                        break;
+                        return null;
                     } catch (ApplicationException e) {
                         System.out.println(e.getMessage());
                     }
