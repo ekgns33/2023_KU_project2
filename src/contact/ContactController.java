@@ -66,7 +66,7 @@ public class ContactController {
                 return ;
             }
             Contact searchedContact = ContactSearchService.getInstance().search(menuCommand);
-            if(searchedContact != null && searchedContact.getPid() != -1) {
+            if(searchedContact != null) {
                 ContactViewProvider.printContactView(searchedContact);
             }
         }catch(ApplicationException e){
