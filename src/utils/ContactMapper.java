@@ -132,7 +132,7 @@ public class ContactMapper {
     }
 
     // group_Info.txt 내의 그룹 정보를 ArrayList로 변환해주는 과정
-    public Set<String> groupInfoToArrayList(List<String> grouplist){
+    public List<String> groupInfoToArrayList(List<String> grouplist){
         List<String> inputList = Arrays.asList(grouplist.get(0).split("\\|"));
         ArrayList<String> groupArrayList = new ArrayList<>(inputList);
         for(String groups : groupArrayList) {
@@ -150,6 +150,6 @@ public class ContactMapper {
                 }
             }
         }
-        return new HashSet<>(inputList);
+        return inputList;
     }
 }
