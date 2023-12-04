@@ -5,6 +5,7 @@ import contact.repositories.ContactRepository;
 import contact.services.ServiceHelper;
 import utils.Validator;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class GroupService extends ServiceHelper {
 
 
     public void groupManagement(int userInput) {
-        String suceed; // 각 groupManage 함수 내 리턴값을 담기 위한 변수
+        String suceed;
 
         switch (userInput) {
             case ADD:
@@ -158,9 +159,15 @@ public class GroupService extends ServiceHelper {
                 continue;
             }
 
+            if(!ContactRepository.getInstance().hasGroup(inputGroupName)) {
+                System.out.println("존재하지 않는 그룹명입니다.");
+                continue;
+            }
+
             if (!confirmModifyOperation()) {
                 return null;
             }
+
             while (true) {
                 System.out.print("수정 후 그룹명을 입력하시오.('0': 그룹 관리 메뉴로 이동)\n>> ");
                 modifiedGroupName = getUserInput().trim();
@@ -180,7 +187,7 @@ public class GroupService extends ServiceHelper {
                     }
                 }
                 Map<String,Set<Integer>> table = ContactRepository.getInstance().getMappingTable();
-                table.get(modifiedGroupName).addAll(table.get(inputGroupName));
+                table.computeIfAbsent(modifiedGroupName, k -> new HashSet<>()).addAll(table.get(inputGroupName));
                 table.remove(inputGroupName);
 
                 Set<String> groupCurrent = contactRepository.getGroupTable();
