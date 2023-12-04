@@ -6,6 +6,8 @@ import contact.ContactViewProvider;
 import utils.Validator;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ContactDeleteService extends ServiceHelper {
 
@@ -64,7 +66,11 @@ public class ContactDeleteService extends ServiceHelper {
                 return;
             }
 
-            contactRepository.getUserTable().remove(selectedContact.getPid());
+            contactRepository.removeContact(selectedContact.getPid());
+            Map<String, Set<Integer>> mappingTable = contactRepository.getMappingTable();
+            for(String groupName : selectedContact.getGroups()) {
+                mappingTable.get(groupName).remove(selectedContact.getPid());
+            }
 
             System.out.println("삭제되었습니다.");
             return;

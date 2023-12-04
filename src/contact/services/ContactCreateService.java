@@ -39,6 +39,9 @@ public class ContactCreateService extends ServiceHelper {
             String createDecision = getUserInput().trim();
             if (createDecision.equals("Y")) {
                 contactRepository.save(contact);
+                for(String group : contact.getGroups()) {
+                    contactRepository.addToMappingTable(group, contact.getPid());
+                }
                 break;
             } else if (createDecision.equals("N")) {
                 return null;
@@ -97,7 +100,6 @@ public class ContactCreateService extends ServiceHelper {
                 if(!isUnique) continue;
             }
 
-
             if(phoneNumbers.contains(userPhoneNumber)) {
                 System.out.println("이미 존재하는 번호입니다.");
                 continue;
@@ -107,28 +109,37 @@ public class ContactCreateService extends ServiceHelper {
         }
     }
 
-    private String readUserGroup() {
+    private Set<String> readUserGroup() {
+        Set<String> groupNames = new HashSet<>();
         String userGroup;
         while(true) {
-            System.out.print("추가할 연락처의 그룹명을 입력하시오.\n그룹명 추가를 원하지 않을 시 'enter' 키를 누르시오.('0': 초기 메뉴로 이동)\n>> ");
+            System.out.print("추가할 연락처의 그룹명을 입력하시오.\n더 이상 추가를 원하지 않으면 'Q'를 입력하시오.('0': 초기 메뉴로 이동)\n>> ");
             userGroup = getUserInput().trim();
             if(userGroup.isEmpty()) {
-                userGroup = "X";
-                break;
+                System.out.println("올바른 입력 형식이 아닙니다.");
+                continue;
             }
             if(userGroup.equals("0")) {
                 return null;
             }
+            if(userGroup.equals("Q")) {
+                break;
+            }
             if(Validator.isValidGroupNameFormat(userGroup) == -1) {
+                System.out.println("잘못된 입력 형식입니다.");
                 continue;
             }
             if(contactRepository.isGroupNameUnique(userGroup)) {
-                return userGroup;
-            } else {
+                if(groupNames.contains(userGroup)) {
+                    System.out.println("이미 추가하신 그룹명입니다.");
+                    continue;
+                }
+                groupNames.add(userGroup);}
+            else {
                 System.out.println("현재 존재하는 그룹명이 아닙니다.");
             }
         }
-        return userGroup;
+        return groupNames;
     }
 
     private String readUserMemo() {
@@ -149,9 +160,8 @@ public class ContactCreateService extends ServiceHelper {
 
     private Contact buildContactInfo() {
         // 전화번호 입력 -> 에러 처리 구현 X
-        int check;
-        String userName, userGroup, userMemo;
-        Set<String> phoneNumbers;
+        String userName, userMemo;
+        Set<String> userGroup, phoneNumbers;
         if((userName = readUserName()) == null) return null;
         if((phoneNumbers = readUserPhoneNumber()) == null) return null;
         if((userGroup = readUserGroup()) == null) return null;

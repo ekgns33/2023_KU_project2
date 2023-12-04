@@ -4,6 +4,9 @@ import errors.exceptions.ApplicationException;
 import errors.exceptions.ErrorCode;
 import errors.exceptions.InvalidInputException;
 
+import java.util.List;
+import java.util.ArrayList;
+
 
 public final class Validator {
     public static final String KOREANONLY = "^[가-힣]+$"; // 한글만 허용(완전 형태 한글만) 한 글자 이상
@@ -71,5 +74,33 @@ public final class Validator {
         }
         return 1;
     }
+
+    public static int isValidGroupSearchFormat(String searchedGroup) {
+        try {
+            String[] groups = searchedGroup.split("&|\\|");
+            int operatorCount = 0;
+            if(searchedGroup.isEmpty()) {
+                throw new InvalidInputException(ErrorCode.Invalid_Input);
+            }
+            if(searchedGroup.charAt(0) == '&' || searchedGroup.charAt(0) == '|') {
+                throw new InvalidInputException(ErrorCode.Invalid_Input);
+            }
+            for(int i=0;i<searchedGroup.length()-1;i++) {
+                if (searchedGroup.charAt(i) == '&' || searchedGroup.charAt(i) == '|') {
+                    operatorCount++;
+                }
+            }
+            if(groups.length != operatorCount+1) {
+                throw new InvalidInputException(ErrorCode.Invalid_Input);
+            }
+        } catch(ApplicationException e) {
+            System.out.println(e.getMessage());
+            return -1;
+        }
+        return 1;
+    }
+
+
+
 
 }

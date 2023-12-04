@@ -14,7 +14,7 @@ public final class ContactViewProvider {
 
     public static String buildContactView(Contact contact) {
         StringBuilder sb = new StringBuilder();
-        String groupName = contact.getGroupName().equals("X") ? "" : contact.getGroupName();
+        String groupName = contact.sizeOfGroupList() == 0 ? "" : contact.getGroupListToString();
         addPropertyToContactView(sb, "이름: ", contact.getName());
         addPropertyToContactView(sb, "전화번호: ", contact.getPhoneNumbersAsList().toString());
         addPropertyToContactView(sb, "그룹명: ", groupName);

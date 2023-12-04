@@ -5,9 +5,10 @@ import contact.repositories.ContactRepository;
 import contact.services.ServiceHelper;
 import utils.Validator;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import java.util.Map;
 public class GroupService extends ServiceHelper {
 
     private static GroupService groupService;
@@ -33,7 +34,7 @@ public class GroupService extends ServiceHelper {
 
 
     public void groupManagement(int userInput) {
-        String suceed; // 각 groupManage 함수 내 리턴값을 담기 위한 변수
+        String suceed;
 
         switch (userInput) {
             case ADD:
@@ -110,6 +111,7 @@ public class GroupService extends ServiceHelper {
                 createDecision = getUserInput().trim();
                 if (createDecision.equals("Y")) {
                     removeGroupFromContacts(inputGroupName);
+                    ContactRepository.getInstance().getMappingTable().remove(inputGroupName);
                     Set<String> groupCurrent = contactRepository.getGroupTable();
                     groupCurrent.remove(inputGroupName);
                     return inputGroupName;
@@ -125,9 +127,7 @@ public class GroupService extends ServiceHelper {
     public void removeGroupFromContacts(String groupName) {
         List<Contact> totalContacts = contactRepository.findAll();
         for (Contact contact : totalContacts) {
-            if (contact.getGroupName().equals(groupName)) {
-                contact.setGroupName("X");
-            }
+                contact.removeGroupName(groupName);
         }
     }
 
@@ -159,9 +159,15 @@ public class GroupService extends ServiceHelper {
                 continue;
             }
 
+            if(!ContactRepository.getInstance().hasGroup(inputGroupName)) {
+                System.out.println("존재하지 않는 그룹명입니다.");
+                continue;
+            }
+
             if (!confirmModifyOperation()) {
                 return null;
             }
+
             while (true) {
                 System.out.print("수정 후 그룹명을 입력하시오.('0': 그룹 관리 메뉴로 이동)\n>> ");
                 modifiedGroupName = getUserInput().trim();
@@ -175,10 +181,15 @@ public class GroupService extends ServiceHelper {
                     return null;
                 }
                 for (Contact contact : queryCurrent) {
-                    if (contact.getGroupName().equals(inputGroupName)) {
-                        contact.setGroupName(modifiedGroupName);
+                    if(contact.hasGroupName(inputGroupName)) {
+                        contact.removeGroupName(inputGroupName);
+                        contact.addGroupName(modifiedGroupName);
                     }
                 }
+                Map<String,Set<Integer>> table = ContactRepository.getInstance().getMappingTable();
+                table.computeIfAbsent(modifiedGroupName, k -> new HashSet<>()).addAll(table.get(inputGroupName));
+                table.remove(inputGroupName);
+
                 Set<String> groupCurrent = contactRepository.getGroupTable();
                 if (!ContactRepository.getInstance().isGroupNameUnique(modifiedGroupName)) {
                     groupCurrent.add(modifiedGroupName);

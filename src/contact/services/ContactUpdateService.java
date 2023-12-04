@@ -8,6 +8,7 @@ import utils.Validator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
 
 public class ContactUpdateService extends ServiceHelper {
 
@@ -92,26 +93,35 @@ public class ContactUpdateService extends ServiceHelper {
 
     public boolean updateGroupInfo(Contact prevContact, Contact selectedContact) {
         String inputGroupName;
+        // copied???
         while (true) {
-            System.out.print("수정할 그룹명을 입력하시오.\n그룹명 추가를 원하지 않을 시 'enter'키를 누르시오.('0': 수정 메뉴로 이동)\n(" + prevContact.getGroupName() + ")>> ");
+            System.out.print("수정할 그룹명을 입력하시오.\n더 이상 수정을 원하지 않으면 'Q'를 입력하시오.('0': 수정 메뉴로 이동)\n(" + prevContact.getGroupListToString() + ")>> ");
             inputGroupName = getUserInput().trim();
             if (inputGroupName.isEmpty()) {
-                inputGroupName = "X";
-                return true;
+                System.out.println("올바른 입력 형식이 아닙니다.");
+                continue;
             }
             if (inputGroupName.equals("0")) {
                 return false;
             }
+            if (inputGroupName.equals("Q")) {
+                break;
+            }
             if (Validator.isValidGroupNameFormat(inputGroupName) == -1) {
+                System.out.println("잘못된 입력 형식입니다.");
                 continue;
             }
             if (!contactRepository.isGroupNameUnique(inputGroupName)) {
                 System.out.println("현재 존재하는 그룹명이 아닙니다.");
                 continue;
             }
-            selectedContact.setGroupName(inputGroupName);
-            return true;
+            if (selectedContact.hasGroupName(inputGroupName)) {
+                System.out.println("이미 추가하신 그룹명입니다.");
+                continue;
+            }
+            selectedContact.addGroupName(inputGroupName);
         }
+        return true;
     }
 
     public boolean updateMemo(Contact prevContact, Contact selectedContact) {
@@ -172,6 +182,13 @@ public class ContactUpdateService extends ServiceHelper {
                         String saveDecision = getUserInput().trim();
                         if (saveDecision.equals("Y")) {
                             System.out.println("수정되었습니다.");
+
+
+                            Map<String, Set<Integer>> mappingTable = contactRepository.getMappingTable();
+                            for(String groupName : selectedContact.getGroups()) {
+                                mappingTable.get(groupName).remove(selectedContact.getPid());
+                            }
+
                             // 새로운 전역 set적용.
                             contactRepository.setPhoneNumberSet(copiedSet);
                             contactRepository.updateContact(updateContact);
