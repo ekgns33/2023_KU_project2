@@ -49,9 +49,6 @@ public class ProjectManager extends ProjectManagerSupport {
                 System.out.println("그룹 정보 파일 형식에 오류가 있습니다.");
                 System.exit(0);
             }
-            List<String> groupList = contactMapper.groupInfoToArrayList(groupInfo);
-            this.contactRepository.initGroupMap(groupList);
-            this.contactRepository.setGroupTable(new HashSet<>(groupList));
 
             // phonebook.txt 내용 불러오기
             List<String> dataList = fileHandler.readFile("src/phonebook.txt");
