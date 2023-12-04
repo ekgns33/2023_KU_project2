@@ -2,12 +2,14 @@ package contact.services;
 
 import contact.entity.Contact;
 import contact.repositories.ContactRepository;
+import errors.exceptions.ApplicationException;
+import errors.exceptions.EntityNotFoundException;
+import errors.exceptions.ErrorCode;
 import utils.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
 
 
 public class ContactSearchService extends ServiceHelper {
@@ -23,28 +25,30 @@ public class ContactSearchService extends ServiceHelper {
 
     private ContactSearchService() {
         contactRepository = ContactRepository.getInstance();
-    };
+    }
+
+    ;
 
     public static ContactSearchService getInstance() {
-        if(contactSearchService == null) {
+        if (contactSearchService == null) {
             contactSearchService = new ContactSearchService();
         }
         return contactSearchService;
     }
 
-    public Contact search(int userInput){
+    public Contact search(int userInput) {
         List<Contact> queryResult = searchByInputType(userInput);
-        if(queryResult == null || queryResult.isEmpty()){
+        if (queryResult == null || queryResult.isEmpty()) {
             System.out.println("일치하는 항목이 없습니다.");
             return null;
-        } else if(queryResult.get(0).getPid() == -1) {
+        } else if (queryResult.get(0).getPid() == -1) {
             return queryResult.get(0);
-        }
-        else {
+        } else {
             showContactList(queryResult);
             return selectAndGetContact(queryResult);
         }
     }
+
     public void showContactList(List<Contact> list) {
         int index = 1;
         for (Contact contact : list) {
@@ -53,16 +57,23 @@ public class ContactSearchService extends ServiceHelper {
             index++;
         }
     }
+
     public List<String> tokenizeQuery(String userInput) {
-        int l = 0; int r = 0;
+        int l = 0;
+        int r = 0;
         int n = userInput.length();
         List<String> ret = new ArrayList<>();
-        while(r < n && l <= r) {
+        while (r < n && l <= r) {
 
             while (r < n && userInput.charAt(r) != '&' && userInput.charAt(r) != '|') {
                 r++;
             }
-            ret.add(userInput.substring(l, r));
+            if (r - l >= 1) {
+                if (r - l == 1 && !Character.isAlphabetic(userInput.charAt(l))) {
+                    throw new ApplicationException(ErrorCode.Invalid_Input);
+                }
+                ret.add(userInput.substring(l, r));
+            }
             l = r;
             r++;
         }
@@ -70,15 +81,6 @@ public class ContactSearchService extends ServiceHelper {
     }
 
     public List<Contact> searchByInputType(int userInput) {
-        for(Map.Entry<String, Set<Integer>>entry : ContactRepository.getInstance().getMappingTable().entrySet()) {
-            System.out.print(entry.getKey() + " : ");
-            List<Integer> l = new ArrayList<>(entry.getValue());
-            for(int pid : l) {
-                System.out.print(pid + " ");
-            }
-            System.out.println();
-        }
-
         List<Contact> queryResult = null;
         String inputName, inputPhoneNumber, inputGroupName;
         switch (userInput) {
@@ -95,7 +97,8 @@ public class ContactSearchService extends ServiceHelper {
                     int check = Validator.isValidNameFormat(inputName);
                     if (check == -1) {
                         continue;
-                    } else break;
+                    }
+                    break;
                 }
                 queryResult = contactRepository.findByName(inputName);
                 break;
@@ -117,10 +120,6 @@ public class ContactSearchService extends ServiceHelper {
                 queryResult = contactRepository.findByPhoneNumber(inputPhoneNumber);
                 break;
             case GROUP:
-                // TODO: 1. inputvalidator -> 박주!&친구
-                // TODO: 2. 집합연산 -> and or not ->
-                //
-
                 if (contactRepository.sizeOfGroup() == 0) {
                     System.out.println("현재 프로그램 내에 존재하는 그룹이 없습니다.");
                     Contact contact = new Contact(-1);
@@ -131,34 +130,33 @@ public class ContactSearchService extends ServiceHelper {
 
                 List<String> tokens;
                 while (true) {
-                    System.out.print("검색하실 그룹을 입력하시오.('0': 검색 메뉴로 이동)\n>> ");
-                    inputGroupName = getUserInput().trim();
-                    if(Validator.isValidGroupSearchFormat(inputGroupName) == -1) {
-                        continue;
-                    }
-                     tokens = this.tokenizeQuery(inputGroupName);
-                    for(String token: tokens) {
-                        System.out.println(token);
-                    }
+                    try {
+                        System.out.print("검색하실 그룹을 입력하시오.('0': 검색 메뉴로 이동)\n>> ");
+                        inputGroupName = getUserInput().trim();
 
-                    if (inputGroupName.equals("0")) {
-                        Contact cancel = new Contact(-1);
-                        queryResult = new ArrayList<>();
-                        queryResult.add(cancel);
-                        return queryResult;
+                        tokens = this.tokenizeQuery(inputGroupName);
+
+                        if (inputGroupName.equals("0")) {
+                            Contact cancel = new Contact(-1);
+                            queryResult = new ArrayList<>();
+                            queryResult.add(cancel);
+                            return queryResult;
+                        }
+                        for (String t : tokens) {
+                            System.out.println(t);
+                        }
+                        queryResult = contactRepository.findByGroupName(tokens);
+                        break;
+                    } catch (EntityNotFoundException e) {
+                        System.out.println(e.getMessage());
+                        break;
+                    } catch (ApplicationException e) {
+                        System.out.println(e.getMessage());
                     }
-//                    int check = Validator.isValidGroupNameFormat(inputGroupName);
-//                    if (check == -1)
-//                        continue;
-                    break;
                 }
-                queryResult = contactRepository.findByGroupName(tokens);
-                break;
             default:
                 break;
         }
         return queryResult;
     }
-
-
 }
