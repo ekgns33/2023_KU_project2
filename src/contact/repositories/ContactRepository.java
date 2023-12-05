@@ -48,12 +48,12 @@ public class ContactRepository {
         Comparator<Contact> customComparator;
         if(this.sortBy == 1) {
             customComparator = NameComparator.getInstance();
-            Collections.sort(queryResult, customComparator);
+            queryResult.sort(customComparator);
 
         }
         if(this.sortBy == 2) {
             customComparator = PidComparator.getInstance();
-            Collections.sort(queryResult, customComparator);
+            queryResult.sort(customComparator);
 
         }
     }
