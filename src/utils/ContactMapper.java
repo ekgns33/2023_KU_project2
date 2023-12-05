@@ -21,33 +21,17 @@ public class ContactMapper {
      * */
     public Map<Integer, Contact> mapListToHashMap(List<String> lines, int lastPid, Set<String> groupTable) {
         Map<Integer, Contact> map = new HashMap<>();
-        List<Integer> pids = new ArrayList<>();
-        int largestPid=0;
         for(String line : lines) {
             Contact contact = mapStringToContact(line, lastPid, groupTable);
+            int curPid = contact.getPid();
+            if(map.containsKey(curPid) || curPid >= lastPid) {
+                System.out.println("전화번호부 파일 형식에 오류가 있습니다.");
+                System.exit(0);
+            }
             map.put(contact.getPid(), contact);
             for(String group : contact.getGroups()) {
                 ContactRepository.getInstance().addToMappingTable(group, contact.getPid());
             }
-            pids.add(contact.getPid());
-        }
-        // pid 중복 체크
-        for(int i=0;i<pids.size()-1;i++) {
-            for(int j=i+1;j<pids.size();j++) {
-                if(pids.get(i) == pids.get(j)) {
-                    System.out.println("전화번호부 파일 형식에 오류가 있습니다.");
-                    System.exit(0);
-                }
-            }
-        }
-        // last pid 체크
-        for(int i=0;i<pids.size();i++) {
-            if(pids.get(i) > largestPid)
-                largestPid = pids.get(i);
-        }
-        if(largestPid != lastPid-1) {
-            System.out.println("전화번호부 파일 형식에 오류가 있습니다.");
-            System.exit(0);
         }
         return map;
     }
