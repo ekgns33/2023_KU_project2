@@ -69,10 +69,12 @@ public class GroupService extends ServiceHelper {
                 return null;
             }
             if (Validator.isValidGroupNameFormat(inputGroupName) == FAIL) {
+                System.out.println("잘못된 입력형식입니다.");
                 continue;
             }
             if (contactRepository.isGroupNameUnique(inputGroupName)) {
                 System.out.println("이미 존재하는 그룹명입니다.");
+                continue;
             }
             while (true) {
                 System.out.print("\'" + inputGroupName + "\' 그룹을 추가하시겠습니까?(Y/N)\n>> ");
@@ -100,6 +102,7 @@ public class GroupService extends ServiceHelper {
                 return null;
             }
             if (Validator.isValidGroupNameFormat(inputGroupName) == FAIL) {
+                System.out.println("잘못된 입력형식입니다.");
                 continue;
             }
             if (!contactRepository.isGroupNameUnique(inputGroupName)) {
@@ -156,6 +159,7 @@ public class GroupService extends ServiceHelper {
                 return null;
             }
             if (Validator.isValidGroupNameFormat(inputGroupName) == FAIL) {
+                System.out.println("잘못된 입력형식입니다.");
                 continue;
             }
 
@@ -175,6 +179,7 @@ public class GroupService extends ServiceHelper {
                     return null;
                 }
                 if (Validator.isValidGroupNameFormat(modifiedGroupName) == -1) {
+                    System.out.println("잘못된 입력형식입니다.");
                     continue;
                 }
                 if (!confirmModifyOperation()) {
