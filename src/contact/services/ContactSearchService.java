@@ -61,6 +61,7 @@ public class ContactSearchService extends ServiceHelper {
     }
 
     public List<String> tokenizeQuery(String userInput) {
+        if(userInput.isEmpty() || !Character.isAlphabetic(userInput.charAt(0))) throw new InvalidInputException(ErrorCode.Invalid_Input);
         int l = 0;
         int r = 0;
         int n = userInput.length();
@@ -76,10 +77,10 @@ public class ContactSearchService extends ServiceHelper {
                 }
                 String token = userInput.substring(l, r);
                 String groupName = token;
-                if (r - l > 1) {
+                if (r - l > 1 && groupName.charAt(0) != '!') {
                     groupName = groupName.substring(1);
                 }
-                if (Validator.isValidGroupNameFormat(groupName) == -1){
+                if (Validator.isValidGroupSearchToken(groupName) == -1){
                     throw new InvalidInputException(ErrorCode.Invalid_Input);
                 }
                 ret.add(token);
@@ -137,9 +138,6 @@ public class ContactSearchService extends ServiceHelper {
 
                         if (inputGroupName.equals("0")) {
                             return null;
-                        }
-                        for (String t : tokens) {
-                            System.out.println(t);
                         }
                         queryResult = contactRepository.findByGroupName(tokens);
                         break;

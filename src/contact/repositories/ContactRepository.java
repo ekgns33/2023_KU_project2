@@ -139,17 +139,17 @@ public class ContactRepository {
         return ret;
     }
 
-    public void filter(Set<Integer> pids, int command, String groupName) throws NullPointerException {
-
+    public void filter(Set<Integer> pids, int command, String groupName, boolean isReversed) throws NullPointerException {
+        Set<Integer> inputGroupPids = contactRepository.getMappingTable().get(groupName);
         if (command == AND) {
-            pids.retainAll(contactRepository.getMappingTable().get(groupName));
+            if(isReversed) {
+                pids.removeAll(inputGroupPids);
+                return;
+            }
+            pids.retainAll(inputGroupPids);
         }
         if (command == OR) {
             pids.addAll(contactRepository.getMappingTable().get(groupName));
-        }
-        if (command == NOT) {
-
-
         }
     }
 
@@ -167,6 +167,7 @@ public class ContactRepository {
         for (String token : searchTokens) {
             int command = 1;
             String groupName = token;
+            boolean isReversed = false;
             if (token.charAt(0) == '|') {
                 command = 2;
                 groupName = token.substring(1);
@@ -174,13 +175,17 @@ public class ContactRepository {
             if (token.charAt(0) == '&') {
                 groupName = token.substring(1);
             }
+            if(groupName.charAt(0) == '!') {
+                groupName = groupName.substring(1);
+                isReversed = true;
+            }
             if(Validator.isValidGroupNameFormat(groupName) == -1) {
                 throw new InvalidInputException(ErrorCode.Invalid_Input);
             }
             if(!groupTable.contains(groupName)) {
                 throw new EntityNotFoundException(ErrorCode.Entity_Not_found);
             }
-            filter(pids, command, groupName);
+            filter(pids, command, groupName, isReversed);
         }
         for (int key : pids) {
             queryResult.add(userTable.get(key));
