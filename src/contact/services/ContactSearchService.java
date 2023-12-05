@@ -61,12 +61,12 @@ public class ContactSearchService extends ServiceHelper {
     }
 
     public List<String> tokenizeQuery(String userInput) {
-        if(userInput.isEmpty() || !Character.isAlphabetic(userInput.charAt(0))) throw new InvalidInputException(ErrorCode.Invalid_Input);
+        if(userInput.isEmpty() || (userInput.charAt(0) == '&' || userInput.charAt(0) == '|')) throw new InvalidInputException(ErrorCode.Invalid_Input);
         int l = 0;
         int r = 0;
         int n = userInput.length();
         List<String> ret = new ArrayList<>();
-        while (r < n && l <= r) {
+        while (l < n && l <= r) {
 
             while (r < n && userInput.charAt(r) != '&' && userInput.charAt(r) != '|') {
                 r++;
@@ -134,11 +134,12 @@ public class ContactSearchService extends ServiceHelper {
                         System.out.print("검색하실 그룹을 입력하시오.('0': 검색 메뉴로 이동)\n>> ");
                         inputGroupName = getUserInput().trim();
 
-                        tokens = this.tokenizeQuery(inputGroupName);
-
                         if (inputGroupName.equals("0")) {
                             return null;
                         }
+
+                        tokens = this.tokenizeQuery(inputGroupName);
+
                         queryResult = contactRepository.findByGroupName(tokens);
                         break;
                     } catch (EntityNotFoundException e) {

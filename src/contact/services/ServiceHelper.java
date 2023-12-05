@@ -13,9 +13,9 @@ public class ServiceHelper {
 
     public Contact selectAndGetContact(List<Contact> queryResult) {
         int targetIndex = selectIndex();
-        while(targetIndex >= 0) {
+        while(targetIndex != 0) {
             try {
-                if (targetIndex > queryResult.size() || targetIndex == 0) {
+                if (targetIndex > queryResult.size() || targetIndex < 0) {
                     throw new InvalidInputException(ErrorCode.Invalid_Input);
                 }
                 return queryResult.get(targetIndex - 1);

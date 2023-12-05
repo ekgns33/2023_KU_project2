@@ -61,6 +61,8 @@ public class ContactDeleteService extends ServiceHelper {
             ContactViewProvider.showContactList(queryResult);
             Contact selectedContact = selectAndGetContact(queryResult);
 
+            if(selectedContact == null) return;
+
             if(!confirmDeleteOperation()) {
                 System.out.println("취소합니다.");
                 return;
