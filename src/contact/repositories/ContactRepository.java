@@ -4,6 +4,8 @@ import contact.entity.Contact;
 import errors.exceptions.EntityNotFoundException;
 import errors.exceptions.ErrorCode;
 import errors.exceptions.InvalidInputException;
+import utils.NameComparator;
+import utils.PidComparator;
 import utils.Validator;
 
 import java.util.*;
@@ -42,6 +44,20 @@ public class ContactRepository {
 
     private static final int NOT = 3;
 
+    public void applySortBy(List<Contact> queryResult) {
+        Comparator<Contact> customComparator;
+        if(this.sortBy == 1) {
+            customComparator = NameComparator.getInstance();
+            Collections.sort(queryResult, customComparator);
+
+        }
+        if(this.sortBy == 2) {
+            customComparator = PidComparator.getInstance();
+            Collections.sort(queryResult, customComparator);
+
+        }
+    }
+
     public void addToMappingTable(String groupName, int pid) {
         if (!mappingTable.containsKey(groupName)) {
             mappingTable.put(groupName, new HashSet<>());
@@ -63,7 +79,9 @@ public class ContactRepository {
      * @return List<Contact> 모든 객체정보가 담긴 리스트 반환
      */
     public List<Contact> findAll() {
-        return new ArrayList<>(this.userTable.values());
+        List<Contact> queryResult = new ArrayList<>(this.userTable.values());
+        applySortBy(queryResult);
+        return queryResult;
     }
 
     public List<Contact> findByName(String name) {
@@ -71,6 +89,7 @@ public class ContactRepository {
         for (Contact contact : this.userTable.values()) {
             if (contact.getName().equals(name)) queryResult.add(contact);
         }
+        applySortBy(queryResult);
         return queryResult;
     }
 
@@ -81,6 +100,7 @@ public class ContactRepository {
                 queryResult.add(contact);
             }
         }
+        applySortBy(queryResult);
         return queryResult;
     }
 
@@ -190,8 +210,8 @@ public class ContactRepository {
         for (int key : pids) {
             queryResult.add(userTable.get(key));
         }
-        return queryResult;
-    }
+        applySortBy(queryResult);
+        return queryResult;    }
 
     /**
      * 수정된 내용을 담고 있는 객체와 이미 저장되어있던 객체를 바꾼다.
