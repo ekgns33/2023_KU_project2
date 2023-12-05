@@ -15,6 +15,7 @@ public final class Validator {
     public static final String DIGITONLY = "^[0-9]{9,11}$"; // 숫자로만 9 이상 11 이하 길이
     public static final String PHONENUM = "^01[0-9]{9}$"; // 01로 시작하고 뒤에 9개의 숫자(무선 전화)
     public static final String OFFICENUM = "^[0-9]{9,10}"; // 유선 전화인지
+    public static final String GROUPNAME ="^[!]?[가-힣]+$";
 
     public Validator() {
     }
@@ -56,6 +57,19 @@ public final class Validator {
             }
         }catch(ApplicationException e) {
             System.out.println(e.getMessage());
+            return -1;
+        }
+        return 1;
+    }
+    public static int isValidGroupSearchToken(String searchToken) {
+        try {
+            // 완전한 형태의 한글로 이루어져 있지 않을 시(중간 공백 허용 X)
+            if(searchToken.equals("X"))
+                return 1;
+            if(!searchToken.matches(GROUPNAME)) {
+                throw new InvalidInputException(ErrorCode.Invalid_Input);
+            }
+        } catch(ApplicationException e) {
             return -1;
         }
         return 1;

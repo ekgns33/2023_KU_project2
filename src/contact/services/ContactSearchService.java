@@ -76,10 +76,10 @@ public class ContactSearchService extends ServiceHelper {
                 }
                 String token = userInput.substring(l, r);
                 String groupName = token;
-                if (r - l > 1) {
+                if (r - l > 1 && groupName.charAt(0) != '!') {
                     groupName = groupName.substring(1);
                 }
-                if (Validator.isValidGroupNameFormat(groupName) == -1){
+                if (Validator.isValidGroupSearchToken(groupName) == -1){
                     throw new InvalidInputException(ErrorCode.Invalid_Input);
                 }
                 ret.add(token);
