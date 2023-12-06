@@ -134,18 +134,18 @@ public class ContactController {
         }
     }
     public void updateConfig() {
-        String sort;
+        String sort ="";
         if(this.contactRepository.getSortBy() == 1) {
             sort = "이름 가나다순";
-        } else if(this.contactRepository.getSortBy() == 2) {
-            sort = "그룹별 정렬";
-        } else {
+        }
+        if(this.contactRepository.getSortBy() == 2) {
             sort = "최근 저장순";
         }
+
         try {
             System.out.println("정렬 기준을 선택하시오.('0': 초기 메뉴로 이동)");
             System.out.println("현재 정렬 기준: " + sort);
-            System.out.print("1) 이름 가나다순 2) 그룹별 정렬 3) 최근 저장순\n>> ");
+            System.out.print("1) 이름 가나다순 2) 최근 저장순\n>> ");
             String userInput = getUserInput();
             int menuCommand = Integer.parseInt(userInput);
             if(menuCommand > 3 || menuCommand < 0) throw new InvalidInputException(ErrorCode.Invalid_Input);
@@ -153,7 +153,18 @@ public class ContactController {
                 setNextCommand(0);
                 return;
             }
-            this.contactRepository.setSortBy(Integer.parseInt(userInput));
+            while(true){
+                System.out.print("위와 같이 저장하시겠습니까?(Y/N)\n>> ");
+                userInput = getUserInput();
+                if(userInput.equals("Y")) {
+                    this.contactRepository.setSortBy(menuCommand);
+                    break;
+                } else if (userInput.equals("N")) {
+                    break;
+                }
+                System.out.println("잘못된 입력 형식입니다.");
+            }
+
         } catch(NumberFormatException e) {
             System.out.println("잘못된 입력 형식입니다.");
         } catch(ApplicationException e1) {
