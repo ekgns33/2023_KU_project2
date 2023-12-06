@@ -34,7 +34,7 @@ public class ProjectManager extends ProjectManagerSupport {
             // config 값 validation
             this.sortBy = Integer.parseInt(configList.get(0));
             this.lastPid = Integer.parseInt(configList.get(1));
-            if (this.sortBy < 1 || this.sortBy > 3 || this.lastPid <= 0) {
+            if (this.sortBy < 1 || this.sortBy > 2 || this.lastPid <= 0) {
                 System.out.println("환경 변수 파일 형식에 오류가 있습니다.");
                 System.exit(0);
             }

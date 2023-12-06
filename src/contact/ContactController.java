@@ -158,8 +158,10 @@ public class ContactController {
                 userInput = getUserInput();
                 if(userInput.equals("Y")) {
                     this.contactRepository.setSortBy(menuCommand);
+                    setNextCommand(0);
                     break;
                 } else if (userInput.equals("N")) {
+                    setNextCommand(0);
                     break;
                 }
                 System.out.println("잘못된 입력 형식입니다.");

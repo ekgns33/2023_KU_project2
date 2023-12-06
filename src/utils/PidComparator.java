@@ -20,6 +20,6 @@ public class PidComparator implements Comparator<Contact> {
 
     @Override
     public int compare(Contact o1, Contact o2) {
-        return o1.getPid() - o2.getPid();
+        return o2.getPid() - o1.getPid();
     }
 }
